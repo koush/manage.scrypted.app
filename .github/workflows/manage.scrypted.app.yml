@@ -1,0 +1,79 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: manage.scrypted.app
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: manage
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: koush/scrypted
+          path: scrypted
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./manage/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: fontawesome token
+        run: |
+          npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+          npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_NPM_TOKEN }}
+      - run: npm ci server
+        working-directory: ./scrypted/server
+      - run: npm ci common
+        working-directory: ./scrypted/common
+      - run: npm ci client
+        working-directory: ./scrypted/packages/client
+      - run: npm ci manage
+        working-directory: ./manage
+      - run: npm run build
+        working-directory: ./manage
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './manage/dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

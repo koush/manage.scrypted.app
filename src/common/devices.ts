@@ -1,0 +1,12 @@
+import { SystemManager } from "@scrypted/types";
+import { connectedClient } from "./client";
+
+export function getAllDevices<T>(systemManager?: SystemManager) {
+    systemManager ||= connectedClient.value?.systemManager;
+    if (!systemManager)
+        return [];
+
+    const ret = Object.keys(systemManager.getSystemState())
+        .map(id => systemManager!.getDeviceById<T>(id));
+    return ret;
+}
