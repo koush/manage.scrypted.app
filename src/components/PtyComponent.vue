@@ -70,6 +70,7 @@ const term = new Terminal({
   theme: dark.value
     ? undefined
     : {
+      selectionBackground: '#0000ff55',
       foreground: "black",
       background: "white",
       cursor: "black",
