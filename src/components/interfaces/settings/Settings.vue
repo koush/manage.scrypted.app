@@ -1,19 +1,22 @@
 <template>
-  <v-chip-group v-model="selectedSettingGroup" column class="mb-4">
+  <v-chip-group v-model="selectedSettingGroup" column class="mb-4" mandatory>
     <v-chip v-for="group of settingsGroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
       size="small" rounded="0">{{
         group.title }}</v-chip>
   </v-chip-group>
 
-  <v-divider class="mb-4"></v-divider>
-  <v-list-item-subtitle>{{ selectedSettingGroup?.title }} > {{ selectedSettingSubgroup?.title }}</v-list-item-subtitle>
-  <v-chip-group v-model="selectedSettingSubgroup" column class="mb-4">
-    <v-chip v-for="group of settingsSubgroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
-      size="small" rounded="0">{{
-        group.title }}</v-chip>
-  </v-chip-group>
+  <template v-if="settingsSubgroups?.length > 1">
+    <v-divider class="mb-4"></v-divider>
+    <v-list-item-subtitle>{{ selectedSettingGroup?.title }} > {{ selectedSettingSubgroup?.title
+      }}</v-list-item-subtitle>
+    <v-chip-group v-model="selectedSettingSubgroup" column class="mb-4" mandatory>
+      <v-chip v-for="group of settingsSubgroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
+        size="small" rounded="0">{{
+          group.title }}</v-chip>
+    </v-chip-group>
+  </template>
 
-  <div v-for="setting in settingsInSubgroup" class="mb-4">
+  <div v-for="setting in settingsInSubgroup" class="">
     <ChoiceString v-if="setting.choices" :model-value="setting"></ChoiceString>
     <StringSetting v-else-if="isStringType(setting.type)" :model-value="setting"></StringSetting>
   </div>
