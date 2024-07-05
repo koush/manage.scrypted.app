@@ -45,16 +45,10 @@
         <template v-else>
 
         </template>
-      </v-col>
-    </v-row>
-    <v-row v-if="hasRTC">
-      <v-col cols="12" md="6">
-        <Camera :id="id"></Camera>
-      </v-col>
-    </v-row>
-    <v-row v-if="hasOrCanCreateDevices">
-      <v-col cols="12" md="6">
-        <DeviceProvider :id="id"></DeviceProvider>
+
+        <Camera :id="id" class="mt-7"></Camera>
+
+        <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" class="mt-7"></DeviceProvider>
       </v-col>
     </v-row>
   </v-container>
