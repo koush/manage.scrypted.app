@@ -43,7 +43,7 @@
           @close="showRepl = false" class="mb-4"></PtyComponent>
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
-        <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" class="mt-7"></DeviceProvider>
+        <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" ></DeviceProvider>
       </v-col>
     </v-row>
   </v-container>
@@ -57,12 +57,12 @@ import { getDeviceFromRoute } from '@/id-device';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import DeviceSettings from './DeviceSettings.vue';
 import InlineTextField from './InlineTextField.vue';
 import PtyComponent from './PtyComponent.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
-import DeviceSettings from './DeviceSettings.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="settings?.length">
     <template v-slot:prepend>
       <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
     </template>
@@ -8,7 +8,7 @@
         Settings
       </v-card-subtitle>
     </template>
-    <div class="ma-4">
+    <div class="ma-4" >
       <SettingsInterface v-model="settings"></SettingsInterface>
     </div>
   </v-card>
@@ -28,6 +28,9 @@ const settings = asyncComputed({
     if (!device.value.interfaces.includes(ScryptedInterface.Settings))
       return;
     return device.value.getSettings();
+  },
+  watch: {
+    device: () => device.value,
   }
 });
 </script>
