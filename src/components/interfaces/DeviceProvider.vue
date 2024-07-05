@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <template v-slot:prepend>
-      <v-icon size="small">{{ getFaPrefix('fa-database') }}</v-icon>
+      <v-icon size="xx-small">{{ getFaPrefix('fa-database') }}</v-icon>
     </template>
     <template v-slot:title>
       <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">

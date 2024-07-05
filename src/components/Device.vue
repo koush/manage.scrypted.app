@@ -1,24 +1,17 @@
 <template>
   <v-container fluid>
-    <v-row v-if="showConsole && device">
-      <v-col cols="12">
-        <PtyComponent :reconnect="true" :clearButton="true" @clear="clearConsole" :copyButton="true" title="Console"
-          :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
-          :options="{ pluginId: device.pluginId }" close @close="showConsole = false"></PtyComponent>
-      </v-col>
-    </v-row>
-    <v-row v-if="showRepl && device">
-      <v-col cols="12">
-        <PtyComponent :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')" nativeId="replservice"
-          :control="false" :options="{ pluginId: device.pluginId }" close @close="showRepl = false"></PtyComponent>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6">
+    <v-row v-if="device">
+      <v-col cols="12" md="8">
+        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole" :copyButton="true"
+          title="Console" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
+          :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4"></PtyComponent>
+        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
+          nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
+          @close="showRepl = false" class="mb-4"></PtyComponent>
         <template v-if="device">
-          <v-card>
+          <v-card class="mb-4">
             <template v-slot:prepend>
-              <v-icon size="small" :icon="typeToIcon(device.type)"></v-icon>
+              <v-icon size="xx-small" :icon="typeToIcon(device.type)"></v-icon>
             </template>
             <template v-slot:append v-if="device.providerId && device.nativeId && mdAndUp">
               <v-btn class="mt-1" :to="`/device/${device.providerId}`" variant="text" density="compact">{{
@@ -46,9 +39,12 @@
 
         </template>
 
-        <Camera v-if="hasRTC" :id="id" class="mt-7"></Camera>
+        <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" class="mt-7"></DeviceProvider>
+      </v-col>
+      <v-col cols="12" md="4">
+        <DeviceSettings :id="id"></DeviceSettings>
       </v-col>
     </v-row>
   </v-container>
@@ -67,6 +63,7 @@ import PtyComponent from './PtyComponent.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
+import DeviceSettings from './DeviceSettings.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);

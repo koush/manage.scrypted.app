@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12">
         <v-card title="Devices" :prepend-icon="getFaPrefix('fa-microchip')">
-          <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple>
+          <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
             <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
               :filter-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"
               size="small" filter variant="flat" :color="isDefaultFilter ? 'deep-purple-accent-4' : 'info'"
@@ -35,8 +35,7 @@
               <tr v-for="device in devicePages[page - 1]" :key="device.id" @click="goDevice(router, device)"
                 style="cursor: pointer;">
                 <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                <td><v-btn color="info" size="small" variant="text">{{ device.name
-                    }}</v-btn></td>
+                <td style="text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
                 <td v-if="mdAndUp">{{ device.info?.model }}</td>
                 <td v-if="lgAndUp">{{ device.info?.manufacturer }}</td>
                 <td v-if="mdAndUp">{{ device.info?.ip }}</td>

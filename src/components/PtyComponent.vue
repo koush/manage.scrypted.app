@@ -75,6 +75,7 @@ const term = new Terminal({
       cursor: "black",
     },
   convertEol: true,
+  fontSize: 12,
 });
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);

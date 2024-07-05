@@ -3,7 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 import { connectPluginClient, connectedClient } from "./common/client";
 import { ScryptedDevice } from "@scrypted/types";
 
-export function getDeviceFromRoute() {
+export function getDeviceFromRoute<T>() {
   const route = useRoute();
 
   const id = computed(() => route.params.id as string);
@@ -14,7 +14,7 @@ export function getDeviceFromRoute() {
       return;
     }
 
-    const d = connectedClient.value.systemManager.getDeviceById(id.value);
+    const d = connectedClient.value.systemManager.getDeviceById<T>(id.value);
     return d;
   });
 
