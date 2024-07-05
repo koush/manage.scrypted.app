@@ -1,18 +1,19 @@
 <template>
   <v-chip-group v-model="selectedSettingGroup" column class="mb-4" mandatory>
-    <v-chip v-for="group of settingsGroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
-      size="small" rounded="0">{{
-        group.title }}</v-chip>
+    <template v-for="group of settingsGroups">
+      <v-chip :value="group" filter variant="flat" color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
+        getTitle(group.title) }}</v-chip>
+    </template>
   </v-chip-group>
 
   <template v-if="settingsSubgroups?.length > 1">
     <v-divider class="mb-4"></v-divider>
-    <v-list-item-subtitle>{{ selectedSettingGroup?.title }} > {{ selectedSettingSubgroup?.title
+    <v-list-item-subtitle>{{ getTitle(selectedSettingGroup?.title) }} > {{ getTitle(selectedSettingSubgroup?.title)
       }}</v-list-item-subtitle>
     <v-chip-group v-model="selectedSettingSubgroup" column class="mb-4" mandatory>
       <v-chip v-for="group of settingsSubgroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
-        size="small" rounded="0">{{
-          group.title }}</v-chip>
+        size="small" rounded="0" class="ma-0">{{
+          getTitle(group.title) }}</v-chip>
     </v-chip-group>
   </template>
 
@@ -22,12 +23,16 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Setting, SettingValue } from '@scrypted/types';
+import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
-import StringSetting from './StringSetting.vue';
 import ChoiceString from './ChoiceString.vue';
+import StringSetting from './StringSetting.vue';
 
 let setting: Setting;
+
+function getTitle(title: string) {
+  return title || 'General';
+}
 
 function isStringType(type: typeof setting.type) {
   switch (type) {
