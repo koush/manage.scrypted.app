@@ -1,7 +1,8 @@
 <template>
-  <v-select class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined" :label="modelValue.title" :hint="modelValue.description"
-    v-model="modelValue.value" :items="modelValue.choices" :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
-    :persistent-hint="!!modelValue.description"></v-select>
+  <v-select class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
+    :label="modelValue.title" :hint="modelValue.description" v-model="modelValue.value" :items="modelValue.choices"
+    :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
+    :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description"></v-select>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';

@@ -20,6 +20,8 @@
   <div v-for="setting in settingsInSubgroup" class="">
     <ChoiceString v-if="setting.choices" :model-value="setting"></ChoiceString>
     <StringSetting v-else-if="isStringType(setting.type)" :model-value="setting"></StringSetting>
+    <BooleanSetting v-else-if="setting.type === 'boolean'" :model-value="setting"></BooleanSetting>
+    <ButtonSetting v-else-if="setting.type === 'button'" :model-value="setting"></ButtonSetting>
   </div>
 </template>
 <script setup lang="ts">
@@ -27,6 +29,8 @@ import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import ChoiceString from './ChoiceString.vue';
 import StringSetting from './StringSetting.vue';
+import BooleanSetting from './BooleanSetting.vue';
+import ButtonSetting from './ButtonSetting.vue';
 
 let setting: Setting;
 

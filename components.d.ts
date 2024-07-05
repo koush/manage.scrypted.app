@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppBar: typeof import('./src/components/AppBar.vue')['default']
+    BooleanSetting: typeof import('./src/components/interfaces/settings/BooleanSetting.vue')['default']
+    ButtonSetting: typeof import('./src/components/interfaces/settings/ButtonSetting.vue')['default']
     Camera: typeof import('./src/components/interfaces/Camera.vue')['default']
     ChoiceStrig: typeof import('./src/components/interfaces/settings/ChoiceStrig.vue')['default']
     ChoiceString: typeof import('./src/components/interfaces/settings/ChoiceString.vue')['default']
@@ -15,6 +17,7 @@ declare module 'vue' {
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
+    DeviceSetting: typeof import('./src/components/interfaces/settings/DeviceSetting.vue')['default']
     DeviceSettings: typeof import('./src/components/DeviceSettings.vue')['default']
     Drawer: typeof import('./src/components/Drawer.vue')['default']
     FilteredDeviceList: typeof import('./src/components/FilteredDeviceList.vue')['default']
