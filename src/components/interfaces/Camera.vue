@@ -25,7 +25,7 @@
       <img :src="imgSrc" style="object-fit: contain; width: 100%; cursor: pointer;" @click="play">
       <video autoplay ref="video" playsinline
         style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: black; object-fit: fill;"
-        :style="{ zIndex: playing ? 1 : -1 }"></video>
+        :style="{ zIndex: playing ? 1 : -1 }" @click="stop"></video>
     </div>
   </v-card>
 </template>
