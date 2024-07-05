@@ -31,24 +31,6 @@
       </template>
     </template>
   </div>
-
-  <!-- <template v-if="settingsSubgroups?.length > 1">
-    <v-divider class="mb-4"></v-divider>
-    <v-list-item-subtitle>{{ getTitle(selectedSettingGroup?.title) }} > {{ getTitle(selectedSettingSubgroup?.title)
-      }}</v-list-item-subtitle>
-    <v-chip-group v-model="selectedSettingSubgroup" column class="mb-4" mandatory>
-      <v-chip v-for="group of settingsSubgroups" :value="group" filter variant="flat" color="deep-purple-accent-4"
-        size="small" rounded="0" class="ma-0">{{
-          getTitle(group.title) }}</v-chip>
-    </v-chip-group>
-  </template>
-
-  <div v-for="setting in settingsInSubgroup" class="">
-    <ChoiceString v-if="setting.choices" :model-value="setting"></ChoiceString>
-    <StringSetting v-else-if="isStringType(setting.type)" :model-value="setting"></StringSetting>
-    <BooleanSetting v-else-if="setting.type === 'boolean'" :model-value="setting"></BooleanSetting>
-    <ButtonSetting v-else-if="setting.type === 'button'" :model-value="setting"></ButtonSetting>
-  </div> -->
 </template>
 <script setup lang="ts">
 import { getLineHintColor } from '@/common/colors';
@@ -116,14 +98,4 @@ watch(() => settingsSubgroups.value, () => {
 function getSubgroupSettings(subgroup: string) {
   return settingsInGroup.value.filter(setting => setting.subgroup === subgroup);
 }
-
-const settingsInSubgroup = computed(() => {
-  if (!selectedSettingSubgroup.value)
-    return;
-  return getSubgroupSettings(selectedSettingSubgroup.value.title);
-});
-
-watch(() => settingsInSubgroup.value, () => {
-  console.log(settingsInSubgroup.value);
-})
 </script>
