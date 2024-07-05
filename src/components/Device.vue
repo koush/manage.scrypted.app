@@ -46,7 +46,7 @@
 
         </template>
 
-        <Camera :id="id" class="mt-7"></Camera>
+        <Camera v-if="hasRTC" :id="id" class="mt-7"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" class="mt-7"></DeviceProvider>
       </v-col>
