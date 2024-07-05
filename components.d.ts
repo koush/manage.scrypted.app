@@ -31,6 +31,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
+    SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
     StringSettings: typeof import('./src/components/interfaces/settings/StringSettings.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
