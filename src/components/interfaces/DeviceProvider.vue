@@ -18,8 +18,8 @@
           <th class="text-left">
             Name
           </th>
-          <th class="text-left" v-if="mdAndUp">Model</th>
-          <th class="text-left" v-if="mdAndUp">IP</th>
+          <th class="text-left" v-if="mdAndUp && showModel">Model</th>
+          <th class="text-left" v-if="mdAndUp && showIp">IP</th>
         </tr>
       </thead>
       <tbody>
@@ -27,8 +27,8 @@
           <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
           <td><v-btn color="info" size="small" variant="text">{{ device.name
               }}</v-btn></td>
-          <td v-if="mdAndUp">{{ device.info?.model }}</td>
-          <td v-if="mdAndUp">{{ device.info?.ip }}</td>
+          <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
+          <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
       </tbody>
     </v-table>
@@ -50,6 +50,14 @@ const { id, device } = getDeviceFromRoute();
 const childDevices = computed(() => {
   return getAllDevices()
     .filter(d => d.providerId === id.value && d.id !== id.value);
+});
+
+const showModel = computed(() => {
+  return childDevices.value.some(d => d.info?.model);
+});
+
+const showIp = computed(() => {
+  return childDevices.value.some(d => d.info?.ip);
 });
 
 </script>
