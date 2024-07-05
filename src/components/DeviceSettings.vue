@@ -21,7 +21,7 @@ import { getDeviceFromRoute } from '@/id-device';
 import { ScryptedInterface, Settings } from '@scrypted/types';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 
-const { id, device } = getDeviceFromRoute<Settings>();
+const { device } = getDeviceFromRoute<Settings>();
 
 const settings = asyncComputed({
   async get() {
@@ -29,6 +29,7 @@ const settings = asyncComputed({
       return;
     return device.value.getSettings();
   },
+  default: [],
   watch: {
     device: () => device.value,
   }

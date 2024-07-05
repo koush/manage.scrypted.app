@@ -74,10 +74,12 @@ function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
 }
 
 const settingsGroups = computed(() => {
-  return makeGroups(modelValue.value, 'group');
+  const r =  makeGroups(modelValue.value, 'group');
+  console.warn('grousp2!', r.length)
+  return r;
 });
 
-const selectedSettingGroup = ref<typeof settingsGroups.value[0]>();
+const selectedSettingGroup = ref(settingsGroups.value?.[0]);
 watch(() => settingsGroups.value, () => {
   selectedSettingGroup.value = settingsGroups.value[0];
 });
@@ -92,9 +94,9 @@ const settingsSubgroups = computed(() => {
   return makeGroups(settingsInGroup.value, 'subgroup');
 });
 
-const selectedSettingSubgroup = ref<typeof settingsSubgroups.value[0]>();
+const selectedSettingSubgroup = ref(settingsSubgroups.value?.[0]);
 watch(() => settingsSubgroups.value, () => {
-  selectedSettingSubgroup.value = settingsSubgroups.value[0];
+  selectedSettingSubgroup.value = settingsSubgroups.value?.[0];
 });
 
 function getSubgroupSettings(subgroup: string) {
