@@ -51,18 +51,12 @@
   </div> -->
 </template>
 <script setup lang="ts">
+import { getLineHintColor } from '@/common/colors';
 import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
-import ChoiceString from './ChoiceString.vue';
-import StringSetting from './StringSetting.vue';
-import BooleanSetting from './BooleanSetting.vue';
-import ButtonSetting from './ButtonSetting.vue';
-import { getLineHintColor } from '@/common/colors';
 import SplatSetting from './SplatSetting.vue';
 
 const lineHintColor = getLineHintColor();
-
-let setting: Setting;
 
 function getTitle(title: string) {
   return title || 'General';
