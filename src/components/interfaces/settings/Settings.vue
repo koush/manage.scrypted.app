@@ -6,7 +6,26 @@
     </template>
   </v-chip-group>
 
-  <template v-if="settingsSubgroups?.length > 1">
+  <div style="border-radius: 16px; overflow: hidden;" :style="`border: 1px solid ${lineHintColor};`">
+    <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" >
+      <template v-for="group in settingsSubgroups">
+        <v-expansion-panel :value="group">
+          <v-expansion-panel-title :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : undefined">{{ getTitle(group.title) }}</v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <template v-for="setting in getSubgroupSettings(group.title)">
+              <ChoiceString v-if="setting.choices" :model-value="setting"></ChoiceString>
+              <StringSetting v-else-if="isStringType(setting.type)" :model-value="setting"></StringSetting>
+              <BooleanSetting v-else-if="setting.type === 'boolean'" :model-value="setting"></BooleanSetting>
+              <ButtonSetting v-else-if="setting.type === 'button'" :model-value="setting"></ButtonSetting>
+            </template>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+        <v-divider></v-divider>
+      </template>
+    </v-expansion-panels>
+  </div>
+
+  <!-- <template v-if="settingsSubgroups?.length > 1">
     <v-divider class="mb-4"></v-divider>
     <v-list-item-subtitle>{{ getTitle(selectedSettingGroup?.title) }} > {{ getTitle(selectedSettingSubgroup?.title)
       }}</v-list-item-subtitle>
@@ -22,7 +41,7 @@
     <StringSetting v-else-if="isStringType(setting.type)" :model-value="setting"></StringSetting>
     <BooleanSetting v-else-if="setting.type === 'boolean'" :model-value="setting"></BooleanSetting>
     <ButtonSetting v-else-if="setting.type === 'button'" :model-value="setting"></ButtonSetting>
-  </div>
+  </div> -->
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
@@ -31,6 +50,9 @@ import ChoiceString from './ChoiceString.vue';
 import StringSetting from './StringSetting.vue';
 import BooleanSetting from './BooleanSetting.vue';
 import ButtonSetting from './ButtonSetting.vue';
+import { getLineHintColor } from '@/common/colors';
+
+const lineHintColor = getLineHintColor();
 
 let setting: Setting;
 
@@ -102,10 +124,14 @@ watch(() => settingsSubgroups.value, () => {
   selectedSettingSubgroup.value = settingsSubgroups.value[0];
 });
 
+function getSubgroupSettings(subgroup: string) {
+  return settingsInGroup.value.filter(setting => setting.subgroup === subgroup);
+}
+
 const settingsInSubgroup = computed(() => {
   if (!selectedSettingSubgroup.value)
     return;
-  return settingsInGroup.value.filter(setting => setting.subgroup === selectedSettingSubgroup.value.title);
+  return getSubgroupSettings(selectedSettingSubgroup.value.title);
 });
 
 watch(() => settingsInSubgroup.value, () => {
