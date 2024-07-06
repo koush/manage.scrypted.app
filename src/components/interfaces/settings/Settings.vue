@@ -75,7 +75,6 @@ function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
 
 const settingsGroups = computed(() => {
   const r =  makeGroups(modelValue.value, 'group');
-  console.warn('grousp2!', r.length)
   return r;
 });
 
