@@ -1,6 +1,7 @@
 <template>
   <template v-if="modelValue.choices?.length <= 3 && !modelValue.combobox">
     <template v-if="true || modelValue.multiple">
+      <v-divider></v-divider>
       <v-label style="font-size: .65rem;" class="ml-3">{{
         modelValue.title }}</v-label>
       <v-chip-group class="ml-3" v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
@@ -10,19 +11,18 @@
           {{
             choice }}</v-chip>
       </v-chip-group>
-      <v-divider></v-divider>
       <div class="mb-2 ml-3 mr-3">
         <v-list-item-subtitle class="shrink" v-if="modelValue.description">{{
           modelValue.description }}</v-list-item-subtitle>
       </div>
     </template>
     <template v-else>
+      <v-divider></v-divider>
       <v-radio-group class="shrink" density="compact" v-model="modelValue.value" inline :label="modelValue.title"
         :hint="modelValue.description" :persistent-hint="!!modelValue.description"
         :hide-details="!modelValue.description">
         <v-radio v-for="choice of modelValue.choices" :color="chipColor" :value="choice" :label="choice"></v-radio>
       </v-radio-group>
-      <v-divider></v-divider>
     </template>
   </template>
   <component v-else :is="component" class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
