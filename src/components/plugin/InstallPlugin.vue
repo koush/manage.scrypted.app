@@ -12,7 +12,6 @@
       </template>
       <template v-slot:append>
         <div style="text-align: end">v{{ plugin.version }}</div>
-        <div style="text-align: end">{{ plugin.date }}</div>
       </template>
       <template v-slot:title>
         <v-card-title>{{ plugin.name }}
