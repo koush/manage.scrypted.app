@@ -16,7 +16,6 @@ declare module 'vue' {
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
-    DeviceSetting: typeof import('./src/components/interfaces/settings/DeviceSetting.vue')['default']
     DeviceSettings: typeof import('./src/components/DeviceSettings.vue')['default']
     Drawer: typeof import('./src/components/Drawer.vue')['default']
     FilteredDeviceList: typeof import('./src/components/FilteredDeviceList.vue')['default']

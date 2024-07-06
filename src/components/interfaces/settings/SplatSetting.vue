@@ -7,13 +7,15 @@
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
-import ChoiceString from './ChoiceString.vue';
-import StringSetting from './StringSetting.vue';
 import BooleanSetting from './BooleanSetting.vue';
 import ButtonSetting from './ButtonSetting.vue';
+import ChoiceString from './ChoiceString.vue';
 import ClipPathSetting from './ClipPathSetting.vue';
+import StringSetting from './StringSetting.vue';
+import { watchModelValue } from './setting-modelvalue';
 
 const modelValue = defineModel<Setting>();
+watchModelValue(modelValue);
 
 function isStringType(type: typeof modelValue.value.type) {
   switch (type) {

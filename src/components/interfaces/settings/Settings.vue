@@ -39,6 +39,7 @@ import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { getChipVariant } from '../settings-chip';
 import SplatSetting from './SplatSetting.vue';
+import { TrackedSetting } from './setting-modelvalue';
 
 const chipVariant = getChipVariant();
 
@@ -48,7 +49,7 @@ function getTitle(title: string) {
   return title || 'General';
 }
 
-const modelValue = defineModel<Setting[]>();
+const modelValue = defineModel<TrackedSetting[]>();
 
 function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
   if (!settings)
@@ -82,7 +83,8 @@ const settingsGroups = computed(() => {
 
 const selectedSettingGroup = ref(settingsGroups.value?.[0]);
 watch(() => settingsGroups.value, () => {
-  selectedSettingGroup.value = settingsGroups.value[0];
+  selectedSettingGroup.value = settingsGroups.value.find(v => v.title === selectedSettingGroup.value?.title)
+    || settingsGroups.value[0];
 });
 
 const settingsInGroup = computed(() => {
@@ -97,7 +99,8 @@ const settingsSubgroups = computed(() => {
 
 const selectedSettingSubgroup = ref(settingsSubgroups.value?.[0]);
 watch(() => settingsSubgroups.value, () => {
-  selectedSettingSubgroup.value = settingsSubgroups.value?.[0];
+  selectedSettingSubgroup.value = settingsSubgroups.value.find(v => v.title === selectedSettingSubgroup.value?.title)
+    || settingsSubgroups.value?.[0];
 });
 
 function getSubgroupSettings(subgroup: string) {
