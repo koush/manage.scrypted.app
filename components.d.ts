@@ -12,6 +12,8 @@ declare module 'vue' {
     ButtonSetting: typeof import('./src/components/interfaces/settings/ButtonSetting.vue')['default']
     Camera: typeof import('./src/components/interfaces/Camera.vue')['default']
     ChoiceString: typeof import('./src/components/interfaces/settings/ChoiceString.vue')['default']
+    ClipPathSetting: typeof import('./src/components/interfaces/settings/ClipPathSetting.vue')['default']
+    copy: typeof import('./src/components/interfaces/settings/ButtonSetting copy.vue')['default']
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']

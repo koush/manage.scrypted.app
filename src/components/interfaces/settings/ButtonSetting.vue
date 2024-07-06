@@ -1,8 +1,9 @@
 <template>
-    <div>
+  <div>
     <v-btn :readonly="modelValue.readonly" density="compact" variant="tonal" block>{{ modelValue.title }}</v-btn>
-    <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{ modelValue.description}}</v-list-item-subtitle>
-</div>
+    <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
+      modelValue.description }}</v-list-item-subtitle>
+  </div>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
