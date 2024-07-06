@@ -2,16 +2,16 @@
   <template v-if="modelValue.choices?.length <= 3 && !modelValue.combobox">
     <template v-if="true || modelValue.multiple">
       <v-divider></v-divider>
-      <v-label style="font-size: .65rem;" class="ml-3">{{
-        modelValue.title }}</v-label>
-      <v-chip-group class="ml-3" v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
+      <v-list-item-subtitle class="shrink  mt-1" v-if="modelValue.title">{{
+        modelValue.title }}</v-list-item-subtitle> <v-chip-group class="" v-model="modelValue.value" column
+        :variant="chipVariant" :multiple="modelValue.multiple">
         <v-chip v-for="choice of modelValue.choices" class="chip-group-round" color="light-blue-darken-3" size="x-small"
           :value="choice"
           :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
           {{
             choice }}</v-chip>
       </v-chip-group>
-      <div class="mb-2 ml-3 mr-3">
+      <div class="mb-2  mr-3">
         <v-list-item-subtitle class="shrink" v-if="modelValue.description">{{
           modelValue.description }}</v-list-item-subtitle>
       </div>
