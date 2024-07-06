@@ -8,7 +8,7 @@
         Settings
       </v-card-subtitle>
     </template>
-    <div class="ml-4 mr-4 mb-4" >
+    <div class="ml-4 mr-4 mb-4">
       <SettingsInterface v-model="settings"></SettingsInterface>
     </div>
     <v-card-actions>
@@ -37,15 +37,35 @@ registerListener(device, {
   refreshSettings.value++;
 });
 
+// various plugins aren't using StorageSettings and are returning stringified values.
+function normalizeBoolean(value: any) {
+  if (value === 'true')
+    return true;
+  if (value === 'false')
+    return false;
+  return !!value;
+}
+
+function normalizeNumber(value: any) {
+  return parseFloat(value);
+}
+
 const settings = asyncComputed({
   async get() {
     if (!device.value.interfaces.includes(ScryptedInterface.Settings))
       return;
     const settings = await device.value.getSettings();
-    const ret: TrackedSetting[] = settings.map(setting => ({
-      ...setting,
-      originalValue: setting.value,
-    }));
+    const ret: TrackedSetting[] = settings.map(setting => {
+      if (setting.type === 'boolean')
+        setting.value = normalizeBoolean(setting.value);
+      else if (setting.type === 'number')
+        setting.value = normalizeNumber(setting.value);
+      const adjusted = {
+        ...setting,
+        originalValue: setting.value,
+      };
+      return adjusted;
+    });
     return ret;
   },
   default(previousValue) {
@@ -57,6 +77,7 @@ const settings = asyncComputed({
   }
 });
 
+
 function isDirty(setting: TrackedSetting) {
   return JSON.stringify(setting.value) !== JSON.stringify(setting.originalValue);
 }
@@ -66,8 +87,10 @@ const dirtyCount = computed(() => {
 });
 
 function save() {
-  // const toSave = settings.value.filter(isDirty);
-  // console.log(toSave);
+  const toSave = settings.value.filter(isDirty);
+  for (const setting of toSave) {
+    device.value.putSetting(setting.key, setting.value);
+  }
 }
 
 </script>
