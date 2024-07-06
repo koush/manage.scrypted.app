@@ -50,8 +50,8 @@ const itemGroups: ItemGroup[] = [
   {
     title: undefined,
     items: [
-      { title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin' },
       { title: 'Devices', icon: getFaPrefix('fa-list'), to: '/device', active: () => routeName.value === 'Device' || routeName.value === 'DeviceList' },
+      { title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin' },
     ]
   },
   {

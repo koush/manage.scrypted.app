@@ -8,7 +8,7 @@
         Settings
       </v-card-subtitle>
     </template>
-    <div class="ma-4" >
+    <div class="ml-4 mr-4 mb-4" >
       <SettingsInterface v-model="settings"></SettingsInterface>
     </div>
   </v-card>

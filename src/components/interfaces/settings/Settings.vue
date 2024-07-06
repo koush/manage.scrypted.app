@@ -1,5 +1,5 @@
 <template>
-  <v-chip-group v-model="selectedSettingGroup" column class="mb-4" mandatory :variant="dark ? 'flat' : undefined">
+  <v-chip-group v-model="selectedSettingGroup" column class="ml-7 mb-4 pt-0" mandatory :variant="chipVariant">
     <template v-for="group of settingsGroups">
       <v-chip :value="group" filter color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
         getTitle(group.title) }}</v-chip>
@@ -34,12 +34,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getLineHintColor, isDark } from '@/common/colors';
+import { getLineHintColor } from '@/common/colors';
 import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
+import { getChipVariant } from '../settings-chip';
 import SplatSetting from './SplatSetting.vue';
 
-const dark = isDark();
+const chipVariant = getChipVariant();
 
 const lineHintColor = getLineHintColor();
 
@@ -75,7 +76,7 @@ function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
 }
 
 const settingsGroups = computed(() => {
-  const r =  makeGroups(modelValue.value, 'group');
+  const r = makeGroups(modelValue.value, 'group');
   return r;
 });
 
