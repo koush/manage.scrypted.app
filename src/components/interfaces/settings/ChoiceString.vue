@@ -1,5 +1,5 @@
 <template>
-  <template v-if="modelValue.choices?.length <= 6 && !modelValue.combobox">
+  <template v-if="modelValue.choices?.length <= 3 && !modelValue.combobox">
     <v-label class="shrink">{{
       modelValue.title }}</v-label>
     <v-chip-group v-model="modelValue.value" column :variant="dark ? 'flat' : undefined"

@@ -25,6 +25,7 @@
     </v-expansion-panels>
   </div>
   <div v-else>
+    <v-divider class="mb-4"></v-divider>
     <template v-for="group in settingsSubgroups">
       <template v-for="setting in getSubgroupSettings(group.title)">
         <SplatSetting :model-value="setting"></SplatSetting>
