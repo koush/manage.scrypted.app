@@ -52,7 +52,7 @@ async function toggleMixin(extension: typeof extensions.value[0], state: boolean
 }
 
 const enabledExtensions = computed(() => {
-  return device.value?.mixins.map(m => {
+  return (device.value?.mixins || []).map(m => {
     const mixin = connectedClient.value!.systemManager.getDeviceById<MixinProvider>(m);
     return mixin;
   })
