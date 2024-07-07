@@ -9,3 +9,5 @@ export function getChipVariant() {
 
   return chipVariant;
 }
+
+export const chipColor = "light-blue-darken-3";

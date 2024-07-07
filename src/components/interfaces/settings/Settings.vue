@@ -1,9 +1,11 @@
 <template>
-  <v-chip-group v-model="selectedSettingGroup" column class="ml-7 mb-4 pt-0" mandatory :variant="chipVariant">
+  <v-chip-group v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column class="ml-7 mb-4 pt-0" mandatory
+    :variant="chipVariant">
     <template v-for="group of settingsGroups">
       <v-chip :value="group" filter color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
         getTitle(group.title) }}</v-chip>
     </template>
+    <slot name="settings-group-chips"></slot>
   </v-chip-group>
 
   <div v-if="settingsSubgroups?.length > 1" style="border-radius: 16px; overflow: hidden;"
@@ -25,21 +27,24 @@
     </v-expansion-panels>
   </div>
   <div v-else>
-    <v-divider class="mb-4"></v-divider>
+    <v-divider v-if="settingsGroups?.length > 1" class="mb-4"></v-divider>
     <template v-for="group in settingsSubgroups">
       <template v-for="setting in getSubgroupSettings(group.title)">
         <SplatSetting :model-value="setting"></SplatSetting>
       </template>
     </template>
   </div>
+  <slot name="settings" :selectedSettingGroup="selectedSettingGroup"></slot>
 </template>
 <script setup lang="ts">
 import { getLineHintColor } from '@/common/colors';
 import { Setting } from '@scrypted/types';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useSlots, watch } from 'vue';
 import { getChipVariant } from '../settings-chip';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
+
+const slots = useSlots();
 
 const chipVariant = getChipVariant();
 
@@ -50,6 +55,9 @@ function getTitle(title: string) {
 }
 
 const modelValue = defineModel<TrackedSetting[]>();
+const props = defineProps<{
+  extraChips?: string[];
+}>();
 
 function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
   if (!settings)
@@ -83,6 +91,8 @@ const settingsGroups = computed(() => {
 
 const selectedSettingGroup = ref(settingsGroups.value?.[0]);
 watch(() => settingsGroups.value, () => {
+  if (props.extraChips?.includes(selectedSettingGroup.value?.title))
+    return;
   selectedSettingGroup.value = settingsGroups.value.find(v => v.title === selectedSettingGroup.value?.title)
     || settingsGroups.value[0];
 });

@@ -9,7 +9,17 @@
       </v-card-subtitle>
     </template>
     <div class="ml-4 mr-4 mb-4">
-      <SettingsInterface v-model="settings"></SettingsInterface>
+      <SettingsInterface v-model="settings" :extra-chips="['Extensions']">
+        <template v-slot:settings-group-chips>
+          <v-chip color="deep-purple-accent-4" size="small" rounded="0" class="ma-0"
+            :prepend-icon="getFaPrefix('fa-bolt')" :value="extensions">
+            Extensions
+          </v-chip>
+        </template>
+        <template v-slot:settings="slotProps">
+          <Extensions :id="id" v-if="slotProps.selectedSettingGroup.title === 'Extensions'"></Extensions>
+        </template>
+      </SettingsInterface>
     </div>
     <v-card-actions>
       <v-spacer></v-spacer>
@@ -22,12 +32,14 @@
 import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromRoute, registerListener } from '@/id-device';
-import { ScryptedInterface, Settings } from '@scrypted/types';
+import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
+import Extensions from './interfaces/settings/Extensions.vue';
 
-const { device } = getDeviceFromRoute<Settings>();
+const { id, device } = getDeviceFromRoute<Settings>();
+const extensions = { title: 'Extensions', settings: [] as Setting[] };
 
 const refreshSettings = ref(0);
 

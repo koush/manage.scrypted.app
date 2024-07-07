@@ -1,30 +1,39 @@
 import { EventListener, EventListenerOptions, EventListenerRegister, ScryptedDevice } from "@scrypted/types";
-import { ComputedRef, computed } from "vue";
+import { ComputedRef, WritableComputedRef, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { connectPluginClient, connectedClient } from "./common/client";
+import { asyncComputed } from "./common/async-computed";
 
 export function getDeviceFromRoute<T>() {
   const route = useRoute();
 
   const id = computed(() => route.params.id as string);
-
-  const device = computed(() => {
-    if (!connectedClient.value) {
-      connectPluginClient();
-      return;
-    }
-
-    const d = connectedClient.value.systemManager.getDeviceById<T>(id.value);
-    return d;
-  });
-
+  const device = getDeviceFromId<T>(() => id.value);
   return {
     id,
     device,
-  }
+  };
 }
 
-export function registerListener(device: ComputedRef<ScryptedDevice>, options: EventListenerOptions, callback: EventListener) {
+export function getDeviceFromId<T>(id: () => string) {
+  const device = asyncComputed({
+    async get() {
+      const { systemManager } = connectedClient.value || await connectPluginClient();
+      const d = systemManager.getDeviceById<T>(id());
+      return d;
+    },
+    watch: {
+      id: () => id(),
+    },
+    default(previousValue) {
+      return connectedClient.value?.systemManager.getDeviceById<T>(id()) || previousValue;
+    }
+  });
+
+  return device;
+}
+
+export function registerListener(device: ComputedRef<ScryptedDevice> | WritableComputedRef<ScryptedDevice>, options: EventListenerOptions, callback: EventListener) {
   let register: EventListenerRegister;
   function registerListener() {
     register?.removeListener();

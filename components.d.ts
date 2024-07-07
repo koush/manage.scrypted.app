@@ -18,6 +18,7 @@ declare module 'vue' {
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
     DeviceSettings: typeof import('./src/components/DeviceSettings.vue')['default']
     Drawer: typeof import('./src/components/Drawer.vue')['default']
+    Extensions: typeof import('./src/components/interfaces/settings/Extensions.vue')['default']
     FilteredDeviceList: typeof import('./src/components/FilteredDeviceList.vue')['default']
     InlineTextField: typeof import('./src/components/InlineTextField.vue')['default']
     InstallPlugin: typeof import('./src/components/plugin/InstallPlugin.vue')['default']

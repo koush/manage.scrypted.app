@@ -39,9 +39,8 @@ import { getFaPrefix } from '@/device-icons';
 import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { VCombobox, VSelect } from 'vuetify/components';
-import { getChipVariant } from '../settings-chip';
+import { chipColor, getChipVariant } from '../settings-chip';
 
-const chipColor = "light-blue-darken-3";
 const chipVariant = getChipVariant();
 
 const modelValue = defineModel<Setting>();

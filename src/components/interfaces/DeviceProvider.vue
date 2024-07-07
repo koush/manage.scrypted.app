@@ -25,8 +25,7 @@
       <tbody>
         <tr v-for="device in childDevices" :key="device.id" @click="goDevice(router, device)" style="cursor: pointer;">
           <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-          <td><v-btn color="info" size="small" variant="text">{{ device.name
-              }}</v-btn></td>
+          <td>{{ device.name }}</td>
           <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
