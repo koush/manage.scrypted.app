@@ -1,6 +1,6 @@
 <template>
-  <v-chip-group v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column class="ml-7 mb-4 pt-0" mandatory
-    :variant="chipVariant">
+  <v-chip-group v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column
+    class="ml-7 mb-4 pt-0" mandatory :variant="chipVariant">
     <template v-for="group of settingsGroups">
       <v-chip :value="group" filter color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
         getTitle(group.title) }}</v-chip>
@@ -8,9 +8,13 @@
     <slot name="settings-group-chips"></slot>
   </v-chip-group>
 
-  <div v-if="settingsSubgroups?.length > 1" style="border-radius: 16px; overflow: hidden;"
+  <div v-if="true || settingsSubgroups?.length > 1" style="border-radius: 16px; overflow: hidden;"
     :style="`border: 1px solid ${lineHintColor};`">
-    <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup">
+    <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" variant="accordion"
+      :mandatory="settingsSubgroups?.length <= 1">
+      <v-toolbar density="compact" :height="48">
+        <v-toolbar-title class="text-caption">{{ selectedSettingGroup.title }}</v-toolbar-title>
+      </v-toolbar>
       <template v-for="group in settingsSubgroups">
         <v-expansion-panel :value="group">
           <v-expansion-panel-title
