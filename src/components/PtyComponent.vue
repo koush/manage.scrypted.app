@@ -8,7 +8,7 @@
         @click="expand" />
       <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Console" variant="text" @click="contrac" />
       <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Console" variant="text" />
-      <ToolbarTooltipButton icon="fa-trash" tooltip="Clear Console" color="error" variant="text" @click="clear" />
+      <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Console" color="error" variant="text" @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
     </template>
     <template v-slot:title>
