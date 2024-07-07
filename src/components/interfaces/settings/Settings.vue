@@ -8,37 +8,42 @@
     <slot name="settings-group-chips"></slot>
   </v-chip-group>
 
-  <div v-if="true || settingsSubgroups?.length > 1" style="border-radius: 16px; overflow: hidden;"
+  <div style="border-radius: 16px; overflow: hidden;"
     :style="`border: 1px solid ${lineHintColor};`">
     <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" variant="accordion"
       :mandatory="settingsSubgroups?.length <= 1">
       <v-toolbar density="compact" :height="48">
         <v-toolbar-title class="text-caption">{{ selectedSettingGroup.title }}</v-toolbar-title>
       </v-toolbar>
-      <template v-for="group in settingsSubgroups">
-        <v-expansion-panel :value="group">
-          <v-expansion-panel-title
-            :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : undefined">{{
-              getTitle(group.title) }}</v-expansion-panel-title>
-          <v-expansion-panel-text>
+      <template v-if="settingsSubgroups.length > 1">
+        <template v-for="group in settingsSubgroups">
+          <v-expansion-panel :value="group">
+            <v-expansion-panel-title
+              :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : undefined">{{
+                getTitle(group.title) }}</v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <template v-for="setting in getSubgroupSettings(group.title)">
+                <SplatSetting :model-value="setting"></SplatSetting>
+              </template>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </template>
+
+        <v-divider></v-divider>
+      </template>
+      <div v-else>
+        <v-divider v-if="settingsGroups?.length > 1" class="mb-4"></v-divider>
+        <div class="ma-2">
+          <template v-for="group in settingsSubgroups">
             <template v-for="setting in getSubgroupSettings(group.title)">
               <SplatSetting :model-value="setting"></SplatSetting>
             </template>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-        <v-divider></v-divider>
-      </template>
+          </template>
+        </div>
+        <slot name="settings" :selectedSettingGroup="selectedSettingGroup"></slot>
+      </div>
     </v-expansion-panels>
   </div>
-  <div v-else>
-    <v-divider v-if="settingsGroups?.length > 1" class="mb-4"></v-divider>
-    <template v-for="group in settingsSubgroups">
-      <template v-for="setting in getSubgroupSettings(group.title)">
-        <SplatSetting :model-value="setting"></SplatSetting>
-      </template>
-    </template>
-  </div>
-  <slot name="settings" :selectedSettingGroup="selectedSettingGroup"></slot>
 </template>
 <script setup lang="ts">
 import { getLineHintColor } from '@/common/colors';

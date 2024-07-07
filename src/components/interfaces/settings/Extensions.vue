@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list density="compact" style="width: 100%;">
+    <v-list density="compact" style="width: 100%; overflow: hidden;">
       <v-list-subheader>Extensions modify and extend the capabilites of devices.</v-list-subheader>
       <template v-for="extension in extensions">
         <v-list-item style="height: 36px;">
