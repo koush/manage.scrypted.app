@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-list density="compact" style="width: 100%; overflow: hidden;">
-      <v-list-subheader>Extensions modify and extend the capabilites of devices.</v-list-subheader>
+    <v-list v-if="extensions.length" density="compact" style="width: 100%; overflow: hidden;">
+      <v-list-subheader>Modify and extend devices capabilities.</v-list-subheader>
       <template v-for="extension in extensions">
         <v-list-item style="height: 36px;">
           <template v-slot:title>
@@ -22,6 +22,9 @@
         <v-divider></v-divider>
       </template>
     </v-list>
+    <div v-else>
+      <v-card-text>No extensions available.</v-card-text>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -34,6 +37,7 @@ import { chipColor } from '../settings-chip';
 import { computed } from 'vue';
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
+import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 
 const router = useRouter();
 
@@ -63,7 +67,7 @@ const availableExtensions = asyncComputed({
   async get() {
     const mixinProviders = getAllDevices<MixinProvider>().filter(d => d.interfaces.includes(ScryptedInterface.MixinProvider));
     const promises = mixinProviders.map(async m => await m.canMixin(device.value.type, device.value.interfaces) ? m : undefined);
-    const settled = await Promise.allSettled(promises);
+    const settled = await Promise.allSettled(promises.map(p => timeoutPromise(2000, p)));
     const valid = settled.map(v => v.status === 'fulfilled' && v.value).filter(v => !!v);
     return valid;
   },
