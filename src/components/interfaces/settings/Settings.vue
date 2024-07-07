@@ -19,7 +19,7 @@
         <template v-for="group in settingsSubgroups">
           <v-expansion-panel :value="group">
             <v-expansion-panel-title style="min-height: unset;"
-              :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : undefined">{{
+              :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : 'rgb(var(--v-theme-background))'">{{
                 getTitle(group.title) }}</v-expansion-panel-title>
             <v-expansion-panel-text>
               <template v-for="setting in getSubgroupSettings(group.title)">
