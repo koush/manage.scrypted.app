@@ -81,12 +81,6 @@ export default defineConfig({
 	host: '0.0.0.0',
     port: 4000,
 	proxy: {
-		// '^/$': {
-		// 	target,
-		// 	changeOrigin: true,
-		// 	secure: false,
-		// 	ws: true,
-		// },
 		'^/(login|logout|endpoint|engine.io)': {
 			target,
 			changeOrigin: true,

@@ -2,12 +2,13 @@
   "name": "manage",
   "version": "0.0.0",
   "scripts": {
+    "postinstall": "node scripts/post-install.js",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-pro": "^6.5.1",
+    "@fortawesome/fontawesome-free": "^6.5.2",
     "@mdi/font": "6.2.95",
     "@scrypted/client": "file:../scrypted/packages/client",
     "@scrypted/common": "file:../scrypted/common",
@@ -34,5 +35,8 @@
     "vite-plugin-pwa": "^0.20.0",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-tsc": "^2.0.6"
+  },
+  "optionalDependencies": {
+    "@fortawesome/fontawesome-pro": "^6.5.2"
   }
 }

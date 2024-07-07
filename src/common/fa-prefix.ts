@@ -1,3 +1,8 @@
+let faPrefix = 'fa-unset';
 export function getFaPrefix(icon?: string) {
-  return 'fa-light' + (icon ? ` ${icon}` : '');
+  return faPrefix + (icon ? ` ${icon}` : '');
+}
+
+export function setFaPrefix(prefix: string) {
+  faPrefix = prefix;
 }

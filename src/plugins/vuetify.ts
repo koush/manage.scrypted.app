@@ -4,22 +4,21 @@
  * Framework documentation: https://vuetifyjs.com`
  */
 
+// import 'vuetify/styles'
+import '../styles/theme.scss'
+
 // Styles
-import '@fortawesome/fontawesome-pro/css/fontawesome.min.css'
 import '@xterm/xterm/css/xterm.css';
 
 import '@mdi/font/css/materialdesignicons.css'
-// import 'vuetify/styles'
 import { aliases, fa } from 'vuetify/iconsets/fa'
 import { mdi } from 'vuetify/iconsets/mdi'
 
-import '../styles/fa/brands.css'
-import '../styles/fa/light.css'
-import '../styles/fa/solid.css'
+import '../../scripts/font-awesome'
+
 import '../fonts/inter-4/inter.css'
 import '../styles/quicksand.css'
 
-import '../styles/theme.scss'
 
 // Composables
 import { createVuetify } from 'vuetify'
