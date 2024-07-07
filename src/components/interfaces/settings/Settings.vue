@@ -1,24 +1,24 @@
 <template>
-  <v-chip-group v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column
-    class="ml-7 mb-4 pt-0" mandatory :variant="chipVariant">
-    <template v-for="group of settingsGroups">
-      <v-chip :value="group" filter color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
-        getTitle(group.title) }}</v-chip>
-    </template>
-    <slot name="settings-group-chips"></slot>
-  </v-chip-group>
-
-  <div style="border-radius: 16px; overflow: hidden;"
-    :style="`border: 1px solid ${lineHintColor};`">
+  <div style="border-radius: 16px; overflow: hidden;" :style="`border: 1px solid ${lineHintColor};`">
     <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" variant="accordion"
       :mandatory="settingsSubgroups?.length <= 1">
-      <v-toolbar density="compact" :height="48">
+
+      <v-chip-group style="width: 100%; background: rgb(var(--v-theme-surface-variant));" v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column
+        class="pt-0 pb-0" mandatory variant="flat">
+        <template v-for="group of settingsGroups">
+          <v-chip :value="group" color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
+            getTitle(group.title) }}</v-chip>
+        </template>
+        <slot name="settings-group-chips"></slot>
+      </v-chip-group>
+      <!-- <v-toolbar density="compact" :height="48">
         <v-toolbar-title class="text-caption">{{ selectedSettingGroup.title }}</v-toolbar-title>
-      </v-toolbar>
+      </v-toolbar> -->
+
       <template v-if="settingsSubgroups.length > 1">
         <template v-for="group in settingsSubgroups">
           <v-expansion-panel :value="group">
-            <v-expansion-panel-title
+            <v-expansion-panel-title style="min-height: unset;"
               :color="group?.title === selectedSettingSubgroup?.title ? 'deep-purple' : undefined">{{
                 getTitle(group.title) }}</v-expansion-panel-title>
             <v-expansion-panel-text>
@@ -49,13 +49,10 @@
 import { getLineHintColor } from '@/common/colors';
 import { Setting } from '@scrypted/types';
 import { computed, ref, useSlots, watch } from 'vue';
-import { getChipVariant } from '../settings-chip';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
 
 const slots = useSlots();
-
-const chipVariant = getChipVariant();
 
 const lineHintColor = getLineHintColor();
 

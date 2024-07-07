@@ -4,7 +4,7 @@ import { useTheme } from "vuetify";
 export function getTextHintColor() {
     const globalTheme = useTheme().global.name;
     return computed(() => {
-        if (globalTheme.value === 'dark')
+         if (globalTheme.value === 'dark')
             return '#B0B0B0';
         return '#B0B0B0';
     })

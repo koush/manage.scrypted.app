@@ -34,9 +34,9 @@ import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromRoute, registerListener } from '@/id-device';
 import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref } from 'vue';
+import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
-import Extensions from './interfaces/settings/Extensions.vue';
 
 const { id, device } = getDeviceFromRoute<Settings>();
 const extensions = { title: 'Extensions', settings: [] as Setting[] };
