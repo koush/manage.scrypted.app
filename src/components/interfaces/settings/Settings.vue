@@ -31,7 +31,7 @@
 
         <v-divider></v-divider>
       </template>
-      <div v-else>
+      <div v-else style="width: 100%">
         <v-divider v-if="settingsGroups?.length > 1" class="mb-4"></v-divider>
         <div class="ma-2">
           <template v-for="group in settingsSubgroups">

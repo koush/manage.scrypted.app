@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list v-if="extensions.length" density="compact" style="width: 100%; overflow: hidden;">
+    <v-list v-if="extensions.length" density="compact" style="overflow: hidden;">
       <v-list-subheader>Modify and extend devices capabilities.</v-list-subheader>
       <template v-for="extension in extensions">
         <v-list-item style="height: 36px;">
