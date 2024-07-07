@@ -128,7 +128,9 @@ const imgSrc = asyncComputed({
     const d = device.value;
     if (!d)
       return;
-    const mo = await d.takePicture();
+    const mo = await d.takePicture({
+      reason: 'event',
+    });
     const { mediaManager } = connectedClient.value || await connectPluginClient();
     const url = await mediaManager.convertMediaObjectToLocalUrl(mo, 'image/jpeg');
     return fixupAppDomainImageUrl(new URL(url).pathname);
