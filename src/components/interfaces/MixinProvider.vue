@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="mixined in mixinList" :key="mixined.device.id" style="cursor: pointer;">
+        <tr v-for="mixined in mixinList" :key="mixined.device.id">
           <td>
             <v-switch inset density="compact" class="shrink" :color="chipColor" hide-details
               :model-value="mixined.value" @update:model-value="v => toggleMixin(mixined, v)">
@@ -34,7 +34,8 @@
           </td>
           <td v-if="mdAndUp && showModel">{{ mixined.device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ mixined.device.info?.ip }}</td>
-          <td><v-btn size="x-small" @click="goDevice(router, mixined.device)" :icon="typeToIcon(mixined.device.type)" ></v-btn></td>
+          <td><v-btn size="x-small" @click="goDevice(router, mixined.device)"
+              :icon="typeToIcon(mixined.device.type)"></v-btn></td>
         </tr>
       </tbody>
     </v-table>

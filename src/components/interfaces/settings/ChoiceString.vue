@@ -2,19 +2,20 @@
   <template v-if="modelValue.choices?.length <= 3 && !modelValue.combobox">
     <template v-if="true || modelValue.multiple">
       <v-divider></v-divider>
-      <v-list-item-subtitle class="shrink  mt-1" v-if="modelValue.title">{{
-        modelValue.title }}</v-list-item-subtitle> <v-chip-group class="" v-model="modelValue.value" column
-        :variant="chipVariant" :multiple="modelValue.multiple">
-        <v-chip v-for="choice of modelValue.choices" class="chip-group-round" color="light-blue-darken-3" size="x-small"
+      <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
+        modelValue.title }}</v-list-item-subtitle>
+      <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
+        <v-chip v-for="choice of modelValue.choices" class="chip-group-round ma-0" rounded="0" :color="chipColor" size="x-small"
           :value="choice"
           :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
           {{
             choice }}</v-chip>
       </v-chip-group>
-      <div class="mb-2  mr-3">
-        <v-list-item-subtitle class="shrink" v-if="modelValue.description">{{
+      <div class="mb-2 mr-3">
+        <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
           modelValue.description }}</v-list-item-subtitle>
       </div>
+      <v-divider></v-divider>
     </template>
     <template v-else>
       <v-divider></v-divider>
@@ -54,17 +55,17 @@ const component = computed(() => {
 </script>
 <style scoped>
 .shrink {
-  transform: scale(.75, .75);
-  width: 133.3333%;
+  transform: scale(.8, .8);
+  width: 125%;
   transform-origin: 0% 50%;
 }
 
-/*
+
 .chip-group-round:first-child {
   border-radius: 16px 0px 0px 16px !important;
 }
 
 .chip-group-round:last-child {
   border-radius: 0px 16px 16px 0px !important;
-} */
+}
 </style>

@@ -3,6 +3,11 @@
     <v-row>
       <v-col cols="12">
         <v-card title="Devices" :prepend-icon="getFaPrefix('fa-microchip')">
+          <template v-slot:append>
+            <div>
+              <v-btn variant="elevated" color="success" class="ml-4" size="small">Add Device</v-btn>
+            </div>
+          </template>
           <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
             <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
               :prepend-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"

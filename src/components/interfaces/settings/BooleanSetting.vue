@@ -11,8 +11,8 @@ const modelValue = defineModel<Setting>();
 </script>
 <style scoped>
 .shrink {
-    transform: scale(.75, .75);
-    width: 133.3333%;
-    transform-origin: 0% 50%;
+  transform: scale(.8, .8);
+  width: 125%;
+  transform-origin: 0% 50%;
 }
 </style>
