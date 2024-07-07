@@ -13,13 +13,14 @@
         <template v-slot:subtitle v-if="connectedClient?.version">
           <v-card-subtitle style="text-align: center;" class="scrypted-subtitle">{{ connectedClient?.version
             }}</v-card-subtitle>
-          <v-card-subtitle style="text-align: center;" class="scrypted-subtitle2">{{ connectedClient?.loginResult.hostname
+          <v-card-subtitle style="text-align: center;" class="scrypted-subtitle2">{{
+            connectedClient?.loginResult.hostname
             }}</v-card-subtitle>
         </template>
         <v-list style="text-align: center;">
           <v-list-item class="pr-16" v-for="item in launcherItems"
             :prepend-icon="item.icon ? getFaPrefix(item.icon) : undefined" :to="item.to" :href="item.href">
-            <v-list-item-title >{{ item.name }}</v-list-item-title>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
             <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
           </v-list-item>
         </v-list>
@@ -66,6 +67,7 @@ const launcherItems = asyncComputed({
 
         const i = {
           ...d.applicationInfo!,
+          name: d.applicationInfo?.name || d.name,
           href,
           to: href ? undefined : `/device/${d.id}`,
         };
