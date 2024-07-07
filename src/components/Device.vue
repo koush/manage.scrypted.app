@@ -43,7 +43,8 @@
           @close="showRepl = false" class="mb-4"></PtyComponent>
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
-        <DeviceProvider v-if="hasOrCanCreateDevices" :id="id" ></DeviceProvider>
+        <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
+        <MixinProvider v-if="canExtendDevices" :id="id"></MixinProvider>
       </v-col>
     </v-row>
   </v-container>
@@ -63,6 +64,7 @@ import PtyComponent from './PtyComponent.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
+import MixinProvider from './interfaces/MixinProvider.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -72,6 +74,10 @@ const { id, device } = getDeviceFromRoute();
 
 const hasOrCanCreateDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator) || getAllDevices().find(d => d.providerId === id.value);
+});
+
+const canExtendDevices = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.MixinProvider);
 });
 
 const hasRTC = computed(() => {
