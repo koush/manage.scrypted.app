@@ -1,5 +1,5 @@
 <template>
-  <v-menu>
+  <v-menu location="bottom right">
     <template v-slot:activator="{ props }">
       <v-btn v-if="!npmUpdate?.updateAvailable" v-bind="props" density="compact" color="info"
         :append-icon="getFaPrefix('fa-caret-down')" style="text-transform: unset;">v{{
