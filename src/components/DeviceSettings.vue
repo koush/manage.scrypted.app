@@ -36,7 +36,7 @@ import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
-import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
+import { TrackedSetting, normalizeBoolean, normalizeNumber } from './interfaces/settings/setting-modelvalue';
 
 const { id, device } = getDeviceFromRoute<Settings>();
 const extensions = { title: 'Extensions', settings: [] as Setting[] };
@@ -48,19 +48,6 @@ registerListener(device, {
 }, () => {
   refreshSettings.value++;
 });
-
-// various plugins aren't using StorageSettings and are returning stringified values.
-function normalizeBoolean(value: any) {
-  if (value === 'true')
-    return true;
-  if (value === 'false')
-    return false;
-  return !!value;
-}
-
-function normalizeNumber(value: any) {
-  return parseFloat(value);
-}
 
 const settings = asyncComputed({
   async get() {

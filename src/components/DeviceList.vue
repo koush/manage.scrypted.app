@@ -3,11 +3,30 @@
     <v-row>
       <v-col cols="12">
         <v-card title="Devices" :prepend-icon="getFaPrefix('fa-microchip')">
-          <template v-slot:append>
-            <div>
-              <v-btn variant="elevated" color="success" class="ml-4" size="small">Add Device</v-btn>
+          <template v-slot:title>
+            <div style="display: flex; align-items: center">
+              <div>Devices</div>
+              <v-dialog max-width="500">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn v-bind="activatorProps" variant="elevated" color="success" class="ml-4" size="small">Add
+                    Device</v-btn>
+                </template>
+
+                <template v-slot:default="{ isActive }">
+                  <v-card title="Dialog">
+                    <DeviceCreator id="108"></DeviceCreator>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
             </div>
           </template>
+
           <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
             <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
               :prepend-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"
@@ -65,6 +84,7 @@ import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import DeviceCreator from './interfaces/DeviceCreator.vue';
 
 const router = useRouter();
 const other = 'Other' as ScryptedDeviceType;

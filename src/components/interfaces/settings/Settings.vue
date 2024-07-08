@@ -67,7 +67,7 @@ const props = defineProps<{
 
 function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
   if (!settings)
-    return;
+    return [];
   const groups: {
     title: string;
     settings: Setting[];
