@@ -17,7 +17,7 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
 import { getDeviceFromId } from '@/id-device';
-import { DeviceCreator, ScryptedInterface, Setting } from '@scrypted/types';
+import { DeviceCreator, ScryptedInterface, ScryptedSystemDevice, Setting } from '@scrypted/types';
 import { ref, watch } from 'vue';
 import Settings from './settings/Settings.vue';
 import { TrackedSetting, normalizeBoolean, normalizeNumber } from './settings/setting-modelvalue';
@@ -41,12 +41,12 @@ const idSettings = ref<TrackedSetting[]>([
     placeholder: 'Select a device type',
     type: 'device',
     key: 'deviceType',
-    deviceFilter: `interfaces.includes('${ScryptedInterface.DeviceCreator}')`,
+    deviceFilter: `interfaces.includes('${ScryptedInterface.DeviceCreator}') && interfaces.includes('${ScryptedInterface.ScryptedDeviceCreator}')`,
     getDeviceTitle(id: string) {
-      const device = connectedClient.value.systemManager.getDeviceById<DeviceCreator>(id);
+      const device = connectedClient.value.systemManager.getDeviceById<DeviceCreator & ScryptedSystemDevice>(id);
       if (!device)
         return '';
-      return device.createdDevice || device.name;
+      return device.systemDevice?.deviceCreator || device.name;
     }
   }
 ]);

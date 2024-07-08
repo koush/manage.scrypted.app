@@ -12,7 +12,7 @@
     "@mdi/font": "6.2.95",
     "@scrypted/client": "file:../scrypted/packages/client",
     "@scrypted/common": "file:../scrypted/common",
-    "@scrypted/types": "^0.3.31",
+    "@scrypted/types": "^0.3.33",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "buffer": "^6.0.3",

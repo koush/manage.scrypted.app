@@ -16,7 +16,7 @@
               <template v-slot:append>
                 <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
                   color="info" @click.prevent="updatePlugin(plugin)">Update</v-btn>
-                <v-list-item-subtitle class="ml-2" style="width: 48px; text-align: end;">v{{ plugin.version
+                <v-list-item-subtitle class="ml-2" style="width: 56px; text-align: end;">v{{ plugin.version
                   }}</v-list-item-subtitle>
               </template>
               <v-list-item-title>{{ plugin.name }}</v-list-item-title>
@@ -48,6 +48,8 @@ const error = ref<string>();
 
 const { lgAndUp } = useDisplay();
 
+const hasUpdate = new Map<string, boolean>();
+
 const plugins = computed(() => {
   if (!connectedClient.value) {
     connectPluginClient();
@@ -62,13 +64,14 @@ const plugins = computed(() => {
       package: d.info?.manufacturer,
       version: d.info?.version,
       type: d.type,
-      updateAvailable: false,
+      updateAvailable: !!hasUpdate.get(d.id),
     }));
 
 
   plugins.forEach(async plugin => {
     const status = await checkNpmUpdate(plugin.package, plugin.version);
     plugin.updateAvailable = !!status.updateAvailable;
+    hasUpdate.set(plugin.id, !!status.updateAvailable);
   });
 
   return plugins;
@@ -80,6 +83,7 @@ async function updatePlugin(plugin: typeof plugins.value[0]) {
     const plugins = await systemManager.getComponent('plugins');
     await plugins.installNpm(plugin.package);
     plugin.updateAvailable = false;
+    hasUpdate.set(plugin.id, false);
   }
   catch (e) {
     error.value = (e as any).message;
