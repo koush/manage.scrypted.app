@@ -37,12 +37,12 @@
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { checkNpmUpdate } from '@/npm';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import InstallPluginCard from './InstallPluginCard.vue';
-import { checkNpmUpdate } from '@/npm';
-
+import { installPlugin } from './plugin-apis';
 
 const error = ref<string>();
 
@@ -79,9 +79,7 @@ const plugins = computed(() => {
 
 async function updatePlugin(plugin: typeof plugins.value[0]) {
   try {
-    const { systemManager } = connectedClient.value || await connectPluginClient();
-    const plugins = await systemManager.getComponent('plugins');
-    await plugins.installNpm(plugin.package);
+    await installPlugin(plugin.package);
     plugin.updateAvailable = false;
     hasUpdate.set(plugin.id, false);
   }

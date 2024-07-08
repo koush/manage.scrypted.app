@@ -25,7 +25,7 @@
 
             <template v-slot:append v-if="isScryptedPlugin">
               <div style="display: flex;">
-                <ScryptedPlugin :id="id"></ScryptedPlugin>
+                <ScryptedPlugin :id="id" @update:plugin="showConsole = true"></ScryptedPlugin>
               </div>
             </template>
             <template v-slot:append
@@ -38,7 +38,7 @@
 
             <v-card-actions>
               <template v-if="isScryptedPlugin">
-                <v-btn size="small" color="info">Restart Plugin</v-btn>
+                <v-btn size="small" color="info" @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
                 <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Console" @click="showConsole = !showConsole">
                 </ToolbarTooltipButton>
               </template>
@@ -88,6 +88,7 @@ import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
+import { restartPlugin } from './plugin/plugin-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
