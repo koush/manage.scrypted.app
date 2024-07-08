@@ -31,6 +31,7 @@ declare module 'vue' {
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
     SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']

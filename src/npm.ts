@@ -3,7 +3,12 @@ import semver from 'semver';
 export interface PluginUpdateCheck {
   updateAvailable?: string;
   updatePublished?: Date;
-  versions: any;
+  versions: NpmVersion[];
+}
+
+export interface NpmVersion {
+  version: string;
+  tag?: string;
 }
 
 export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: string): Promise<PluginUpdateCheck> {
@@ -43,6 +48,6 @@ export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: stri
   return {
     updateAvailable,
     updatePublished,
-    versions,
+    versions: versions as NpmVersion[],
   };
 }

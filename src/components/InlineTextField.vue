@@ -1,9 +1,10 @@
 <template>
-  <v-btn v-if="!editing" density="compact" variant="text" :append-icon="editIcon ? getFaPrefix('fa-pencil') : undefined" @click="editing = true">{{ modelValue
-    }}</v-btn>
-  <component :items="items" :is="component" hide-details style="transform: scale(.60, .60); transform-origin: 0 50%;" density="compact"
-    variant="outlined" v-else v-model="internalModelValue">
-    <template  v-slot:append-inner>
+  <v-btn v-if="!editing" :size="size" density="compact" variant="text"
+    :append-icon="editIcon ? getFaPrefix('fa-pencil') : undefined"
+    @click="editing = true; emit('update:editing', editing);">{{ modelValue }}</v-btn>
+  <component :items="items" :is="component" hide-details style="transform: scale(.60, .60); transform-origin: 0 50%;"
+    density="compact" variant="outlined" v-else v-model="internalModelValue">
+    <template v-slot:append-inner>
       <v-btn class="pa-0 inner-btn" variant="text" @click="cancel">
         <v-icon>{{ getFaPrefix('fa-cancel') }}</v-icon>
       </v-btn>
@@ -21,6 +22,7 @@ import { VCombobox, VTextField } from 'vuetify/components';
 const props = defineProps<{
   items?: string[];
   editIcon?: boolean;
+  size?: string;
 }>();
 
 const modelValue = defineModel<string>();
@@ -33,6 +35,7 @@ const component = computed(() => {
 
 const emit = defineEmits<{
   (event: 'update:modelValue', value?: string): void;
+  (event: 'update:editing', editing: boolean): void;
 }>();
 
 const internalModelValue = ref(modelValue.value);
@@ -45,11 +48,13 @@ const editing = ref(false);
 function cancel() {
   internalModelValue.value = modelValue.value;
   editing.value = false;
+  emit('update:editing', editing.value);
 }
 
 function save() {
   editing.value = false;
   modelValue.value = internalModelValue.value;
+  emit('update:editing', editing.value);
 }
 
 </script>

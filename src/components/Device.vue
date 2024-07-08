@@ -7,20 +7,42 @@
             <template v-slot:prepend>
               <v-icon size="xx-small" :icon="typeToIcon(device.type)"></v-icon>
             </template>
-            <template v-slot:append v-if="device.providerId && device.nativeId && mdAndUp">
-              <v-btn class="mt-1" :to="`/device/${device.providerId}`" variant="text" density="compact">{{
-                connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
-            </template>
+
             <template v-slot:title>
-              <div style="display: flex; align-items: center;" class="mt-1">
-                <InlineTextField :model-value="device.name"></InlineTextField>
-                <v-card-subtitle class="mt-1">ID: {{ device.id }}</v-card-subtitle>
+              <template v-if="!isScryptedPlugin">
+                <div style="display: flex; align-items: center;">
+                  <InlineTextField :model-value="device.name" size="small" @update:editing="v => editingName = v">
+                  </InlineTextField>
+                  <v-card-subtitle class="mt-1" v-if="!editingName">ID: {{ device.id }}</v-card-subtitle>
+                </div>
+              </template>
+              <template v-else>
+                <div style="display: flex;">
+                  <v-btn size="small" density="compact" variant="text">{{ device.name }}</v-btn>
+                </div>
+              </template>
+            </template>
+
+            <template v-slot:append v-if="isScryptedPlugin">
+              <div style="display: flex;">
+                <ScryptedPlugin :id="id"></ScryptedPlugin>
               </div>
             </template>
-            <template v-slot:subtitle>
+            <template v-slot:append
+              v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp && !editingName">
+              <div style="display: flex; align-items: center;">
+                <v-btn :to="`/device/${device.providerId}`" variant="text" size="small" density="compact">{{
+                  connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
+              </div>
             </template>
+
             <v-card-actions>
-              <v-btn class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Console</v-btn>
+              <template v-if="isScryptedPlugin">
+                <v-btn size="small" color="info">Restart Plugin</v-btn>
+                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Console" @click="showConsole = !showConsole">
+                </ToolbarTooltipButton>
+              </template>
+              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Console</v-btn>
               <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events"></ToolbarTooltipButton>
               <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
               </ToolbarTooltipButton>
@@ -65,10 +87,12 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
+import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
 const showRepl = ref(false);
+const editingName = ref(false);
 
 const { id, device } = getDeviceFromRoute();
 
@@ -82,6 +106,10 @@ const canExtendDevices = computed(() => {
 
 const hasRTC = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
+const isScryptedPlugin = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.ScryptedPlugin);
 });
 
 watch(() => device.value, () => resetPtys());
