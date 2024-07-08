@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { ScryptedDeviceType, ScryptedInterface, Setting } from '@scrypted/types';
+import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { VSelect } from 'vuetify/components';
 import { chipColor, getChipVariant } from '../settings-chip';
