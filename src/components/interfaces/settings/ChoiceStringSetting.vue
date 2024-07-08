@@ -5,8 +5,8 @@
       <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
         modelValue.title }}</v-list-item-subtitle>
       <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
-        <v-chip v-for="choice of modelValue.choices" class="chip-group-round ma-0" rounded="0" :color="chipColor" size="x-small"
-          :value="choice"
+        <v-chip v-for="choice of modelValue.choices" :class="!modelValue.multiple ? 'chip-group-round ma-0' : undefined"
+          :rounded="!modelValue.multiple ? 0 : undefined" :color="chipColor" size="x-small" :value="choice"
           :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
           {{
             choice }}</v-chip>
