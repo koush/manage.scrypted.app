@@ -13,13 +13,15 @@
                 </template>
 
                 <template v-slot:default="{ isActive }">
-                  <v-card title="Dialog">
-                    <DeviceCreator id="108"></DeviceCreator>
+                  <v-card title="Add Device">
+                    <div class="ma-4">
+                    <DeviceCreator></DeviceCreator>
+                  </div>
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
-
-                      <v-btn text="Close Dialog" @click="isActive.value = false"></v-btn>
+                      <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
+                      <v-btn text="Add" @click="isActive.value = false" color="success"></v-btn>
                     </v-card-actions>
                   </v-card>
                 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div style="border-radius: 16px; overflow: hidden;" :style="`border: 1px solid ${lineHintColor};`">
+  <div :style="hideBorder ? undefined : `border: 1px solid ${lineHintColor}; border-radius: 16px; overflow: hidden;`">
     <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" variant="accordion"
       :mandatory="settingsSubgroups?.length <= 1">
 
@@ -63,6 +63,7 @@ function getTitle(title: string) {
 const modelValue = defineModel<TrackedSetting[]>();
 const props = defineProps<{
   extraChips?: string[];
+  hideBorder?: boolean;
 }>();
 
 function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {

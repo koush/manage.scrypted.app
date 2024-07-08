@@ -76,7 +76,6 @@ const settings = asyncComputed({
   }
 });
 
-
 function isDirty(setting: TrackedSetting) {
   return JSON.stringify(setting.value) !== JSON.stringify(setting.originalValue);
 }
