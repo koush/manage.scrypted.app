@@ -1,9 +1,8 @@
 <template>
   <v-select class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
     :label="modelValue.title" :hint="modelValue.description" v-model="value" :items="choices" return-object
-    item-title="title" item-value="value" :multiple="modelValue.multiple" :chips="modelValue.multiple"
-    :closable-chips="modelValue.multiple" :persistent-hint="!!modelValue.description"
-    :hide-details="!modelValue.description" persistent-placeholder>
+    :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
+    :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description" persistent-placeholder>
     <template v-if="modelValue.multiple" v-slot:chip="{ props }">
       <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"></v-chip>
     </template>
@@ -12,20 +11,24 @@
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { VSelect } from 'vuetify/components';
 import { chipColor, getChipVariant } from '../settings-chip';
+import { TrackedSetting } from './setting-modelvalue';
 
 const chipVariant = getChipVariant();
 
-const modelValue = defineModel<Setting>();
+const modelValue = defineModel<TrackedSetting>();
 
 const value = computed({
   get() {
     const value = modelValue.value.value as string;
+    const title = modelValue.value.getDeviceTitle
+      ? modelValue.value.getDeviceTitle(value)
+      : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || '');
+
     return {
-      title: connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || '',
+      title,
       value,
     }
   },
@@ -68,7 +71,7 @@ const choices = computed(() => {
   }
 
   return ret.map(device => ({
-    title: device.name,
+    title: modelValue.value.getDeviceTitle ? modelValue.value.getDeviceTitle(device.id) : device.name,
     value: device.id,
   }));
 });

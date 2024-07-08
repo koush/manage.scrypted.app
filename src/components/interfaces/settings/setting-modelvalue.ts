@@ -9,6 +9,7 @@ export function watchModelValue(modelValue: ModelRef<Setting, string>) {
 
 export interface TrackedSetting extends Setting {
   originalValue?: SettingValue;
+  getDeviceTitle?: (id: string) => string;
 }
 
 // various plugins aren't using StorageSettings and are returning stringified values.

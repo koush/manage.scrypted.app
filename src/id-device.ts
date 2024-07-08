@@ -43,5 +43,9 @@ export function registerListener(device: ComputedRef<ScryptedDevice> | WritableC
 }
 
 export function goDevice(router: ReturnType<typeof useRouter>, device: ScryptedDevice) {
-  router.push(`/device/${device.id}`);
+  goDeviceId(router, device.id);
+}
+
+export function goDeviceId(router: ReturnType<typeof useRouter>, id: string) {
+  router.push(`/device/${id}`);
 }

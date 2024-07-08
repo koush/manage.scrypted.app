@@ -13,17 +13,9 @@
                 </template>
 
                 <template v-slot:default="{ isActive }">
-                  <v-card title="Add Device">
-                    <div class="ma-4">
-                    <DeviceCreator></DeviceCreator>
-                  </div>
-
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
-                      <v-btn text="Add" @click="isActive.value = false" color="success"></v-btn>
-                    </v-card-actions>
-                  </v-card>
+                  <DeviceCreatorInterface @click:cancel="isActive.value = false"
+                    @click:create="(id, settings) => { isActive.value = false; createDevice(id, settings); }">
+                  </DeviceCreatorInterface>
                 </template>
               </v-dialog>
             </div>
@@ -81,12 +73,12 @@
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { goDevice } from '@/id-device';
-import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
+import { goDevice, goDeviceId } from '@/id-device';
+import { DeviceCreator, DeviceCreatorSettings, ScryptedDeviceType, ScryptedInterface, Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import DeviceCreator from './interfaces/DeviceCreator.vue';
+import DeviceCreatorInterface from './interfaces/DeviceCreator.vue';
 
 const router = useRouter();
 const other = 'Other' as ScryptedDeviceType;
@@ -210,5 +202,13 @@ const devicePages = computed(() => {
   return pages;
 });
 
-
+async function createDevice(id: string, settings: Setting[]) {
+  const device = connectedClient.value.systemManager.getDeviceById<DeviceCreator>(id);
+  const deviceCreatorSettings: DeviceCreatorSettings = {};
+  for (const setting of settings) {
+    deviceCreatorSettings[setting.key] = setting.value;
+  }
+  const newId = await device.createDevice(deviceCreatorSettings);
+  goDeviceId(router, newId);
+}
 </script>
