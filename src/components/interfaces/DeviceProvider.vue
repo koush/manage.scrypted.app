@@ -4,9 +4,27 @@
       <v-icon size="xx-small">{{ getFaPrefix('fa-database') }}</v-icon>
     </template>
     <template v-slot:title>
-      <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
+      <v-card-subtitle v-if="!hasDeviceCreator" class="pt-1 pl-4" style="text-transform: uppercase;">
         Providing Things
       </v-card-subtitle>
+      <template v-else>
+        <div style="display: flex; align-items: center">
+          <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
+            Providing Things
+          </v-card-subtitle>
+          <v-dialog max-width="500">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-btn v-bind="activatorProps" variant="elevated" color="success" class="ml-4" size="small">Add
+                Device</v-btn>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false"
+                @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
+              </DeviceCreatorInterface>
+            </template>
+          </v-dialog>
+        </div>
+      </template>
     </template>
     <v-card-subtitle>
       These things were created by {{ device.name }}.
@@ -35,11 +53,14 @@
 </template>
 <script setup lang="ts">
 import { getAllDevices } from '@/common/devices';
+import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromRoute, goDevice } from '@/id-device';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import DeviceCreatorInterface from './DeviceCreator.vue';
+import { ScryptedInterface } from '@scrypted/types';
 
 const router = useRouter();
 const { mdAndUp } = useDisplay()
@@ -59,4 +80,7 @@ const showIp = computed(() => {
   return childDevices.value.some(d => d.info?.ip);
 });
 
+const hasDeviceCreator = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator);
+});
 </script>

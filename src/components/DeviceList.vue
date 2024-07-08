@@ -14,7 +14,7 @@
 
                 <template v-slot:default="{ isActive }">
                   <DeviceCreatorInterface @click:cancel="isActive.value = false"
-                    @click:create="(id, settings) => { isActive.value = false; createDevice(id, settings); }">
+                    @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
                   </DeviceCreatorInterface>
                 </template>
               </v-dialog>
@@ -72,9 +72,10 @@
 <script setup lang="ts">
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
+import { createDevice } from '@/device-creator';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { goDevice, goDeviceId } from '@/id-device';
-import { DeviceCreator, DeviceCreatorSettings, ScryptedDeviceType, ScryptedInterface, Setting } from '@scrypted/types';
+import { goDevice } from '@/id-device';
+import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
@@ -201,14 +202,4 @@ const devicePages = computed(() => {
   }
   return pages;
 });
-
-async function createDevice(id: string, settings: Setting[]) {
-  const device = connectedClient.value.systemManager.getDeviceById<DeviceCreator>(id);
-  const deviceCreatorSettings: DeviceCreatorSettings = {};
-  for (const setting of settings) {
-    deviceCreatorSettings[setting.key] = setting.value;
-  }
-  const newId = await device.createDevice(deviceCreatorSettings);
-  goDeviceId(router, newId);
-}
 </script>
