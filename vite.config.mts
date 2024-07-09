@@ -8,7 +8,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
-const target = 'http://scrypted-server:11080';
+const target = 'http://localhost:11080';
 
 // https://vitejs.dev/config/
 export default defineConfig({

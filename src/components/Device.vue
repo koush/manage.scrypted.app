@@ -45,8 +45,8 @@
               </template>
               <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
               <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events"></ToolbarTooltipButton>
-              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
-              </ToolbarTooltipButton>
+              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl"></ToolbarTooltipButton>
+              <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings" :href="device.info.managementUrl" target="_blank"></ToolbarTooltipButton>
               <v-spacer></v-spacer>
               <ToolbarTooltipButton icon="fa-trash" tooltip="Delete" color="error"></ToolbarTooltipButton>
             </v-card-actions>
