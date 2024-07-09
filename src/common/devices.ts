@@ -2,6 +2,7 @@ import { SystemManager } from "@scrypted/types";
 import { connectedClient } from "./client";
 
 export function getAllDevices<T>(systemManager?: SystemManager) {
+  systemManager ||= connectedClient.value?.systemManager;
     const ret = getAllDeviceIds(systemManager)
         .map(id => systemManager!.getDeviceById<T>(id));
     return ret;
