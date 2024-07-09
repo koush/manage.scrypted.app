@@ -32,9 +32,11 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
+    ScryptedSettings: typeof import('./src/components/ScryptedSettings.vue')['default']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
     SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
+    SystemSettings: typeof import('./src/components/SystemSettings.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
     ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']
   }

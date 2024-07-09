@@ -1,3 +1,4 @@
+import ScryptedSettings from "@/components/ScryptedSettings.vue";
 import Terminal from "@/components/Terminal.vue";
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Device from '../components/Device.vue';
@@ -30,6 +31,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/component/shell",
     component: Terminal,
+  },
+  {
+    path: "/settings",
+    component: ScryptedSettings,
   },
   {
     path: '/',
