@@ -8,12 +8,14 @@ export interface PluginUpdateCheck {
 
 export interface NpmVersion {
   version: string;
-  tag?: string;
+  tag: string;
+  time: string;
 }
 
 export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: string): Promise<PluginUpdateCheck> {
   const response = await fetch(`https://registry.npmjs.org/${npmPackage}`);
   const data = await response.json();
+  const { time } = data;
   const versions = Object.values(data.versions).sort((a: any, b: any) => semver.compare(a.version, b.version)).reverse();
   let updateAvailable: any;
   let updatePublished: any;
@@ -44,6 +46,12 @@ export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: stri
   return {
     updateAvailable,
     updatePublished,
-    versions: versions as NpmVersion[],
+    versions: (versions as NpmVersion[]).map(version => {
+      return {
+        ...version,
+        tag: version.tag || '',
+        time: new Date(time[version.version]).toLocaleDateString(),
+      };
+    }),
   };
 }
