@@ -55,21 +55,25 @@
 import { getAllDevices } from '@/common/devices';
 import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromRoute, goDevice } from '@/id-device';
+import { getDeviceFromId, goDevice } from '@/id-device';
+import { DeviceProvider, ScryptedInterface } from '@scrypted/types';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './DeviceCreator.vue';
-import { ScryptedInterface } from '@scrypted/types';
 
 const router = useRouter();
 const { mdAndUp } = useDisplay()
 
-const { id, device } = getDeviceFromRoute();
+const props = defineProps<{
+  id: string;
+}>();
+
+const device = getDeviceFromId<DeviceProvider>(() => props.id);
 
 const childDevices = computed(() => {
   return getAllDevices()
-    .filter(d => d.providerId === id.value && d.id !== id.value);
+    .filter(d => d.providerId === props.id && d.id !== props.id);
 });
 
 const showModel = computed(() => {

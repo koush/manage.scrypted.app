@@ -4,10 +4,14 @@ import { useRoute, useRouter } from "vue-router";
 import { connectPluginClient, connectedClient } from "./common/client";
 import { asyncComputed } from "./common/async-computed";
 
-export function getDeviceFromRoute<T>() {
+export function getIdFromRoute() {
   const route = useRoute();
-
   const id = computed(() => route.params.id as string);
+  return id;
+}
+
+export function getDeviceFromRoute<T>() {
+  const id = getIdFromRoute();
   const device = getDeviceFromId<T>(() => id.value);
   return {
     id,

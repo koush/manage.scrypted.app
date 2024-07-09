@@ -31,14 +31,18 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
-import { getDeviceFromRoute, registerListener } from '@/id-device';
+import { getDeviceFromId, registerListener } from '@/id-device';
 import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { TrackedSetting, normalizeBoolean, normalizeNumber } from './interfaces/settings/setting-modelvalue';
 
-const { id, device } = getDeviceFromRoute<Settings>();
+const props = defineProps<{
+  id: string;
+}>();
+
+const device = getDeviceFromId<Settings>(() => props.id);
 const extensions = { title: 'Extensions', settings: [] as Setting[] };
 
 const refreshSettings = ref(0);

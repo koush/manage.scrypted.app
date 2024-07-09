@@ -42,25 +42,29 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromRoute, goDevice } from '@/id-device';
+import { getDeviceFromId, goDevice } from '@/id-device';
+import { timeoutPromise } from '@scrypted/common/src/promise-utils';
+import { MixinProvider } from '@scrypted/types';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { chipColor } from './settings-chip';
-import { asyncComputed } from '@/common/async-computed';
-import { MixinProvider } from '@scrypted/types';
-import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 
 const router = useRouter();
 const { mdAndUp } = useDisplay()
 
-const { id, device } = getDeviceFromRoute<MixinProvider>();
+const props = defineProps<{
+  id: string;
+}>();
+
+const device = getDeviceFromId<MixinProvider>(() => props.id);
 
 const extendedDevices = computed(() => {
   return getAllDevices()
-    .filter(d => d.mixins?.includes(id.value));
+    .filter(d => d.mixins?.includes(props.id));
 });
 
 const extensibleDevices = asyncComputed({
@@ -94,9 +98,9 @@ const mixinList = computed(() => {
 
 async function toggleMixin(mixined: typeof mixinList.value[0], state: boolean) {
   mixined.value = state;
-  const mixins = mixined.device.mixins.filter(m => m !== id.value);
+  const mixins = mixined.device.mixins.filter(m => m !== props.id);
   if (state)
-    mixins.push(id.value);
+    mixins.push(props.id);
   await mixined.device.setMixins(mixins);
 }
 

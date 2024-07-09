@@ -38,11 +38,12 @@
 
             <v-card-actions>
               <template v-if="isScryptedPlugin">
-                <v-btn size="small" color="info" @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
-                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Console" @click="showConsole = !showConsole">
+                <v-btn size="small" color="info"
+                  @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
+                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Log" @click="showConsole = !showConsole">
                 </ToolbarTooltipButton>
               </template>
-              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Console</v-btn>
+              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
               <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events"></ToolbarTooltipButton>
               <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
               </ToolbarTooltipButton>
@@ -58,7 +59,7 @@
       <v-col cols="12" md="8">
 
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole" :copyButton="true"
-          title="Console" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
+          title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
           :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4"></PtyComponent>
         <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
           nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
@@ -76,7 +77,7 @@
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { getDeviceFromRoute } from '@/id-device';
+import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -95,7 +96,14 @@ const showConsole = ref<boolean | undefined>(false);
 const showRepl = ref(false);
 const editingName = ref(false);
 
-const { id, device } = getDeviceFromRoute();
+const routeId = getIdFromRoute();
+
+const props = defineProps<{
+  id?: string;
+}>();
+
+const id = computed(() => props.id || routeId.value);
+const device = getDeviceFromId(() => id.value);
 
 const hasOrCanCreateDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator) || getAllDevices().find(d => d.providerId === id.value);

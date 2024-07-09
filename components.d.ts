@@ -39,5 +39,6 @@ declare module 'vue' {
     SystemSettings: typeof import('./src/components/SystemSettings.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
     ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']
+    Users: typeof import('./src/components/Users.vue')['default']
   }
 }

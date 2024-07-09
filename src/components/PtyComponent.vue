@@ -6,9 +6,9 @@
     <template v-slot:append>
       <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
         @click="expand" />
-      <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Console" variant="text" @click="contrac" />
-      <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Console" variant="text" />
-      <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Console" color="error" variant="text" @click="clear" />
+      <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contrac" />
+      <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
+      <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
     </template>
     <template v-slot:title>
