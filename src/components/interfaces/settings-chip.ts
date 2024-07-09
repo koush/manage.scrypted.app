@@ -1,13 +1,6 @@
-import { isDark } from "@/common/colors";
-import { computed } from "vue";
 
-export function getChipVariant() {
-  const dark = isDark();
-  const chipVariant = computed<'flat' | undefined>(() => {
-    return dark.value ? 'flat' : undefined;
-  });
-
-  return chipVariant;
+export function getChipVariant(): 'flat' | undefined | 'tonal' {
+  return 'flat';
 }
 
 export const chipColor = "light-blue-darken-3";
