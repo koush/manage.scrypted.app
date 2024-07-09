@@ -3,12 +3,14 @@
     <v-alert v-if="error" color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
     <v-row>
-      <InstallPluginCard v-if="!lgAndUp"></InstallPluginCard>
+      <v-col v-if="!lgAndUp" cols="12" md="6" lg="4">
+        <InstallPluginCard></InstallPluginCard>
+      </v-col>
 
-      <v-col cols="12" md="8" lg="6">
+      <v-col cols="12" md="6" lg="4">
         <v-card text="These plugins are currently installed in Scrypted." :prepend-icon="getFaPrefix('fa-puzzle')"
           title="Plugins">
-          <v-list>
+          <v-list >
             <v-list-item v-for="plugin in plugins" :to="`/device/${plugin.id}`">
               <template v-slot:prepend>
                 <v-icon size="x-small">{{ getFaPrefix(typeToIcon(plugin.type)) }}</v-icon>
@@ -16,17 +18,19 @@
               <template v-slot:append>
                 <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
                   color="info" @click.prevent="updatePlugin(plugin)">Update</v-btn>
-                <v-list-item-subtitle class="ml-2" style="width: 56px; text-align: end;">v{{ plugin.version
+                <v-list-item-subtitle class="ml-2" style="font-size: .8rem; width: 56px; text-align: end;">v{{ plugin.version
                   }}</v-list-item-subtitle>
               </template>
-              <v-list-item-title>{{ plugin.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ plugin.package }}</v-list-item-subtitle>
+              <v-list-item-title style="font-size: .8rem">{{ plugin.name }}</v-list-item-title>
+              <v-list-item-subtitle style="font-size: .8rem">{{ plugin.package }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
         </v-card>
       </v-col>
 
-      <InstallPluginCard v-if="lgAndUp"></InstallPluginCard>
+      <v-col v-if="lgAndUp" cols="12" md="6" lg="4">
+        <InstallPluginCard></InstallPluginCard>
+      </v-col>
 
     </v-row>
   </v-container>
