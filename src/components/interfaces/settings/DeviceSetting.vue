@@ -22,18 +22,31 @@ const modelValue = defineModel<TrackedSetting>();
 
 const value = computed({
   get() {
-    const value = modelValue.value.value as string;
-    const title = modelValue.value.getDeviceTitle
-      ? modelValue.value.getDeviceTitle(value)
-      : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || '');
+    if (!modelValue.value.multiple) {
+      const value = modelValue.value.value as string;
+      const title = modelValue.value.getDeviceTitle
+        ? modelValue.value.getDeviceTitle(value)
+        : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || '');
 
-    return {
-      title,
-      value,
+      return {
+        title,
+        value,
+      }
     }
+
+    const values = modelValue.value.value as string[];
+    return values.map(value => ({
+      title: modelValue.value.getDeviceTitle
+        ? modelValue.value.getDeviceTitle(value)
+        : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || ''),
+      value,
+    }));
   },
-  set(value: typeof choices.value[0]) {
-    modelValue.value.value = value.value;
+  set(value) {
+    if (!Array.isArray(value))
+      modelValue.value.value = value.value;
+    else
+      modelValue.value.value = value.map(v => v.value);
   }
 });
 

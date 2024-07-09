@@ -50,7 +50,7 @@ const component = computed(() => {
   if (!modelValue.value?.combobox)
     return VSelect;
   return VCombobox;
-})
+});
 
 </script>
 <style scoped>
