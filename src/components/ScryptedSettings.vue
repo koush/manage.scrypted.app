@@ -1,51 +1,114 @@
 <template>
-    <v-container fluid>
-        <v-row>
-            <v-col cols="12" md="6">
-                <SettingsInterface v-model="settings"></SettingsInterface>
-            </v-col>
-        </v-row>
-    </v-container>
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-card v-if="settings?.length">
+          <template v-slot:prepend>
+            <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
+          </template>
+          <template v-slot:title>
+            <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
+              Scrypted Settings
+            </v-card-subtitle>
+          </template>
+          <div class="ml-4 mr-4 mb-4">
+            <SettingsInterface v-model="settings"></SettingsInterface>
+          </div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn variant="text" size="small" :disabled="!dirtyCount" @click="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient } from '@/common/client';
-import { getAllDevices } from '@/common/devices';
+import { getAllDeviceIds } from '@/common/devices';
+import { getFaPrefix } from '@/device-icons';
+import { registerListeners } from '@/id-device';
 import { ScryptedInterface, ScryptedSystemDevice, Setting, Settings } from '@scrypted/types';
+import { computed, ref } from 'vue';
+import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 
+function getScryptedSettingsIds() {
+  if (!connectedClient.value)
+    return [];
+  const { systemManager } = connectedClient.value;
+  return getAllDeviceIds()
+    .filter(id => {
+      const d = systemManager.getDeviceById(id);
+      return d.interfaces.includes(ScryptedInterface.ScryptedSettings) || d.interfaces.includes("SystemSettings");
+    });
+}
+
+const scryptedSettingsDevices = computed(() => {
+  if (!connectedClient.value)
+    return [];
+  return getScryptedSettingsIds().map(id => connectedClient.value.systemManager.getDeviceById<Settings & ScryptedSystemDevice>(id));
+});
+
+const refreshSettings = ref(0);
+
+registerListeners(() => getScryptedSettingsIds(), {
+  event: ScryptedInterface.Settings,
+}, () => {
+  refreshSettings.value++;
+});
+
 const settings = asyncComputed({
-    async get() {
-        const { systemManager } = connectedClient.value || await connectPluginClient();
-        const all = getAllDevices<Settings & ScryptedSystemDevice>(systemManager)
-            .filter(d => d.interfaces.includes(ScryptedInterface.ScryptedSettings) || d.interfaces.includes("SystemSettings"))
-            .map(async d => {
-                const name = d.systemDevice?.settings || d.name;
-                let settings: Setting[];
-                try {
-                    settings = await d.getSettings();
-                }
-                catch (e) {
-                    settings = [
-                        {
-                            title: `${name} Settings Failure`,
-                            description: 'Settings failed to load.'
-                        }
-                    ];
-                }
+  async get() {
+    const all = scryptedSettingsDevices.value.map(async d => {
+      const name = d.systemDevice?.settings || d.name;
+      let settings: Setting[];
+      try {
+        settings = await d.getSettings();
+      }
+      catch (e) {
+        settings = [
+          {
+            title: `${name} Settings Failure`,
+            description: 'Settings failed to load.'
+          }
+        ];
+      }
 
-                return settings.map(setting => ({
-                    ...setting,
-                    group: name,
-                    subgroup: setting.group,
-                } as Setting));
-            });
+      return settings.map(setting => ({
+        ...setting,
+        key: `${d.id}:${setting.key}`,
+        group: name,
+        subgroup: setting.group,
+      } as Setting));
+    });
 
-        const stacked = await Promise.all(all);
-        return stacked.flat();
-    },
-    default: [],
-})
+    const stacked = await Promise.all(all);
+    const flat = stacked.flat();
+    return flat.map(trackSetting);
+  },
+  default(previousValue) {
+    return previousValue || [];
+  },
+  watch: {
+    refreshSettings: () => refreshSettings.value,
+    scryptedSettingsDevices: () => scryptedSettingsDevices.value,
+  }
+});
 
+const dirtyCount = computed(() => {
+  return settings.value.filter(isDirty).length;
+});
+
+async function save() {
+  const { systemManager } = connectedClient.value || await connectPluginClient();
+  const toSave = settings.value.filter(isDirty);
+  for (const setting of toSave) {
+    const [id, key] = setting.key.split(':', 2);
+    const device = systemManager.getDeviceById<Settings>(id);
+    device.putSetting(key, setting.value);
+  }
+}
 </script>

@@ -36,7 +36,7 @@ import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
-import { TrackedSetting, normalizeBoolean, normalizeNumber } from './interfaces/settings/setting-modelvalue';
+import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 
 const props = defineProps<{
   id: string;
@@ -58,17 +58,7 @@ const settings = asyncComputed({
     if (!device.value.interfaces.includes(ScryptedInterface.Settings))
       return;
     const settings = await device.value.getSettings();
-    const ret: TrackedSetting[] = settings.map(setting => {
-      if (setting.type === 'boolean')
-        setting.value = normalizeBoolean(setting.value);
-      else if (setting.type === 'number')
-        setting.value = normalizeNumber(setting.value);
-      const adjusted = {
-        ...setting,
-        originalValue: setting.value,
-      };
-      return adjusted;
-    });
+    const ret = settings.map(trackSetting);
     return ret;
   },
   default(previousValue) {
@@ -79,10 +69,6 @@ const settings = asyncComputed({
     refreshSettings: () => refreshSettings.value,
   }
 });
-
-function isDirty(setting: TrackedSetting) {
-  return JSON.stringify(setting.value) !== JSON.stringify(setting.originalValue);
-}
 
 const dirtyCount = computed(() => {
   return settings.value.filter(isDirty).length;

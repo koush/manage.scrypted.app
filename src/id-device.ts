@@ -1,8 +1,8 @@
 import { EventListener, EventListenerOptions, EventListenerRegister, ScryptedDevice } from "@scrypted/types";
-import { ComputedRef, WritableComputedRef, computed } from "vue";
+import { ComputedRef, WritableComputedRef, computed, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { connectPluginClient, connectedClient } from "./common/client";
 import { asyncComputed } from "./common/async-computed";
+import { connectPluginClient, connectedClient } from "./common/client";
 
 export function getIdFromRoute() {
   const route = useRoute();
@@ -43,7 +43,22 @@ export function registerListener(device: ComputedRef<ScryptedDevice> | WritableC
     register?.removeListener();
     register = device.value?.listen(options, callback);
   }
+  watch(() => device.value, registerListener);
   registerListener();
+  onUnmounted(() => register?.removeListener());
+  return register;
+}
+
+export function registerListeners(ids: () => string[], options: EventListenerOptions, callback: EventListener) {
+  let registers: EventListenerRegister[];
+  function registerListeners() {
+    registers?.forEach(register => register.removeListener());
+    registers = ids().map(id => connectedClient.value?.systemManager.getDeviceById(id)?.listen(options, callback));
+  }
+  watch(ids, registerListeners);
+  registerListeners();
+  onUnmounted(() => registers?.forEach(register => register.removeListener));
+  return registers;
 }
 
 export function goDevice(router: ReturnType<typeof useRouter>, device: ScryptedDevice) {

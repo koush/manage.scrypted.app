@@ -24,3 +24,24 @@ export function normalizeBoolean(value: any) {
 export function normalizeNumber(value: any) {
   return parseFloat(value);
 }
+
+export function normalizeSetting(setting: TrackedSetting) {
+  if (setting.type === 'boolean')
+    setting.value = normalizeBoolean(setting.value);
+  else if (setting.type === 'number')
+    setting.value = normalizeNumber(setting.value);
+  return setting;
+}
+
+export function trackSetting(setting: Setting) {
+  normalizeSetting(setting);
+  const adjusted: TrackedSetting = {
+      ...setting,
+      originalValue: setting.value,
+  };
+  return adjusted;
+}
+
+export function isDirty(setting: TrackedSetting) {
+  return JSON.stringify(normalizeSetting(setting).value) !== JSON.stringify(normalizeSetting(setting).originalValue);
+}
