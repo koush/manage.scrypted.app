@@ -68,3 +68,7 @@ export function goDevice(router: ReturnType<typeof useRouter>, device: ScryptedD
 export function goDeviceId(router: ReturnType<typeof useRouter>, id: string) {
   router.push(`/device/${id}`);
 }
+
+export function getDeviceRoute(id: string) {
+  return `/device/${id}`;
+}

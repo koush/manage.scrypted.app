@@ -45,10 +45,18 @@
               </template>
               <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
               <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events"></ToolbarTooltipButton>
-              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl"></ToolbarTooltipButton>
-              <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings" :href="device.info.managementUrl" target="_blank"></ToolbarTooltipButton>
+              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
+              </ToolbarTooltipButton>
+              <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings"
+                :href="device.info.managementUrl" target="_blank"></ToolbarTooltipButton>
               <v-spacer></v-spacer>
-              <ToolbarTooltipButton icon="fa-trash" tooltip="Delete" color="error"></ToolbarTooltipButton>
+              <DeleteDeviceDialog :id="id">
+                <template v-slot:activator="{ activatorProps }">
+                  <ToolbarTooltipButton v-bind="activatorProps" icon="fa-trash" tooltip="Delete" color="error">
+                  </ToolbarTooltipButton>
+                </template>
+
+              </DeleteDeviceDialog>
             </v-card-actions>
           </v-card>
         </template>
@@ -58,9 +66,10 @@
       </v-col>
       <v-col cols="12" md="8">
 
-        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole" :copyButton="true"
-          title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
-          :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4"></PtyComponent>
+        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
+          :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
+          :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
+        </PtyComponent>
         <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
           nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
           @close="showRepl = false" class="mb-4"></PtyComponent>
@@ -81,6 +90,7 @@ import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import InlineTextField from './InlineTextField.vue';
 import PtyComponent from './PtyComponent.vue';
@@ -89,7 +99,7 @@ import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
-import { restartPlugin } from './plugin/plugin-apis';
+import { clearConsole, restartPlugin } from './plugin/plugin-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -128,11 +138,4 @@ function resetPtys() {
   showRepl.value = false;
 }
 resetPtys();
-
-async function clearConsole() {
-  const plugins = await connectedClient.value!.systemManager.getComponent(
-    "plugins"
-  );
-  plugins.clearConsole(id.value);
-}
 </script>

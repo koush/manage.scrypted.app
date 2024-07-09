@@ -13,6 +13,7 @@ declare module 'vue' {
     Camera: typeof import('./src/components/interfaces/Camera.vue')['default']
     ChoiceStringSetting: typeof import('./src/components/interfaces/settings/ChoiceStringSetting.vue')['default']
     ClipPathSetting: typeof import('./src/components/interfaces/settings/ClipPathSetting.vue')['default']
+    DeleteDeviceDialog: typeof import('./src/components/DeleteDeviceDialog.vue')['default']
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceCreator: typeof import('./src/components/interfaces/DeviceCreator.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']

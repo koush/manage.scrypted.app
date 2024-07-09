@@ -11,3 +11,10 @@ export async function restartPlugin(pkg: string) {
   const plugins = await systemManager.getComponent('plugins');
   await plugins.reload(pkg);
 }
+
+export async function clearConsole(id: string) {
+  const plugins = await connectedClient.value!.systemManager.getComponent(
+    "plugins"
+  );
+  plugins.clearConsole(id);
+}
