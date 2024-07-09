@@ -1,5 +1,5 @@
 <template>
-  <v-menu location="bottom right" :close-on-content-click="false">
+  <v-menu location="bottom right" :close-on-content-click="false" v-model="menu">
     <template v-slot:activator="{ props }">
       <v-btn v-if="!npmUpdate?.updateAvailable" v-bind="props" density="compact" color="info"
         :append-icon="getFaPrefix('fa-caret-down')" style="text-transform: unset;">v{{
@@ -10,14 +10,15 @@
     <v-list density="compact" width="300">
       <template v-for="item in npmVersionPage" :key="item?.version || 'header'" :value="index">
         <v-list-subheader v-if="!item">Other Versions</v-list-subheader>
-        <v-list-item v-else @click="installPluginVersion(device.info.manufacturer, item.version)">
+        <v-list-item v-else @click="menu = false; installPluginVersion(device.info.manufacturer, item.version)">
           <v-list-item-title>v{{ item.version }}</v-list-item-title>
           <v-list-item-subtitle style="font-size: .6rem">{{ item.time }}</v-list-item-subtitle>
           <template v-slot:append v-if="item.tag">
             <v-chip variant="flat" size="x-small" class="ml-8" :color="getChipColor(item)">{{ item.tag }}</v-chip>
           </template>
         </v-list-item>
-        <v-divider v-if="item?.version === installedNpmVersion.version || item?.version === latestNpmVersion.version"></v-divider>
+        <v-divider
+          v-if="item?.version === installedNpmVersion.version || item?.version === latestNpmVersion.version"></v-divider>
       </template>
       <v-divider></v-divider>
       <v-pagination :length="npmVersionPages.length" v-model="page" rounded density="compact"></v-pagination>
@@ -32,6 +33,8 @@ import { checkNpmUpdate, NpmVersion } from '@/npm';
 import { ScryptedPlugin } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import { installPlugin } from '../plugin/plugin-apis';
+
+const menu = ref(false);
 
 const props = defineProps<{
   id: string;
