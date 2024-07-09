@@ -19,7 +19,7 @@
           </th>
           <th class="text-left" v-if="mdAndUp && showModel">Model</th>
           <th class="text-left" v-if="mdAndUp && showIp">IP</th>
-          <th style="width: 0;"></th>
+          <th style="width: 32px;"></th>
         </tr>
       </thead>
       <tbody>

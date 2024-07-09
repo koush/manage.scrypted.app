@@ -37,7 +37,7 @@
           <v-table density="compact">
             <thead>
               <tr>
-                <th style="width: 0;"></th>
+                <th style="width: 32px;"></th>
                 <th class="text-left">
                   Name
                 </th>

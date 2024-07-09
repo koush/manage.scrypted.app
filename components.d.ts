@@ -36,7 +36,6 @@ declare module 'vue' {
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
     SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
-    SystemSettings: typeof import('./src/components/SystemSettings.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
     ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']
     Users: typeof import('./src/components/Users.vue')['default']
