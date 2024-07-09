@@ -30,10 +30,8 @@
               }} ({{ devices.filter(d => (hasFixedPhysicalLocation(d.type!) ? d.type : other) ===
                 deviceGroup).length }})</v-chip>
           </v-chip-group>
-          <v-fade-transition>
-            <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText"
-              style="transform: scale(.75, .75)" title="Search" label="Search" density="compact"></v-text-field>
-          </v-fade-transition>
+          <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText" style="transform: scale(.75, .75)"
+            title="Search" label="Search" density="compact"></v-text-field>
           <v-table density="compact">
             <thead>
               <tr>
@@ -41,22 +39,22 @@
                 <th class="text-left">
                   Name
                 </th>
-                <th class="text-left" v-if="mdAndUp">Model</th>
-                <th class="text-left" v-if="lgAndUp">Manufacturer</th>
-                <th class="text-left" v-if="mdAndUp">IP</th>
+                <th class="text-left" v-if="mdAndUp && showModel">Model</th>
+                <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
+                <th class="text-left" v-if="mdAndUp && showIp">IP</th>
                 <th class="text-left" v-if="mdAndUp">
                   Plugin
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="device in devicePages[page - 1]" :key="device.id" @click="goDevice(router, device)"
+              <tr v-for="device in devicePage" :key="device.id" @click="goDevice(router, device)"
                 style="cursor: pointer;">
                 <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
                 <td style="text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
-                <td v-if="mdAndUp">{{ device.info?.model }}</td>
-                <td v-if="lgAndUp">{{ device.info?.manufacturer }}</td>
-                <td v-if="mdAndUp">{{ device.info?.ip }}</td>
+                <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
+                <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
+                <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
                 <td v-if="mdAndUp"><v-btn color="info" size="small" variant="text" @click.stop
                     :to="`/device/${connectedClient!.systemManager.getDeviceById(device.pluginId).id}`">{{
                       connectedClient!.systemManager.getDeviceById(device.pluginId).name }}</v-btn></td>
@@ -84,7 +82,7 @@ import DeviceCreatorInterface from './interfaces/DeviceCreator.vue';
 const router = useRouter();
 const other = 'Other' as ScryptedDeviceType;
 
-const { lgAndUp, mdAndUp } = useDisplay()
+const { lgAndUp, mdAndUp } = useDisplay();
 
 const isDefaultFilter = ref(true);
 
@@ -188,7 +186,7 @@ const filteredDevices = computed(() => {
 
 const textFilteredDevices = computed(() => {
   return filteredDevices.value.filter(d => d.name?.toLocaleLowerCase().includes(filterText.value.toLocaleLowerCase()));
-})
+});
 
 const pageSize = 20;
 const page = ref(1);
@@ -202,4 +200,19 @@ const devicePages = computed(() => {
   }
   return pages;
 });
+
+const devicePage = computed(() => devicePages.value[page.value - 1]);
+
+const showIp = computed(() => {
+  return devicePage.value?.some(d => d.info?.ip);
+});
+
+const showManufacturer = computed(() => {
+  return devicePage.value?.some(d => d.info?.manufacturer);
+});
+
+const showModel = computed(() => {
+  return devicePage.value?.some(d => d.info?.model);
+});
+
 </script>
