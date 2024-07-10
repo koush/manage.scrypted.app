@@ -13,7 +13,6 @@
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
-import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { Scriptable } from '@scrypted/types';
 import * as monaco from 'monaco-editor';
