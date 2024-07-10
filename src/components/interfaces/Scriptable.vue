@@ -1,20 +1,24 @@
 <template>
-  <v-card title="Script">
-    <div ref="container" style="height: 640px; width: 100%;"></div>
+  <v-card >
+    <template v-slot:title>
+      <div style="display: flex;">
+      <v-card-subtitle class="mr-4">Script</v-card-subtitle>
+      <ToolbarTooltipButton icon="fa-play" tooltip="Run" variant="text" size="x-small"></ToolbarTooltipButton>
+      <ToolbarTooltipButton icon="fa-save" tooltip="Save" variant="text" size="x-small"></ToolbarTooltipButton>
+    </div>
+    </template>
 
-    <!-- <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn text="Cancel" @click="emits('click:cancel')"></v-btn>
-      <v-btn v-if="useId" text="Add" @click="emits('click:create', useId, settings)" color="success"></v-btn>
-    </v-card-actions> -->
+    <div ref="container" style="height: 640px; width: 100%;"></div>
   </v-card>
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
+import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { Scriptable } from '@scrypted/types';
 import * as monaco from 'monaco-editor';
 import { onUnmounted, ref, watch } from 'vue';
+import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 
 const props = defineProps<{
   id: string;
