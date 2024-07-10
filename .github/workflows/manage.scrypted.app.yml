@@ -60,16 +60,24 @@ jobs:
         run: |
           npm config set "@fortawesome:registry" https://npm.fontawesome.com/
           npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONTAWESOME_NPM_TOKEN }}
-      - run: npm ci server
+
+      - run: npm ci
+        working-directory: ./scrypted/sdk
+      - run: npm run build
+        working-directory: ./scrypted/sdk
+
+      - run: npm ci
         working-directory: ./scrypted/server
-      - run: npm ci common
+      - run: npm ci
         working-directory: ./scrypted/common
-      - run: npm ci client
+      - run: npm ci
         working-directory: ./scrypted/packages/client
-      - run: npm ci manage
+
+      - run: npm ci
         working-directory: ./manage
       - run: npm run build
         working-directory: ./manage
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
