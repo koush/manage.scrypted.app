@@ -35,7 +35,6 @@ const useId = ref<string>(props.id);
 const device = getDeviceFromId<DeviceCreator & ScryptedSystemDevice>(() => useId.value);
 
 const title = computed(() => {
-  console.warn(device.value?.systemDevice?.deviceCreator)
   return device.value?.systemDevice?.deviceCreator || "Device";
 });
 
