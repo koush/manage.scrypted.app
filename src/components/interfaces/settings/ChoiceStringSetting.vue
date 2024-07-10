@@ -1,5 +1,5 @@
 <template>
-  <template v-if="modelValue.choices?.length <= 3 && !modelValue.combobox">
+  <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox">
     <template v-if="true || modelValue.multiple">
       <v-divider></v-divider>
       <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
@@ -45,6 +45,9 @@ import { chipColor, getChipVariant } from '../settings-chip';
 const chipVariant = getChipVariant();
 
 const modelValue = defineModel<Setting>();
+defineProps<{
+  forceChips?: boolean;
+}>();
 
 const component = computed(() => {
   if (!modelValue.value?.combobox)
