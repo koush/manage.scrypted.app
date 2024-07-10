@@ -33,6 +33,7 @@ declare module 'vue' {
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Scriptable: typeof import('./src/components/interfaces/Scriptable.vue')['default']
     ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
     ScryptedSettings: typeof import('./src/components/ScryptedSettings.vue')['default']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']

@@ -32,7 +32,6 @@ const mdit = markdownit('commonmark', {
   linkify: true,
   typographer: true,
   highlight(str: string, lang: string, attrs: string): string {
-    console.log(lang);
     if (lang && hljs.getLanguage(lang)) {
       try {
         return '<pre><code class="hljs">' +
@@ -44,7 +43,7 @@ const mdit = markdownit('commonmark', {
     return '<pre><code class="hljs">' + mdit.utils.escapeHtml(str) + '</code></pre>';
   }
 });
-console.warn('ad')
+
 const innerHtml = asyncComputed({
   async get() {
     const md = await device.value.getReadmeMarkdown();

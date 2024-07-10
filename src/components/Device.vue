@@ -66,6 +66,7 @@
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
+        <Scriptable v-if="hasScriptable" :id="id"></Scriptable>
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
@@ -101,6 +102,7 @@ import MixinProvider from './interfaces/MixinProvider.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { clearConsole, restartPlugin } from './plugin/plugin-apis';
 import Readme from './interfaces/Readme.vue';
+import Scriptable from './interfaces/Scriptable.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -126,6 +128,10 @@ const canExtendDevices = computed(() => {
 
 const hasRTC = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
+const hasScriptable = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Scriptable);
 });
 
 const isScryptedPlugin = computed(() => {
