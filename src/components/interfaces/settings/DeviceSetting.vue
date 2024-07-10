@@ -1,18 +1,19 @@
 <template>
-  <v-select class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
+  <v-autocomplete class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
     :label="modelValue.title" :hint="modelValue.description" v-model="value" :items="choices" return-object
     :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
     :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description" persistent-placeholder>
     <template v-if="modelValue.multiple" v-slot:chip="{ props }">
       <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"></v-chip>
     </template>
-  </v-select>
+    <template v-slot:no-data>
+    </template>
+  </v-autocomplete>
 </template>
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { computed } from 'vue';
-import { VSelect } from 'vuetify/components';
 import { chipColor, getChipVariant } from '../settings-chip';
 import { TrackedSetting } from './setting-modelvalue';
 

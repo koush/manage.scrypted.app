@@ -3,7 +3,7 @@
     <v-alert v-if="error" color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
     <v-row>
-      <v-col v-if="!lgAndUp" cols="12" md="6" lg="4">
+      <v-col v-if="!mdAndUp" cols="12" md="6" lg="4">
         <InstallPluginCard></InstallPluginCard>
       </v-col>
 
@@ -28,7 +28,7 @@
         </v-card>
       </v-col>
 
-      <v-col v-if="lgAndUp" cols="12" md="6" lg="4">
+      <v-col v-if="mdAndUp" cols="12" md="6" lg="4">
         <InstallPluginCard></InstallPluginCard>
       </v-col>
 
@@ -50,7 +50,7 @@ import { installPlugin } from './plugin-apis';
 
 const error = ref<string>();
 
-const { lgAndUp } = useDisplay();
+const { mdAndUp } = useDisplay();
 
 const hasUpdate = new Map<string, boolean>();
 

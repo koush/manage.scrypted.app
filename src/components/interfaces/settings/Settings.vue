@@ -11,9 +11,6 @@
         </template>
         <slot name="settings-group-chips"></slot>
       </v-chip-group>
-      <!-- <v-toolbar density="compact" :height="48">
-        <v-toolbar-title class="text-caption">{{ selectedSettingGroup.title }}</v-toolbar-title>
-      </v-toolbar> -->
 
       <template v-if="settingsSubgroups.length > 1">
         <template v-for="group in settingsSubgroups">
