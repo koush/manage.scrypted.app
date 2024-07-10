@@ -77,6 +77,7 @@
 
         <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" :id="id"></MixinProvider>
+        <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
     </v-row>
   </v-container>
@@ -100,6 +101,7 @@ import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { clearConsole, restartPlugin } from './plugin/plugin-apis';
+import Readme from './interfaces/Readme.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -129,6 +131,10 @@ const hasRTC = computed(() => {
 
 const isScryptedPlugin = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ScryptedPlugin);
+});
+
+const hasReadme = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Readme);
 });
 
 watch(() => device.value, () => resetPtys());

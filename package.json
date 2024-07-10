@@ -18,6 +18,7 @@
     "@xterm/xterm": "^5.5.0",
     "buffer": "^6.0.3",
     "lodash": "^4.17.21",
+    "markdown-it": "^14.1.0",
     "semver": "^7.6.2",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0",
@@ -25,7 +26,9 @@
   },
   "devDependencies": {
     "@babel/types": "^7.24.0",
+    "@types/highlight.js": "^10.1.0",
     "@types/lodash": "^4.17.6",
+    "@types/markdown-it": "^14.1.1",
     "@types/node": "^20.11.25",
     "@types/semver": "^7.5.8",
     "@vitejs/plugin-vue": "^5.0.4",

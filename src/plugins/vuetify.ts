@@ -9,6 +9,7 @@ import '../styles/theme.scss'
 
 // Styles
 import '@xterm/xterm/css/xterm.css';
+import 'highlight.js/styles/github-dark.css';
 
 import '@mdi/font/css/materialdesignicons.css'
 import { aliases, fa } from 'vuetify/iconsets/fa'

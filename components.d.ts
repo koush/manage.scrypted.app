@@ -30,6 +30,7 @@ declare module 'vue' {
     MixinProvider: typeof import('./src/components/interfaces/MixinProvider.vue')['default']
     Plugins: typeof import('./src/components/plugin/Plugins.vue')['default']
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
+    Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
