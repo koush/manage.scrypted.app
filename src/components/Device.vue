@@ -68,8 +68,8 @@
       <v-col cols="12" md="8">
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
-        <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" :id="id"></MixinProvider>
+        <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
           :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
           :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
