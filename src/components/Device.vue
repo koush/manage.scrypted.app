@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
-    <v-row v-if="hasScriptable">
+    <!-- <v-row v-if="hasScriptable">
       <v-col cols="12">
       <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
     </v-col>
-    </v-row>
+    </v-row> -->
     <v-row v-if="device">
       <v-col cols="12" md="4">
         <template v-if="device">
@@ -71,6 +71,7 @@
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
+        <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>

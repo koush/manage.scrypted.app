@@ -5,7 +5,8 @@
         <v-card-subtitle class="mr-4">Script</v-card-subtitle>
         <ToolbarTooltipButton icon="fa-play" tooltip="Run" variant="text" size="x-small" @click="run">
         </ToolbarTooltipButton>
-        <ToolbarTooltipButton icon="fa-save" tooltip="Save" variant="text" size="x-small" @click="save"></ToolbarTooltipButton>
+        <ToolbarTooltipButton icon="fa-save" tooltip="Save" variant="text" size="x-small" @click="save">
+        </ToolbarTooltipButton>
       </div>
     </template>
 
@@ -97,6 +98,7 @@ async function createEditor() {
     minimap: {
       enabled: false,
     },
+    fontSize: 10,
     model,
   });
 
