@@ -41,6 +41,11 @@ async function loadScript() {
 }
 
 const dark = isDark();
+watch(() => dark.value, () => {
+  currentEditor.updateOptions({
+    theme: dark.value ? "vs-dark" : "vs",
+  });
+});
 
 async function createEditor() {
   if (!container.value)
