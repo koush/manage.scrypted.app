@@ -23,7 +23,8 @@
     </div>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn variant="text" size="small" :disabled="!dirtyCount" @click="save">Save</v-btn>
+      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
+        color="success">Save</v-btn>
     </v-card-actions>
   </v-card>
 </template>
