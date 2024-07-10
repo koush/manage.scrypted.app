@@ -7,7 +7,7 @@
     <div v-if="connectedClient?.serverVersion && !isTouchPhone" class="pt-1" style="color: lightgrey">v{{
       connectedClient?.serverVersion }}</div>
     <v-spacer></v-spacer>
-    <v-autocomplete v-if="!isTouchDevice" @update:search="v => search = v" :items="choices" hide-details return-object
+    <v-autocomplete v-if="!isTouchDevice" max-width="320" @update:search="v => search = v" :items="choices" hide-details return-object
       persistent-placeholder label="Search" variant="outlined" density="compact" v-model="value">
       <template v-slot:no-data>
       </template>
