@@ -1,5 +1,5 @@
 <template>
-  <v-card title="Add Device">
+  <v-card :title="`Add ${title}`">
     <div class="ma-4">
       <Settings v-if="!id" v-model="idSettings" hide-border />
       <Settings v-if="useId" v-model="settings" hide-border />
@@ -18,7 +18,7 @@ import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
 import { getDeviceFromId } from '@/id-device';
 import { DeviceCreator, ScryptedInterface, ScryptedSystemDevice, Setting } from '@scrypted/types';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Settings from './settings/Settings.vue';
 import { TrackedSetting, normalizeBoolean, normalizeNumber } from './settings/setting-modelvalue';
 
@@ -32,7 +32,12 @@ const emits  = defineEmits<{
 }>();
 
 const useId = ref<string>(props.id);
-const device = getDeviceFromId<DeviceCreator>(() => useId.value);
+const device = getDeviceFromId<DeviceCreator & ScryptedSystemDevice>(() => useId.value);
+
+const title = computed(() => {
+  console.warn(device.value?.systemDevice?.deviceCreator)
+  return device.value?.systemDevice?.deviceCreator || "Device";
+});
 
 const idSettings = ref<TrackedSetting[]>([
   {

@@ -33,13 +33,16 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
+import { getDeviceFromId } from '@/id-device';
 import { BrowserSignalingSession } from '@scrypted/common/src/rtc-signaling';
 import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
-import { onUnmounted, ref } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   id: string;
 }>();
+const device = getDeviceFromId<Camera & RTCSignalingChannel & VideoCamera>(() => props.id);
+watch(() => device.value, () => stop());
 
 const destination = ref<MediaStreamDestination>('Default' as any);
 const destinations: MediaStreamDestination[] = [
@@ -50,16 +53,6 @@ const destinations: MediaStreamDestination[] = [
   'low-resolution',
   'remote-recorder',
 ];
-
-const device = asyncComputed({
-  async get() {
-    const { systemManager } = connectedClient.value || await connectPluginClient();
-    return systemManager.getDeviceById<Camera & RTCSignalingChannel & VideoCamera>(props.id);
-  },
-  watch: {
-    id: () => props.id,
-  }
-});
 
 let pc: Promise<RTCPeerConnection> | undefined;
 function cleanupPeerConnection() {
@@ -124,10 +117,15 @@ function stop() {
 const counter = ref(0);
 
 const imgSrc = asyncComputed({
-  async get() {
+  async get({ clearOldValue }, ov: string, nwv, owv, w) {
     const d = device.value;
-    if (!d)
+    if (!d) {
+      clearOldValue();
       return;
+    }
+    // route/device change, old value is from another camera
+    if (w === 'device')
+      clearOldValue();
     const mo = await d.takePicture({
       reason: 'event',
     });
@@ -136,7 +134,7 @@ const imgSrc = asyncComputed({
     return fixupAppDomainImageUrl(new URL(url).pathname);
   },
   default(previousValue) {
-    return previousValue;
+    return previousValue as string || 'img/scrypted/240x135-000000ff.png';
   },
   watch: {
     device: () => device.value,

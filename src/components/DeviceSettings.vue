@@ -55,9 +55,11 @@ registerListener(device, {
 });
 
 const settings = asyncComputed({
-  async get() {
-    if (!device.value.interfaces.includes(ScryptedInterface.Settings))
+  async get({ clearOldValue }) {
+    if (!device.value.interfaces.includes(ScryptedInterface.Settings)) {
+      clearOldValue();
       return;
+    }
     const settings = await device.value.getSettings();
     const ret = settings.map(trackSetting);
     return ret;

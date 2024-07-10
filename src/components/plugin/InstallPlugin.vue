@@ -8,7 +8,7 @@
     </v-card>
     <v-card v-for="plugin in plugins" class="mt-4">
       <template v-slot:prepend>
-        <v-icon color="info" size="small" :icon="getFaPrefix('fa-puzzle-piece')"></v-icon>
+        <v-icon color="info" size="x-small" :icon="getFaPrefix('fa-puzzle-piece')"></v-icon>
       </template>
       <template v-slot:append>
         <div style="text-align: end">v{{ plugin.version }}</div>
@@ -21,9 +21,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="flat" color="deep-purple-accent-4" size="small"
+        <v-btn variant="flat" color="deep-purple-accent-4" size="x-small"
           :prepend-icon="getFaPrefix('fa-download')">Install</v-btn>
-        <v-btn variant="outlined" color="info" size="small" prepend-icon="fab fa-npm" :href="plugin.link"
+        <v-btn variant="outlined" color="info" size="x-small" prepend-icon="fab fa-npm" :href="plugin.link"
           target="_blank">View
           On NPM</v-btn>
       </v-card-actions>

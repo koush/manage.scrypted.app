@@ -15,7 +15,7 @@
           <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
               <v-btn v-bind="activatorProps" variant="elevated" color="success" class="ml-4" size="small">Add
-                Device</v-btn>
+                {{ title }}</v-btn>
             </template>
             <template v-slot:default="{ isActive }">
               <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false"
@@ -56,7 +56,7 @@ import { getAllDevices } from '@/common/devices';
 import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, goDevice } from '@/id-device';
-import { DeviceProvider, ScryptedInterface } from '@scrypted/types';
+import { DeviceProvider, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
@@ -69,7 +69,11 @@ const props = defineProps<{
   id: string;
 }>();
 
-const device = getDeviceFromId<DeviceProvider>(() => props.id);
+const device = getDeviceFromId<DeviceProvider & ScryptedSystemDevice>(() => props.id);
+
+const title = computed(() => {
+  return device.value?.systemDevice?.deviceCreator || "Device";
+});
 
 const childDevices = computed(() => {
   return getAllDevices()
