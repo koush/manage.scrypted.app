@@ -11,9 +11,7 @@ import '../styles/theme.scss'
 import '@xterm/xterm/css/xterm.css';
 import 'highlight.js/styles/github-dark.css';
 
-import '@mdi/font/css/materialdesignicons.css'
 import { aliases, fa } from 'vuetify/iconsets/fa'
-import { mdi } from 'vuetify/iconsets/mdi'
 
 import '../../scripts/font-awesome'
 
@@ -42,7 +40,6 @@ export default createVuetify({
     aliases,
     sets: {
       fa,
-      mdi,
     }
   },
 })
