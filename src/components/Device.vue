@@ -62,10 +62,14 @@
         </template>
         <template v-else>
         </template>
-        <DeviceSettings :id="id"></DeviceSettings>
+        <DeviceSettings :id="id" class="mb-4"></DeviceSettings>
+        <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
+        <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
+        <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
+        <MixinProvider v-if="canExtendDevices" :id="id"></MixinProvider>
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
           :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
           :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
@@ -73,11 +77,6 @@
         <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
           nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
           @close="showRepl = false" class="mb-4"></PtyComponent>
-        <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
-
-        <DeviceProvider class="mb-4" v-if="hasOrCanCreateDevices" :id="id"></DeviceProvider>
-        <MixinProvider v-if="canExtendDevices" :id="id"></MixinProvider>
-        <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
     </v-row>
   </v-container>
