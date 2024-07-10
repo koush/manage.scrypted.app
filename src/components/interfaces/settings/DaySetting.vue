@@ -1,9 +1,8 @@
 <template>
-  <ChoiceStringSetting v-model="computedModelValue" force-chips></ChoiceStringSetting>
+  <ChoiceStringSetting v-model="computedModelValue" force-chips force-group></ChoiceStringSetting>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
-import { isNumber } from 'lodash';
 import { ref, watch } from 'vue';
 import ChoiceStringSetting from './ChoiceStringSetting.vue';
 import { normalizeNumber } from './setting-modelvalue';

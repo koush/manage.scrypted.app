@@ -1,30 +1,21 @@
 <template>
   <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox">
-    <template v-if="true || modelValue.multiple">
-      <v-divider></v-divider>
-      <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
-        modelValue.title }}</v-list-item-subtitle>
-      <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
-        <v-chip v-for="choice of modelValue.choices" :class="!modelValue.multiple ? 'chip-group-round ma-0' : undefined"
-          :rounded="!modelValue.multiple ? 0 : undefined" :color="chipColor" size="x-small" :value="choice"
-          :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
-          {{
-            choice }}</v-chip>
-      </v-chip-group>
-      <div class="mb-2 mr-3">
-        <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
-          modelValue.description }}</v-list-item-subtitle>
-      </div>
-      <v-divider></v-divider>
-    </template>
-    <template v-else>
-      <v-divider></v-divider>
-      <v-radio-group class="shrink" density="compact" v-model="modelValue.value" inline :label="modelValue.title"
-        :hint="modelValue.description" :persistent-hint="!!modelValue.description"
-        :hide-details="!modelValue.description">
-        <v-radio v-for="choice of modelValue.choices" :color="chipColor" :value="choice" :label="choice"></v-radio>
-      </v-radio-group>
-    </template>
+    <v-divider></v-divider>
+    <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
+      modelValue.title }}</v-list-item-subtitle>
+    <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
+      <v-chip v-for="choice of modelValue.choices"
+        :class="!modelValue.multiple || forceGroup ? 'chip-group-round ma-0' : undefined"
+        :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="x-small" :value="choice"
+        :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
+        {{
+          choice }}</v-chip>
+    </v-chip-group>
+    <div class="mb-2 mr-3">
+      <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
+        modelValue.description }}</v-list-item-subtitle>
+    </div>
+    <v-divider></v-divider>
   </template>
   <component v-else :is="component" class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
     :label="modelValue.title" :hint="modelValue.description" v-model="modelValue.value" :items="modelValue.choices"
@@ -47,6 +38,7 @@ const chipVariant = getChipVariant();
 const modelValue = defineModel<Setting>();
 defineProps<{
   forceChips?: boolean;
+  forceGroup?: boolean;
 }>();
 
 const component = computed(() => {
