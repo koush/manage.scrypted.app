@@ -7,6 +7,15 @@
     <div v-if="connectedClient?.serverVersion && !isTouchPhone" class="pt-1" style="color: lightgrey">v{{
       connectedClient?.serverVersion }}</div>
     <v-spacer></v-spacer>
+    <v-autocomplete v-if="!isTouchDevice" @update:search="v => search = v" :items="choices" hide-details
+      persistent-placeholder label="Search" variant="outlined" density="compact">
+      <template v-slot:no-data>
+      </template>
+      <template v-slot:item="{ props, item }">
+        <v-list-item v-bind="props" :prepend-icon="typeToIcon(item.raw.value.type)"
+          :subtitle="item.raw.subtitle" :title="item.raw.value.name"></v-list-item>
+      </template>
+    </v-autocomplete>
     <ThemeToggle></ThemeToggle>
     <template v-if="isLoggedIn">
       <!-- <div class="mr-2">{{ connectedClient?.username }}</div> -->
@@ -18,9 +27,12 @@
 </template>
 <script setup lang="ts">
 import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
-import { isTouchPhone } from '@/common/size';
+import { getAllDevices } from '@/common/devices';
+import { isTouchDevice, isTouchPhone } from '@/common/size';
+import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { ScryptedDevice } from '@scrypted/types';
+import { computed, ref } from 'vue';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
-import { getFaPrefix } from '@/device-icons';
 
 defineProps<{
   modelValue: boolean;
@@ -29,6 +41,62 @@ defineProps<{
 const emits = defineEmits<{
   (event: 'update:modelValue', value: boolean): void;
 }>();
+
+interface SearchResult {
+  title: string;
+  subtitle: string;
+  value: ScryptedDevice;
+}
+
+const search = ref<string>();
+
+const choices = computed(() => {
+  if (!connectedClient.value)
+    return [];
+
+  const searchLower = search.value?.toLowerCase();
+
+  return getAllDevices().map(d => {
+
+    let subtitle: string;
+    if (searchLower) {
+      // check various device properties for the search term
+      // and set subtitle to the first property that matches.
+      if (d.name.toLowerCase().includes(searchLower)) {
+        subtitle = d.name;
+      }
+      else if (d.type.toLowerCase().includes(searchLower)) {
+        subtitle = d.type;
+      }
+      else if (d.pluginId.toLowerCase().includes(searchLower)) {
+        subtitle = d.pluginId;
+      }
+      else if (d.info?.manufacturer?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.manufacturer;
+      }
+      else if (d.info?.model?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.model;
+      }
+      else if (d.info?.serialNumber?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.serialNumber;
+      }
+      else if (d.info?.ip?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.ip;
+      }
+      else if (d.info?.mac?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.mac;
+      }
+    }
+
+    return {
+      subtitle,
+      title: `${d.name} ${d.type} ${JSON.stringify(d.info || {})} ${d.pluginId}`,
+      value: d,
+    } as SearchResult;
+  })
+  // .filter(v => !!v);
+});
+
 </script>
 <style scoped>
 .hide-link {
