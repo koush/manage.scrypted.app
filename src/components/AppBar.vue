@@ -7,13 +7,14 @@
     <div v-if="connectedClient?.serverVersion && !isTouchPhone" class="pt-1" style="color: lightgrey">v{{
       connectedClient?.serverVersion }}</div>
     <v-spacer></v-spacer>
-    <v-autocomplete v-if="!isTouchDevice" @update:search="v => search = v" :items="choices" hide-details
-      persistent-placeholder label="Search" variant="outlined" density="compact">
+    <v-autocomplete v-if="!isTouchDevice" @update:search="v => search = v" :items="choices" hide-details return-object
+      persistent-placeholder label="Search" variant="outlined" density="compact" v-model="value">
       <template v-slot:no-data>
       </template>
+      <template v-slot:selection></template>
       <template v-slot:item="{ props, item }">
-        <v-list-item v-bind="props" :prepend-icon="typeToIcon(item.raw.value.type)"
-          :subtitle="item.raw.subtitle" :title="item.raw.value.name"></v-list-item>
+        <v-list-item v-bind="props" :prepend-icon="typeToIcon(item.raw.value.type)" :subtitle="item.raw.subtitle"
+          :title="item.raw.value.name"></v-list-item>
       </template>
     </v-autocomplete>
     <ThemeToggle></ThemeToggle>
@@ -30,8 +31,10 @@ import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { goDevice } from '@/id-device';
 import { ScryptedDevice } from '@scrypted/types';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
 
 defineProps<{
@@ -49,6 +52,14 @@ interface SearchResult {
 }
 
 const search = ref<string>();
+
+const value = ref<SearchResult>();
+const router = useRouter();
+
+watch(() => value.value, async () => {
+  if (value.value)
+    goDevice(router, value.value.value);
+});
 
 const choices = computed(() => {
   if (!connectedClient.value)
@@ -85,6 +96,11 @@ const choices = computed(() => {
       }
       else if (d.info?.mac?.toLowerCase().includes(searchLower)) {
         subtitle = d.info.mac;
+      }
+      else if (d.info?.managementUrl?.toLowerCase().includes(searchLower)) {
+        subtitle = d.info.managementUrl;
+      }
+      else {
       }
     }
 
