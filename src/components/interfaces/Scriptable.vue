@@ -1,11 +1,12 @@
 <template>
-  <v-card >
+  <v-card>
     <template v-slot:title>
       <div style="display: flex;">
-      <v-card-subtitle class="mr-4">Script</v-card-subtitle>
-      <ToolbarTooltipButton icon="fa-play" tooltip="Run" variant="text" size="x-small"></ToolbarTooltipButton>
-      <ToolbarTooltipButton icon="fa-save" tooltip="Save" variant="text" size="x-small"></ToolbarTooltipButton>
-    </div>
+        <v-card-subtitle class="mr-4">Script</v-card-subtitle>
+        <ToolbarTooltipButton icon="fa-play" tooltip="Run" variant="text" size="x-small" @click="run">
+        </ToolbarTooltipButton>
+        <ToolbarTooltipButton icon="fa-save" tooltip="Save" variant="text" size="x-small" @click="save"></ToolbarTooltipButton>
+      </div>
     </template>
 
     <div ref="container" style="height: 640px; width: 100%;"></div>
@@ -14,7 +15,7 @@
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
 import { getDeviceFromId } from '@/id-device';
-import { Scriptable } from '@scrypted/types';
+import { Scriptable, ScriptSource } from '@scrypted/types';
 import * as monaco from 'monaco-editor';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
@@ -23,7 +24,26 @@ const props = defineProps<{
   id: string;
 }>();
 
+const emits = defineEmits<{
+  (event: 'run'): void;
+}>();
+
 const device = getDeviceFromId<Scriptable>(() => props.id);
+
+function run() {
+  if (!device.value || !currentEditor)
+    return;
+  emits('run');
+  scriptsSource.script = currentEditor.getValue();
+  device.value.eval(scriptsSource);
+}
+
+async function save() {
+  if (!device.value || !currentEditor)
+    return;
+  scriptsSource.script = currentEditor.getValue();
+  device.value.saveScript(scriptsSource);
+}
 
 const container = ref<HTMLDivElement>();
 let currentEditor: monaco.editor.IStandaloneCodeEditor;
@@ -34,14 +54,16 @@ onUnmounted(() => {
   model?.dispose();
 });
 
+let scriptsSource: ScriptSource & { filename: string };
 async function loadScript() {
   const scripts = await device.value?.loadScripts();
-  console.log(scripts);
-  return {
+  scriptsSource = {
     filename: Object.keys(scripts)[0],
     ...scripts[Object.keys(scripts)[0]],
   }
+  return scriptsSource;
 }
+
 
 const dark = isDark();
 watch(() => dark.value, () => {
