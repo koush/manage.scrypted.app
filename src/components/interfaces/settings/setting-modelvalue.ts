@@ -22,7 +22,10 @@ export function normalizeBoolean(value: any) {
 }
 
 export function normalizeNumber(value: any) {
-  return parseFloat(value);
+  const ret = parseFloat(value);
+  if (Number.isNaN(ret))
+    return undefined;
+  return ret;
 }
 
 export function normalizeSetting(setting: TrackedSetting) {
