@@ -4,8 +4,7 @@
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
     <template v-slot:append>
-      <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
-        @click="expand" />
+      <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text" @click="expand" />
       <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contrac" />
       <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
       <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
@@ -77,6 +76,16 @@ const term = new Terminal({
     },
   convertEol: true,
   fontSize: 12,
+});
+watch(() => dark.value, () => {
+  term.options.theme = dark.value
+    ? undefined
+    : {
+      selectionBackground: '#0000ff55',
+      foreground: "black",
+      background: "white",
+      cursor: "black",
+    };
 });
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);

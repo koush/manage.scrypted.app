@@ -66,7 +66,7 @@
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
-        <Scriptable v-if="hasScriptable" :id="id"></Scriptable>
+        <Scriptable v-if="hasScriptable" :id="id" class="mb-4"></Scriptable>
         <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
