@@ -7,8 +7,8 @@
     <div v-if="connectedClient?.serverVersion && !isTouchPhone" class="pt-1" style="color: lightgrey">v{{
       connectedClient?.serverVersion }}</div>
     <v-spacer></v-spacer>
-    <v-autocomplete v-if="!isTouchDevice" max-width="320" @update:search="v => search = v" :items="choices" hide-details return-object
-      persistent-placeholder label="Search" variant="outlined" density="compact" v-model="value">
+    <v-autocomplete v-if="!isTouchDevice" max-width="320" @update:search="v => search = v" :items="choices" hide-details
+      return-object persistent-placeholder label="Search" variant="outlined" density="compact" v-model="value">
       <template v-slot:no-data>
       </template>
       <template v-slot:selection></template>
@@ -30,9 +30,9 @@
 import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { goDevice } from '@/id-device';
-import { ScryptedDevice } from '@scrypted/types';
+import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
@@ -67,49 +67,74 @@ const choices = computed(() => {
 
   const searchLower = search.value?.toLowerCase();
 
-  return getAllDevices().map(d => {
-
-    let subtitle: string;
-    if (searchLower) {
-      // check various device properties for the search term
-      // and set subtitle to the first property that matches.
-      if (d.name.toLowerCase().includes(searchLower)) {
-        subtitle = d.name;
-      }
-      else if (d.type.toLowerCase().includes(searchLower)) {
-        subtitle = d.type;
-      }
-      else if (d.pluginId.toLowerCase().includes(searchLower)) {
-        subtitle = d.pluginId;
-      }
-      else if (d.info?.manufacturer?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.manufacturer;
-      }
-      else if (d.info?.model?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.model;
-      }
-      else if (d.info?.serialNumber?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.serialNumber;
-      }
-      else if (d.info?.ip?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.ip;
-      }
-      else if (d.info?.mac?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.mac;
-      }
-      else if (d.info?.managementUrl?.toLowerCase().includes(searchLower)) {
-        subtitle = d.info.managementUrl;
+  return getAllDevices()
+    .sort((d1, d2) => {
+      // order list for ux
+      // prefer physical devices
+      const h1 = hasFixedPhysicalLocation(d1.type);
+      const h2 = hasFixedPhysicalLocation(d2.type);
+      if (h1 && !h2)
+        return -1;
+      if (h2 && !h1)
+        return 1;
+      // prefer cameras (if both are physical)
+      if (d1.type === ScryptedDeviceType.Camera)
+        return -1;
+      if (d2.type === ScryptedDeviceType.Camera)
+        return 1;
+      // prefer plugins if both are not physical
+      if (d1.interfaces.includes(ScryptedInterface.ScryptedPlugin))
+        return -1;
+      if (d2.interfaces.includes(ScryptedInterface.ScryptedPlugin))
+        return 1;
+      return d1.name.localeCompare(d2.name);
+    })
+    .map(d => {
+      let subtitle: string;
+      if (searchLower) {
+        // check various device properties for the search term
+        // and set subtitle to the first property that matches.
+        if (d.name.toLowerCase().includes(searchLower)) {
+          subtitle = d.name;
+        }
+        else if (d.type.toLowerCase().includes(searchLower)) {
+          subtitle = d.type;
+        }
+        else if (d.pluginId.toLowerCase().includes(searchLower)) {
+          subtitle = d.pluginId;
+        }
+        else if (d.info?.manufacturer?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.manufacturer;
+        }
+        else if (d.info?.model?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.model;
+        }
+        else if (d.info?.serialNumber?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.serialNumber;
+        }
+        else if (d.info?.ip?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.ip;
+        }
+        else if (d.info?.mac?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.mac;
+        }
+        else if (d.info?.managementUrl?.toLowerCase().includes(searchLower)) {
+          subtitle = d.info.managementUrl;
+        }
+        else {
+          subtitle = d.pluginId;
+        }
       }
       else {
+        subtitle = d.pluginId;
       }
-    }
 
-    return {
-      subtitle,
-      title: `${d.name} ${d.type} ${JSON.stringify(d.info || {})} ${d.pluginId}`,
-      value: d,
-    } as SearchResult;
-  })
+      return {
+        subtitle,
+        title: `${d.name} ${d.type} ${JSON.stringify(d.info || {})} ${d.pluginId}`,
+        value: d,
+      } as SearchResult;
+    })
   // .filter(v => !!v);
 });
 
