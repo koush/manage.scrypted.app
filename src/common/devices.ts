@@ -2,7 +2,7 @@ import { SystemManager } from "@scrypted/types";
 import { connectedClient } from "./client";
 import { computed } from "vue";
 
-export const cachedSystemManager = computed<SystemManager>(previousValue => {
+export const cachedSystemManager = computed<SystemManager|undefined>(previousValue => {
   return connectedClient.value?.systemManager || previousValue;
 });
 

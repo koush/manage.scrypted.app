@@ -25,9 +25,9 @@ const value = computed({
   get() {
     if (!modelValue.value.multiple) {
       const value = modelValue.value.value as string;
-      const title = modelValue.value.getDeviceTitle
-        ? modelValue.value.getDeviceTitle(value)
-        : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || '');
+      const [id, deviceInterface] = value.split('#', 2);
+      const device = connectedClient.value?.systemManager.getDeviceById(id);
+      const title = device.name + ` (${deviceInterface})`;
 
       return {
         title,
@@ -38,12 +38,15 @@ const value = computed({
     let values = modelValue.value.value as string[];
     if (!Array.isArray(values))
       values = [];
-    return values.map(value => ({
-      title: modelValue.value.getDeviceTitle
-        ? modelValue.value.getDeviceTitle(value)
-        : (connectedClient.value?.systemManager.getDeviceById(value)?.name || modelValue.value.placeholder || ''),
-      value,
-    }));
+    return values.map(value => {
+      const [id, deviceInterface] = value.split('#', 2);
+      const device = connectedClient.value?.systemManager.getDeviceById(id);
+      const title = device.name + ` (${deviceInterface})`;
+      return {
+        title,
+        value,
+      }
+    });
   },
   set(value) {
     if (!Array.isArray(value))
@@ -61,8 +64,12 @@ const choices = computed(() => {
     }));
   }
 
-  const allDevices = getAllDevices();
-  let ret = allDevices;
+  const allDeviceInterfaces = getAllDevices().map(device => device.interfaces.map(deviceInterface => ({
+    device,
+    deviceInterface,
+  }))).flat();
+
+  let ret = allDeviceInterfaces;
 
   if (modelValue.value.deviceFilter) {
     let expression;
@@ -72,12 +79,13 @@ const choices = computed(() => {
       expression = "true;";
     }
 
-    ret = allDevices.filter(device => {
+    ret = allDeviceInterfaces.filter(({ device, deviceInterface }) => {
       try {
         return eval(
           `(function() { var interfaces = ${JSON.stringify(
             device.interfaces
-          )}; var type='${device.type}'; var id = '${device.id}'; return ${expression} })`
+          )}; var deviceInterface = '${deviceInterface}'}; var type='${device.type
+          }'; return ${expression} })`
         )();
       } catch (e) {
         return true;
@@ -85,9 +93,9 @@ const choices = computed(() => {
     });
   }
 
-  return ret.map(device => ({
-    title: modelValue.value.getDeviceTitle ? modelValue.value.getDeviceTitle(device.id) : device.name,
-    value: device.id,
+  return ret.map(({ device, deviceInterface }) => ({
+    title: device.name + ` (${deviceInterface})`,
+    value: device.id + "#" + deviceInterface,
   }));
 });
 
