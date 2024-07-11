@@ -3,8 +3,9 @@
     <v-expansion-panels flat density="compact" v-model="selectedSettingSubgroup" variant="accordion"
       :mandatory="settingsSubgroups?.length <= 1">
 
-      <v-chip-group style="width: 100%; background: rgb(var(--v-theme-surface-variant));" v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column
-        class="pt-0 pb-0" mandatory variant="flat">
+      <v-chip-group style="width: 100%; background: rgb(var(--v-theme-surface-variant));"
+        v-if="settingsGroups?.length > 1 || slots.settings" v-model="selectedSettingGroup" column class="pt-0 pb-0"
+        mandatory variant="flat">
         <template v-for="group of settingsGroups">
           <v-chip :value="group" color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
             getTitle(group.title) }}</v-chip>
@@ -20,7 +21,8 @@
                 getTitle(group.title) }}</v-expansion-panel-title>
             <v-expansion-panel-text>
               <template v-for="setting in getSubgroupSettings(group.title)">
-                <SplatSetting :model-value="setting"></SplatSetting>
+                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)">
+                </SplatSetting>
               </template>
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -33,7 +35,8 @@
         <div class="ma-2">
           <template v-for="group in settingsSubgroups">
             <template v-for="setting in getSubgroupSettings(group.title)">
-              <SplatSetting :model-value="setting"></SplatSetting>
+              <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)">
+              </SplatSetting>
             </template>
           </template>
         </div>
@@ -61,6 +64,10 @@ const modelValue = defineModel<TrackedSetting[]>();
 const props = defineProps<{
   extraChips?: string[];
   hideBorder?: boolean;
+}>();
+
+const emits = defineEmits<{
+  (event: 'click-button-setting', setting: Setting): void;
 }>();
 
 function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {

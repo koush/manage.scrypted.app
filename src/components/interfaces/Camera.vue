@@ -1,8 +1,10 @@
 <template>
   <v-card>
-    <template v-if="hasRTC" v-slot:prepend>
-      <template v-if="!playing">
-        <v-btn :prepend-icon="getFaPrefix('fa-play')" variant="text" size="small" @click="play">Play</v-btn>
+    <template v-if="hasRTC || slots.prepend" v-slot:prepend>
+      <slot v-if="slots.prepend" name="prepend"></slot>
+      <template v-else-if="!playing">
+        <ToolbarTooltipButton :icon="getFaPrefix('fa-play')" variant="text" size="small" @click="play" tooltip="Play">
+        </ToolbarTooltipButton>
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn variant="text" size="small" v-bind="props">
@@ -16,12 +18,15 @@
           </v-list>
         </v-menu>
       </template>
-      <v-btn v-else :prepend-icon="getFaPrefix('fa-stop')" variant="text" size="small" @click="stop">Stop (Stream: {{ destination }})</v-btn>
+      <ToolbarTooltipButton v-else :icon="getFaPrefix('fa-stop')" variant="text" size="small" @click="stop"
+        :tooltip="`Stop (Stream: ${destination})`"></ToolbarTooltipButton>
     </template>
     <template v-slot:append v-if="!playing">
-      <v-btn :prepend-icon="getFaPrefix('fa-refresh')" variant="text" size="small" @click="counter++">Refresh</v-btn>
+      <ToolbarTooltipButton :icon="getFaPrefix('fa-refresh')" variant="text" size="small" @click="counter++"
+        tooltip="Refresh"></ToolbarTooltipButton>
     </template>
     <div style="display: flex; position: relative;">
+      <ClipPathEditor v-if="clipPath" v-model="clipPath"></ClipPathEditor>
       <img :src="imgSrc" style="object-fit: contain; width: 100%; cursor: pointer;" @click="play">
       <video autoplay ref="video" playsinline
         style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: black; object-fit: fill;"
@@ -30,17 +35,23 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { ClipPathModel } from '@/clip-path-model';
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { BrowserSignalingSession } from '@scrypted/common/src/rtc-signaling';
 import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedInterface, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { computed, onUnmounted, ref, useSlots, watch } from 'vue';
+import ClipPathEditor from '../ClipPathEditor.vue';
+import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 
 const props = defineProps<{
   id: string;
 }>();
+const clipPath = defineModel<ClipPathModel>('clipPath');
+const slots = useSlots();
+
 const device = getDeviceFromId<Camera & RTCSignalingChannel & VideoCamera>(() => props.id);
 watch(() => device.value, () => stop());
 

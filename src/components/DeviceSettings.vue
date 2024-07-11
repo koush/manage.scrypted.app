@@ -9,7 +9,7 @@
       </v-card-subtitle>
     </template>
     <div class="ml-4 mr-4 mb-4">
-      <SettingsInterface v-model="settings" :extra-chips="['Extensions']">
+      <SettingsInterface v-model="settings" :extra-chips="['Extensions']" @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-group-chips>
           <v-chip color="deep-purple-accent-4" size="small" rounded="0" class="ma-0"
             :prepend-icon="getFaPrefix('fa-bolt')" :value="extensions">
@@ -41,6 +41,10 @@ import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue'
 
 const props = defineProps<{
   id: string;
+}>();
+
+const emits = defineEmits<{
+  (event: 'click-button-setting', setting: Setting): void;
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);

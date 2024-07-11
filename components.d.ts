@@ -12,6 +12,7 @@ declare module 'vue' {
     ButtonSetting: typeof import('./src/components/interfaces/settings/ButtonSetting.vue')['default']
     Camera: typeof import('./src/components/interfaces/Camera.vue')['default']
     ChoiceStringSetting: typeof import('./src/components/interfaces/settings/ChoiceStringSetting.vue')['default']
+    ClipPathEditor: typeof import('./src/components/ClipPathEditor.vue')['default']
     ClipPathSetting: typeof import('./src/components/interfaces/settings/ClipPathSetting.vue')['default']
     DateTimeSetting: typeof import('./src/components/interfaces/settings/DateTimeSetting.vue')['default']
     DaySetting: typeof import('./src/components/interfaces/settings/DaySetting.vue')['default']

@@ -3,7 +3,7 @@
   <StringSetting v-else-if="isStringType(modelValue.type)" :model-value="modelValue"></StringSetting>
   <BooleanSetting v-else-if="modelValue.type === 'boolean'" :model-value="modelValue"></BooleanSetting>
   <ButtonSetting v-else-if="modelValue.type === 'button'" :model-value="modelValue"></ButtonSetting>
-  <ClipPathSetting v-else-if="modelValue.type === 'clippath'" :model-value="modelValue"></ClipPathSetting>
+  <ClipPathSetting v-else-if="modelValue.type === 'clippath'" :model-value="modelValue" @click="emits('click-button-setting')"></ClipPathSetting>
   <DeviceSetting v-else-if="modelValue.type === 'device'" :model-value="modelValue"></DeviceSetting>
   <DeviceInterfaceSetting v-else-if="modelValue.type === 'interface'" :model-value="modelValue"></DeviceInterfaceSetting>
   <ScriptSetting v-else-if="modelValue.type === 'script'" :model-value="modelValue"></ScriptSetting>
@@ -28,6 +28,10 @@ import DeviceInterfaceSetting from './DeviceInterfaceSetting.vue';
 
 const modelValue = defineModel<Setting>();
 watchModelValue(modelValue);
+
+const emits = defineEmits<{
+  (event: 'click-button-setting'): void;
+}>();
 
 function isStringType(type: typeof modelValue.value.type) {
   switch (type) {
