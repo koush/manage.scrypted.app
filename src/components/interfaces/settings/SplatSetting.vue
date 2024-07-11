@@ -8,6 +8,7 @@
   <ScriptSetting v-else-if="modelValue.type === 'script'" :model-value="modelValue"></ScriptSetting>
   <DateTimeSetting v-else-if="isDateOrTimeType(modelValue.type)" :model-value="modelValue"></DateTimeSetting>
   <DaySetting v-else-if="modelValue.type === 'day'" :model-value="modelValue"></DaySetting>
+  <HtmlSetting v-else-if="modelValue.type === 'html'" :model-value="modelValue"></HtmlSetting>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
@@ -21,6 +22,7 @@ import DeviceSetting from './DeviceSetting.vue';
 import DateTimeSetting from './DateTimeSetting.vue';
 import ScriptSetting from './ScriptSetting.vue';
 import DaySetting from './DaySetting.vue';
+import HtmlSetting from './HtmlSetting.vue';
 
 const modelValue = defineModel<Setting>();
 watchModelValue(modelValue);
