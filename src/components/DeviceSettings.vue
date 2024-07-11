@@ -12,7 +12,7 @@
       <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
         color="success">Save</v-btn>
     </template>
-    <div :class="false ? 'ml-4 mr-4 mb-4' : undefined">
+    <div>
       <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
