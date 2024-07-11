@@ -1,6 +1,6 @@
 <template>
   <v-card :title="`Add ${title}`">
-    <div class="ma-4">
+    <div >
       <Settings v-if="!id" v-model="idSettings" hide-border />
       <Settings v-if="useId" v-model="settings" hide-border />
     </div>

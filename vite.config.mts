@@ -24,9 +24,9 @@ export default defineConfig({
 		// https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
 		Vuetify(),
 		VitePWA({
-      workbox: {
-        maximumFileSizeToCacheInBytes: 10000000,
-      },
+			workbox: {
+				maximumFileSizeToCacheInBytes: 10000000,
+			},
 			useCredentials: true,
 			registerType: 'autoUpdate',
 			devOptions: {

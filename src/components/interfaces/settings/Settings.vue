@@ -6,7 +6,7 @@
 
       <template v-for="group in settingsGroups">
         <v-expansion-panel :value="group">
-          <v-expansion-panel-title style="min-height: unset;"
+          <v-expansion-panel-title v-if="settingsGroups?.length > 1" style="min-height: unset;"
             :color="group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
               getTitle(group.title) }}</v-expansion-panel-title>
 
