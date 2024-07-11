@@ -33,7 +33,7 @@ import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId, goDevice } from '@/id-device';
 import { MixinProvider, ScryptedDevice, ScryptedInterface } from '@scrypted/types';
 import { useRouter } from 'vue-router';
-import { chipColor } from '../settings-chip';
+import { chipColor } from '../settings-common';
 import { computed } from 'vue';
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';

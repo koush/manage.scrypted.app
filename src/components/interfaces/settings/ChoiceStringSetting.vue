@@ -31,7 +31,7 @@ import { getFaPrefix } from '@/device-icons';
 import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { VCombobox, VSelect } from 'vuetify/components';
-import { chipColor, getChipVariant } from '../settings-chip';
+import { chipColor, getChipVariant } from '../settings-common';
 
 const chipVariant = getChipVariant();
 

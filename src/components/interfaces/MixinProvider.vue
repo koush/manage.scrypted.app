@@ -51,7 +51,7 @@ import { MixinProvider } from '@scrypted/types';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { chipColor } from './settings-chip';
+import { chipColor } from './settings-common';
 
 const router = useRouter();
 const { mdAndUp } = useDisplay()

@@ -39,6 +39,7 @@ import { computed, ref } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
+import { SettingsGroup } from './interfaces/settings-common';
 
 const props = defineProps<{
   id: string;
@@ -49,7 +50,7 @@ const emits = defineEmits<{
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);
-const extensions = { title: 'Extensions', subgroups: {} };
+const extensions: SettingsGroup = { title: 'Extensions', subgroups: [] };
 
 const refreshSettings = ref(0);
 

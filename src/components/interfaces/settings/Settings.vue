@@ -43,6 +43,7 @@ import { Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
+import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 
 const lineHintColor = getLineHintColor();
 
@@ -87,16 +88,16 @@ function makeGroups(settings: Setting[], groupKey: 'group' | 'subgroup') {
 
 const settingsGroups = computed(() => {
   const grouped = makeGroups(modelValue.value, 'group');
-  const subrgrouped = grouped.map(group => {
+  const subgrouped: SettingsGroup[] = grouped.map(group => {
     return {
       title: group.title,
       subgroups: makeGroups(group.settings, 'subgroup'),
     };
   });
-  return subrgrouped;
+  return subgrouped;
 });
 
-const selectedSettingGroup = ref(settingsGroups.value?.[0]);
+const selectedSettingGroup = ref<SettingsGroup>(settingsGroups.value?.[0]);
 watch(() => settingsGroups.value, () => {
   if (props.extraGroups?.includes(selectedSettingGroup.value?.title))
     return;
@@ -104,7 +105,7 @@ watch(() => settingsGroups.value, () => {
     || settingsGroups.value[0];
 });
 
-const selectedSettingSubgroup = ref(settingsGroups.value?.[0]?.subgroups?.[0]);
+const selectedSettingSubgroup = ref<SettingsSubgroup>(settingsGroups.value?.[0]?.subgroups?.[0]);
 watch(() => selectedSettingGroup.value, () => {
   selectedSettingSubgroup.value = selectedSettingGroup.value?.subgroups.find(v => v.title === selectedSettingSubgroup.value?.title)
     || selectedSettingGroup.value?.subgroups[0];

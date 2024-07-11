@@ -14,7 +14,7 @@
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { computed } from 'vue';
-import { chipColor, getChipVariant } from '../settings-chip';
+import { chipColor, getChipVariant } from '../settings-common';
 import { TrackedSetting } from './setting-modelvalue';
 
 const chipVariant = getChipVariant();
