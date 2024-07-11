@@ -8,16 +8,18 @@
         Settings
       </v-card-subtitle>
     </template>
-    <div class="ml-4 mr-4 mb-4">
-      <SettingsInterface v-model="settings" :extra-chips="['Extensions']" @click-button-setting="setting => emits('click-button-setting', setting)">
-        <template v-slot:settings-group-chips>
-          <v-chip color="deep-purple-accent-4" size="small" rounded="0" class="ma-0"
-            :prepend-icon="getFaPrefix('fa-bolt')" :value="extensions">
-            Extensions
-          </v-chip>
-        </template>
-        <template v-slot:settings="slotProps">
-          <Extensions :id="id" v-if="slotProps.selectedSettingGroup.title === 'Extensions'"></Extensions>
+    <div :class="false ? 'ml-4 mr-4 mb-4' : undefined">
+      <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
+        @click-button-setting="setting => emits('click-button-setting', setting)">
+        <template v-slot:settings-expansion-panels="slotProps">
+          <v-expansion-panel :value="extensions">
+            <v-expansion-panel-title style="min-height: unset;"
+              :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-divider></v-divider>
         </template>
       </SettingsInterface>
     </div>
@@ -48,7 +50,7 @@ const emits = defineEmits<{
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);
-const extensions = { title: 'Extensions', settings: [] as Setting[] };
+const extensions = { title: 'Extensions', subgroups: {} };
 
 const refreshSettings = ref(0);
 

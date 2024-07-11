@@ -19,7 +19,6 @@ declare module 'vue' {
     DeleteDeviceDialog: typeof import('./src/components/DeleteDeviceDialog.vue')['default']
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceCreator: typeof import('./src/components/interfaces/DeviceCreator.vue')['default']
-    DeviceInterface: typeof import('./src/components/interfaces/settings/DeviceInterface.vue')['default']
     DeviceInterfaceSetting: typeof import('./src/components/interfaces/settings/DeviceInterfaceSetting.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
