@@ -3,7 +3,7 @@
     <template v-if="icon" v-slot:prepend>
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
-    <template v-slot:append>
+    <template v-slot:append v-if="!hideButtons">
       <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text" @click="expand" />
       <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contrac" />
       <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
@@ -31,11 +31,13 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 
 const props = defineProps<{
   title: string;
+  pluginId?: string;
   nativeId: string;
   hello?: string;
   control?: boolean;
   reconnect?: boolean;
   copyButton?: boolean;
+  hideButtons?: boolean;
   options?: any;
   icon?: string;
   close?: boolean;
@@ -170,10 +172,10 @@ async function connectPty() {
 
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
-    const termSvcRaw = systemManager.getDeviceByName<DeviceProvider>("@scrypted/core");
-    const termSvc = await termSvcRaw.getDevice(props.nativeId);
-    const termSvcDirect = await connectRPCObject(termSvc);
-    const remoteGenerator = await termSvcDirect.connectStream(localGenerator(), props.options);
+    const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || '@scrypted/core');
+    const streamSvc = await plugin.getDevice(props.nativeId);
+    const streamSvcDirect = await connectRPCObject(streamSvc);
+    const remoteGenerator = await streamSvcDirect.connectStream(localGenerator(), props.options);
 
     for await (const message of remoteGenerator) {
       if (!message) {
