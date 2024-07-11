@@ -35,4 +35,10 @@ const mode = computed(() => {
 :deep(.vc-bordered) {
   border: 0px !important;
 }
+
+.shrink {
+  transform: scale(.75, .75);
+  width: 120%;
+  transform-origin: 0% 50%;
+}
 </style>

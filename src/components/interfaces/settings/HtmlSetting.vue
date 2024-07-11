@@ -9,3 +9,10 @@ import { Setting } from '@scrypted/types';
 
 const modelValue = defineModel<Setting>();
 </script>
+<style scoped>
+.shrink {
+  transform: scale(.75, .75);
+  width: 120%;
+  transform-origin: 0% 50%;
+}
+</style>

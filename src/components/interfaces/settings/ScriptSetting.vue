@@ -13,9 +13,6 @@ import { onUnmounted, ref, watch } from 'vue';
 import * as monaco from 'monaco-editor';
 import { getLineHintColor, isDark } from '@/common/colors';
 
-
-
-
 const lineHintColor = getLineHintColor();
 
 const modelValue = defineModel<Setting>();
@@ -123,3 +120,10 @@ const scryptedLibs: ScryptedLibs = {
 const monacoEvalDefaults = createMonacoEvalDefaultsWithLibs(standardLibs, scryptedLibs, {});
 
 </script>
+<style scoped>
+.shrink {
+  transform: scale(.75, .75);
+  width: 120%;
+  transform-origin: 0% 50%;
+}
+</style>
