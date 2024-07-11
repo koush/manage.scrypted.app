@@ -28,7 +28,7 @@
 import { connectedClient } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceRoute } from '@/id-device';
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -45,6 +45,7 @@ async function deleteDevice() {
   const providerId = device?.providerId === props.id ? undefined : device?.providerId;
   const id = props.id;
   router.replace(providerId ? getDeviceRoute(providerId) : '/device');
+  await nextTick();
   await connectedClient.value?.systemManager.removeDevice(id);
 }
 </script>
