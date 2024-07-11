@@ -72,7 +72,7 @@
       </v-col>
       <v-col cols="12" md="8">
         <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-        <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
+        <Camera v-if="hasCamera" :id="id" class="mb-4"></Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
@@ -131,8 +131,8 @@ const canExtendDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.MixinProvider);
 });
 
-const hasRTC = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+const hasCamera = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Camera);
 });
 
 const hasScriptable = computed(() => {

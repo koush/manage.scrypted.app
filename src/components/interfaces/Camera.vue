@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <template v-slot:prepend>
+    <template v-if="hasRTC" v-slot:prepend>
       <template v-if="!playing">
         <v-btn :prepend-icon="getFaPrefix('fa-play')" variant="text" size="small" @click="play">Play</v-btn>
         <v-menu>
@@ -35,8 +35,8 @@ import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { BrowserSignalingSession } from '@scrypted/common/src/rtc-signaling';
-import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
-import { onUnmounted, ref, watch } from 'vue';
+import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedInterface, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
+import { computed, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   id: string;
@@ -53,6 +53,11 @@ const destinations: MediaStreamDestination[] = [
   'low-resolution',
   'remote-recorder',
 ];
+
+const hasRTC = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
 
 let pc: Promise<RTCPeerConnection> | undefined;
 function cleanupPeerConnection() {
