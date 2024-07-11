@@ -33,6 +33,7 @@ function isStringType(type: typeof modelValue.value.type) {
     case 'number':
     case 'integer':
     case 'password':
+    case 'textarea':
       return true;
   }
   return false;
