@@ -8,6 +8,10 @@
         Settings
       </v-card-subtitle>
     </template>
+    <template v-slot:append>
+      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
+        color="success">Save</v-btn>
+    </template>
     <div :class="false ? 'ml-4 mr-4 mb-4' : undefined">
       <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
         @click-button-setting="setting => emits('click-button-setting', setting)">
@@ -23,11 +27,6 @@
         </template>
       </SettingsInterface>
     </div>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
-        color="success">Save</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 

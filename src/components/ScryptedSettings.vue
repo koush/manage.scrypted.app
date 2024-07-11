@@ -6,6 +6,9 @@
           <template v-slot:prepend>
             <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
           </template>
+          <template v-slot:append>
+            <v-btn :variant="dirtyCount ? 'flat' : 'text'" color="success" size="small" :disabled="!dirtyCount" @click="save">Save</v-btn>
+          </template>
           <template v-slot:title>
             <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
               Scrypted Settings
@@ -14,10 +17,6 @@
           <div class="ml-4 mr-4 mb-4">
             <SettingsInterface v-model="settings"></SettingsInterface>
           </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn :variant="dirtyCount ? 'flat' : 'text'" color="success" size="small" :disabled="!dirtyCount" @click="save">Save</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
