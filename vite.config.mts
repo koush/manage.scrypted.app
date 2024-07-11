@@ -12,13 +12,21 @@ const target = 'http://localhost:11080';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    Vue({
-      template: { transformAssetUrls },
-    }),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
-    Vuetify(),
-    VitePWA({
+	build: {
+		rollupOptions: {
+			onwarn: (warning, warn) => (warning.code !== 'EVAL') ? warn(warning) : undefined // suppress eval warnings (@vue/devtools)
+		}
+	},
+	plugins: [
+		Vue({
+			template: { transformAssetUrls },
+		}),
+		// https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
+		Vuetify(),
+		VitePWA({
+			workbox: {
+				maximumFileSizeToCacheInBytes: 10000000,
+			},
 			useCredentials: true,
 			registerType: 'autoUpdate',
 			devOptions: {
@@ -60,33 +68,33 @@ export default defineConfig({
 				"theme_color": "#424242"
 			}
 		}),
-    Components(),
-  ],
-  define: { 'process.env': {} },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-    extensions: [
-      '.js',
-      '.json',
-      '.jsx',
-      '.mjs',
-      '.ts',
-      '.tsx',
-      '.vue',
-    ],
-  },
-  server: {
-	host: '0.0.0.0',
-    port: 4000,
-	proxy: {
-		'^/(login|logout|endpoint|engine.io)': {
-			target,
-			changeOrigin: true,
-			secure: false,
-			ws: true,
+		Components(),
+	],
+	define: { 'process.env': {} },
+	resolve: {
+		alias: {
+			'@': fileURLToPath(new URL('./src', import.meta.url)),
 		},
-	}
-  },
+		extensions: [
+			'.js',
+			'.json',
+			'.jsx',
+			'.mjs',
+			'.ts',
+			'.tsx',
+			'.vue',
+		],
+	},
+	server: {
+		host: '0.0.0.0',
+		port: 4000,
+		proxy: {
+			'^/(login|logout|endpoint|engine.io)': {
+				target,
+				changeOrigin: true,
+				secure: false,
+				ws: true,
+			},
+		}
+	},
 })

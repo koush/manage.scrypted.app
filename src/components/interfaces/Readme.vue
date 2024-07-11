@@ -77,5 +77,10 @@ const lineHintColor= getLineHintColor();
 
 :deep(code:not(.hljs)) {
   background-color: v-bind('lineHintColor');
+  text-wrap: wrap;
+}
+
+:deep(img) {
+  max-width: 100%;
 }
 </style>

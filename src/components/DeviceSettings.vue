@@ -8,24 +8,25 @@
         Settings
       </v-card-subtitle>
     </template>
-    <div class="ml-4 mr-4 mb-4">
-      <SettingsInterface v-model="settings" :extra-chips="['Extensions']">
-        <template v-slot:settings-group-chips>
-          <v-chip color="deep-purple-accent-4" size="small" rounded="0" class="ma-0"
-            :prepend-icon="getFaPrefix('fa-bolt')" :value="extensions">
-            Extensions
-          </v-chip>
-        </template>
-        <template v-slot:settings="slotProps">
-          <Extensions :id="id" v-if="slotProps.selectedSettingGroup.title === 'Extensions'"></Extensions>
+    <template v-slot:append>
+      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
+        color="success">Save</v-btn>
+    </template>
+    <div>
+      <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
+        @click-button-setting="setting => emits('click-button-setting', setting)">
+        <template v-slot:settings-expansion-panels="slotProps">
+          <v-expansion-panel :value="extensions">
+            <v-expansion-panel-title style="min-height: unset;"
+              :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+          <v-divider></v-divider>
         </template>
       </SettingsInterface>
     </div>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
-        color="success">Save</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -38,13 +39,18 @@ import { computed, ref } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
+import { SettingsGroup } from './interfaces/settings-common';
 
 const props = defineProps<{
   id: string;
 }>();
 
+const emits = defineEmits<{
+  (event: 'click-button-setting', setting: Setting): void;
+}>();
+
 const device = getDeviceFromId<Settings>(() => props.id);
-const extensions = { title: 'Extensions', settings: [] as Setting[] };
+const extensions: SettingsGroup = { title: 'Extensions', subgroups: [] };
 
 const refreshSettings = ref(0);
 

@@ -6,18 +6,18 @@
           <template v-slot:prepend>
             <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
           </template>
+          <template v-slot:append>
+            <v-btn :variant="dirtyCount ? 'flat' : 'text'" color="success" size="small" :disabled="!dirtyCount"
+              @click="save">Save</v-btn>
+          </template>
           <template v-slot:title>
             <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
               Scrypted Settings
             </v-card-subtitle>
           </template>
-          <div class="ml-4 mr-4 mb-4">
+          <div>
             <SettingsInterface v-model="settings"></SettingsInterface>
           </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn :variant="dirtyCount ? 'flat' : 'text'" color="success" size="small" :disabled="!dirtyCount" @click="save">Save</v-btn>
-          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -86,7 +86,17 @@ const settings = asyncComputed({
     });
 
     const stacked = await Promise.all(all);
-    const flat = stacked.flat();
+    const flat = stacked.flat()
+      .sort((s1, s2) => {
+        // alphabetical unless the group title is General
+        if (s1.group === s2.group)
+          return s1.title.localeCompare(s2.title);
+        if (s1.group === 'General')
+          return -1;
+        if (s2.group === 'General')
+          return 1;
+        return s1.group.localeCompare(s2.group);
+      })
     return flat.map(trackSetting);
   },
   default(previousValue) {

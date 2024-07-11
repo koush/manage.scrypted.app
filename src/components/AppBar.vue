@@ -13,8 +13,17 @@
       </template>
       <template v-slot:selection></template>
       <template v-slot:item="{ props, item }">
-        <v-list-item v-bind="props" :prepend-icon="typeToIcon(item.raw.value.type)" :subtitle="item.raw.subtitle"
-          :title="item.raw.value.name"></v-list-item>
+        <v-list-item v-bind="props" >
+          <template v-slot:prepend>
+            <v-icon size="xx-small">{{ typeToIcon(item.raw.value.type) }}</v-icon>
+          </template>
+          <template v-slot:title>
+            <v-list-item-title style="font-size: .8rem;">{{ item.raw.value.name }}</v-list-item-title>
+          </template>
+          <template v-slot:subtitle>
+            <v-list-item-subtitle style="font-size: .8rem;">{{ item.raw.subtitle }}</v-list-item-subtitle>
+          </template>
+        </v-list-item>
       </template>
     </v-autocomplete>
     <ThemeToggle></ThemeToggle>

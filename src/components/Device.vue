@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid>
+  <v-container fluid style="position: relative;">
+    <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <!-- <v-row v-if="hasScriptable">
       <v-col cols="12">
       <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
@@ -67,12 +68,23 @@
         </template>
         <template v-else>
         </template>
-        <DeviceSettings :id="id" class="mb-4"></DeviceSettings>
+        <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
         <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-        <Camera v-if="hasRTC" :id="id" class="mb-4"></Camera>
+        <Camera v-if="hasCamera" :id="id" class="mb-4 never-blur" v-bind:clipPath="clipPath"
+          @cancel:clip-path="cancelClipPath" @save:clip-path="saveClipPath">
+          <template v-slot:prepend v-if="clipPath">
+            <v-card-subtitle class="mt-1">Edit Zone</v-card-subtitle>
+            <ToolbarTooltipButton :icon="getFaPrefix('fa-cancel')" variant="text" size="small"
+              @click="cancelClipPath" tooltip="Cancel"></ToolbarTooltipButton>
+            <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-broom-wide')" variant="text" size="small"
+              @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
+            <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
+              @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
+          </template>
+        </Camera>
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
@@ -93,10 +105,10 @@
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
+import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
-import { ScryptedInterface } from '@scrypted/types';
-import { computed, ref, watch } from 'vue';
+import { ClipPath, ScryptedInterface, Setting, Settings } from '@scrypted/types';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceSettings from './DeviceSettings.vue';
@@ -110,6 +122,8 @@ import Readme from './interfaces/Readme.vue';
 import Scriptable from './interfaces/Scriptable.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { clearConsole, restartPlugin } from './plugin/plugin-apis';
+import { ClipPathModel } from '@/clip-path-model';
+import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -123,7 +137,7 @@ const props = defineProps<{
 }>();
 
 const id = computed(() => props.id || routeId.value);
-const device = getDeviceFromId(() => id.value);
+const device = getDeviceFromId<Settings>(() => id.value);
 
 const hasOrCanCreateDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator) || getAllDevices().find(d => d.providerId === id.value);
@@ -133,8 +147,8 @@ const canExtendDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.MixinProvider);
 });
 
-const hasRTC = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+const hasCamera = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Camera);
 });
 
 const hasScriptable = computed(() => {
@@ -160,4 +174,52 @@ function resetPtys() {
   showRepl.value = false;
 }
 resetPtys();
+
+const clipPath = ref<ClipPathModel>();
+let clipPathSetting: TrackedSetting;
+function clickButtonSetting(setting: Setting) {
+  if (typeof setting.value === 'string') {
+    try {
+      setting.value = JSON.parse(setting.value);
+      setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+    }
+    catch (e) {
+      setting.value = undefined;
+    }
+  }
+  clipPathSetting = setting;
+  if (setting && !Array.isArray(setting.value))
+    setting.value = undefined;
+  clipPath.value = { points: (setting.value as any) || [] };
+}
+async function cancelClipPath() {
+  clipPath.value = undefined;
+  await nextTick();
+  clipPathSetting.value = clipPathSetting.originalValue;
+}
+async function saveClipPath() {
+  clipPath.value = undefined;
+  await device.value.putSetting(clipPathSetting.key, clipPathSetting.value);
+}
+function resetClipPath() {
+  clipPath.value?.points.splice(0, clipPath.value?.points.length);
+}
+watch(() => clipPath.value?.points, () => {
+  if (typeof clipPathSetting.originalValue === 'string')
+    clipPathSetting.value = JSON.stringify(clipPath.value?.points?.map(p => [p[0] * 100, p[1] * 100]));
+  else
+    clipPathSetting.value = clipPath.value?.points;
+}, {
+  deep: true,
+});
 </script>
+<style scoped>
+.blur {
+  z-index: 1;
+  backdrop-filter: blur(10px);
+}
+
+.never-blur {
+  z-index: 2;
+}
+</style>
