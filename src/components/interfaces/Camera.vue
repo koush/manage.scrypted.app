@@ -3,7 +3,7 @@
     <template v-if="hasRTC || slots.prepend" v-slot:prepend>
       <slot v-if="slots.prepend" name="prepend"></slot>
       <template v-else-if="!playing">
-        <ToolbarTooltipButton :icon="getFaPrefix('fa-play')" variant="text" size="small" @click="play" tooltip="Play">
+        <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-play-circle')" variant="text" size="small" @click="play" tooltip="Play">
         </ToolbarTooltipButton>
         <v-menu>
           <template v-slot:activator="{ props }">
@@ -18,7 +18,7 @@
           </v-list>
         </v-menu>
       </template>
-      <ToolbarTooltipButton v-else :icon="getFaPrefix('fa-stop')" variant="text" size="small" @click="stop"
+      <ToolbarTooltipButton v-else color="error" :icon="getFaPrefix('fa-stop-circle')" variant="text" size="small" @click="stop"
         :tooltip="`Stop (Stream: ${destination})`"></ToolbarTooltipButton>
     </template>
     <template v-slot:append v-if="!playing">
