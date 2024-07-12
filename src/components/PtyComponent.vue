@@ -196,7 +196,7 @@ async function connectPty() {
 
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
-    const plugin = systemManager.getDeviceByName<DeviceProvider>("@scrypted/core");
+    const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || "@scrypted/core");
     const streamSvc = await plugin.getDevice(props.nativeId) as StreamService;
     const streamSvcDirect = await connectRPCObject(streamSvc);
     const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue, props.options);

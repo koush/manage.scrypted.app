@@ -120,7 +120,7 @@
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
-        <PtyComponent v-if="hasStreamService" :reconnect="true" title="Stream Interface" :hideButtons="true"
+        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :hideButtons="true"
           :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
           :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
@@ -191,8 +191,8 @@ const hasScriptable = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Scriptable);
 });
 
-const hasStreamService = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.StreamService);
+const hasTTYService = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.StreamService) && device.value?.interfaces.includes(ScryptedInterface.TTY || 'TTY');
 });
 
 const isScryptedPlugin = computed(() => {
