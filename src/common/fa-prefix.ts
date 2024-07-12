@@ -17,6 +17,12 @@ export function getFaPrefix(icon?: string) {
     case 'fa-broom-wide':
       icon = 'fa-trash';
       break;
+    case 'fa-chevrons-down':
+      icon = 'fa-chevron-down';
+      break;
+    case 'fa-chevrons-up':
+      icon = 'fa-chevron-up';
+      break;
     }
   }
   return faPrefix + (icon ? ` ${icon}` : '');
