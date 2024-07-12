@@ -13,7 +13,7 @@
     <template v-slot:title>
       <v-card-subtitle>{{ title }}</v-card-subtitle>
     </template>
-    <div class="ml-3 mr-3" ref="terminal"></div>
+    <div class="ml-3 mr-3" ref="terminal" :style="{ height: '100%' }"></div>
   </v-card>
 </template>
 <script setup lang="ts">
@@ -28,6 +28,7 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
+import { debounce } from 'lodash';
 
 const props = defineProps<{
   title: string;
@@ -90,6 +91,9 @@ watch(() => dark.value, () => {
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
+const terminalResize = debounce(() => fitAddon.fit(), 50);
+window.addEventListener('resize', terminalResize);
+
 watch(() => terminal.value, () => {
   if (!terminal.value)
     return;
@@ -102,6 +106,9 @@ let buffer: Buffer[] = [];
 
 const unmounted = new Deferred<void>();
 onUnmounted(() => unmounted.resolve());
+unmounted.promise.then(() => {
+  window.removeEventListener('resize', terminalResize);
+});
 
 let localQueue: ReturnType<typeof createAsyncQueueFromGenerator>;
 
