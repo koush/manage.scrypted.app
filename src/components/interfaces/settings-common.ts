@@ -1,7 +1,12 @@
+import { isDark } from "@/common/colors";
 import { Setting } from "@scrypted/types";
+import { computed } from "vue";
 
-export function getChipVariant(): 'flat' | undefined | 'tonal' {
-  return 'flat';
+export function getChipVariant() {
+  const dark = isDark();
+  return computed(() => {
+    return !dark.value ? 'tonal' : 'flat';
+  });
 }
 
 export const chipColor = "light-blue-darken-3";
@@ -11,7 +16,7 @@ export interface SettingsSubgroup {
   settings: Setting[];
 }
 
-export interface SettingsGroup{
+export interface SettingsGroup {
   title: string;
   subgroups: SettingsSubgroup[];
 }

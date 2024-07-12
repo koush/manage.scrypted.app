@@ -6,7 +6,7 @@
     <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
       <v-chip v-for="choice of modelValue.choices"
         :class="!modelValue.multiple || forceGroup ? 'chip-group-round ma-0' : undefined"
-        :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="x-small" :value="choice"
+        :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="small" :value="choice"
         :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')">
         {{
           choice }}</v-chip>
@@ -54,7 +54,6 @@ const component = computed(() => {
   width: 125%;
   transform-origin: 0% 50%;
 }
-
 
 .chip-group-round:first-child {
   border-radius: 16px 0px 0px 16px !important;

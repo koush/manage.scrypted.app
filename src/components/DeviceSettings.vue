@@ -17,7 +17,7 @@
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
           <v-expansion-panel :value="extensions">
-            <v-expansion-panel-title style="min-height: unset;"
+            <v-expansion-panel-title style="min-height: unset; height: 24px; font-size: .75rem;"
               :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
             <v-expansion-panel-text>
               <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>
