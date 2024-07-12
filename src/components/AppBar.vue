@@ -1,7 +1,11 @@
 <template>
   <v-app-bar app clipped-left color="deep-purple accent-4">
-    <v-app-bar-nav-icon variant="text" :icon="getFaPrefix('fa-bars')" @click="emits('update:modelValue', !modelValue)"
-      class="mt-1"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon variant="text" @click="emits('update:modelValue', !modelValue)" class="mt-1">
+      <v-badge v-if="!modelValue && scryptedAlerts.length" :content="scryptedAlerts.length.toString()" color="error">
+        <v-icon>{{ getFaPrefix('fa-bars') }}</v-icon>
+      </v-badge>
+      <v-icon v-else>{{ getFaPrefix('fa-bars') }}</v-icon>
+    </v-app-bar-nav-icon>
     <v-toolbar-title class="scrypted-title mr-4" style="flex: none;"><a class="hide-link"
         href="#/">Scrypted</a></v-toolbar-title>
     <div v-if="connectedClient?.serverVersion && !isTouchPhone" class="pt-1" style="color: lightgrey">v{{
@@ -13,7 +17,7 @@
       </template>
       <template v-slot:selection></template>
       <template v-slot:item="{ props, item }">
-        <v-list-item v-bind="props" >
+        <v-list-item v-bind="props">
           <template v-slot:prepend>
             <v-icon size="xx-small">{{ typeToIcon(item.raw.value.type) }}</v-icon>
           </template>
@@ -45,6 +49,7 @@ import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
+import { scryptedAlerts } from './plugin/plugin-apis';
 
 defineProps<{
   modelValue: boolean;
