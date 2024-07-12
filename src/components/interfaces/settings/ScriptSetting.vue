@@ -10,16 +10,18 @@
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
 import { onUnmounted, ref, watch } from 'vue';
-import * as monaco from 'monaco-editor';
 import { getLineHintColor, isDark } from '@/common/colors';
+import type * as MonacoType from 'monaco-editor';
+
+const monaco = await import('monaco-editor');
 
 const lineHintColor = getLineHintColor();
 
 const modelValue = defineModel<Setting>();
 
 const container = ref<HTMLDivElement>();
-let currentEditor: monaco.editor.IStandaloneCodeEditor;
-let model: monaco.editor.ITextModel
+let currentEditor: MonacoType.editor.IStandaloneCodeEditor;
+let model: MonacoType.editor.ITextModel
 
 onUnmounted(() => {
   currentEditor?.dispose();

@@ -17,9 +17,11 @@
 import { isDark } from '@/common/colors';
 import { getDeviceFromId } from '@/id-device';
 import { Scriptable, ScriptSource } from '@scrypted/types';
-import * as monaco from 'monaco-editor';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import type * as MonacoType from 'monaco-editor';
+
+const monaco = await import('monaco-editor');
 
 const props = defineProps<{
   id: string;
@@ -47,8 +49,8 @@ async function save() {
 }
 
 const container = ref<HTMLDivElement>();
-let currentEditor: monaco.editor.IStandaloneCodeEditor;
-let model: monaco.editor.ITextModel
+let currentEditor: MonacoType.editor.IStandaloneCodeEditor;
+let model: MonacoType.editor.ITextModel
 
 onUnmounted(() => {
   currentEditor?.dispose();

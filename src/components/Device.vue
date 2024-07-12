@@ -1,11 +1,6 @@
 <template>
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
-    <!-- <v-row v-if="hasScriptable">
-      <v-col cols="12">
-      <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-    </v-col>
-    </v-row> -->
     <v-row v-if="device">
       <v-col cols="12" md="4">
         <template v-if="device">
@@ -72,7 +67,9 @@
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
-        <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
+        <Suspense>
+          <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
+        </Suspense>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
           @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
