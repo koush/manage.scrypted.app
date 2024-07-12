@@ -75,8 +75,8 @@
         <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing" @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;"></ClipPathEditor>
-          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing">
-          </RTCSignalingChannel>
+          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"></RTCSignalingChannel>
+          <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
 
           <template v-slot:prepend>
             <template v-if="clipPath">
@@ -154,6 +154,7 @@ import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import { clearConsole, restartPlugin } from './plugin/plugin-apis';
+import ObjectDetector from './interfaces/ObjectDetector.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -195,6 +196,10 @@ const hasReadme = computed(() => {
 
 const hasRTC = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
+const hasObjectDetector = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.ObjectDetector);
 });
 
 watch(() => device.value, () => resetPtys());
