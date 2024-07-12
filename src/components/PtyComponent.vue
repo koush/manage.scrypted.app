@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card :min-height="fillScreen ? '100%' : null">
     <template v-if="icon" v-slot:prepend>
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
@@ -39,6 +39,7 @@ const props = defineProps<{
   options?: any;
   icon?: string;
   close?: boolean;
+  fillScreen?: boolean;
 }>();
 
 const emits = defineEmits<{
