@@ -1,10 +1,6 @@
 <template>
   <v-container fluid>
-    <v-row >
-      <v-col cols="12">
-        <PtyComponent title= "Terminal" native-id="terminalservice" control></PtyComponent>
-      </v-col>
-    </v-row>
+    <PtyComponent title="Terminal" native-id="terminalservice" control :expand-button="false" :style="{ display: 'flex', flexDirection: 'column', height: '100%' }"></PtyComponent>
   </v-container>
 </template>
 <script setup lang="ts">

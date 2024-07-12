@@ -1,134 +1,41 @@
 <template>
   <v-card>
-    <template v-if="hasRTC || slots.prepend" v-slot:prepend>
-      <slot v-if="slots.prepend" name="prepend"></slot>
-      <template v-else-if="!playing">
-        <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-play-circle')" variant="text" size="small" @click="play" tooltip="Play">
-        </ToolbarTooltipButton>
-        <v-menu>
-          <template v-slot:activator="{ props }">
-            <v-btn variant="text" size="small" v-bind="props">
-              Stream: {{ destination }}
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item v-for="(item, index) in destinations" :key="index" :value="index" @click="destination = item">
-              <v-list-item-title>{{ item }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template>
-      <ToolbarTooltipButton v-else color="error" :icon="getFaPrefix('fa-stop-circle')" variant="text" size="small" @click="stop"
-        :tooltip="`Stop (Stream: ${destination})`"></ToolbarTooltipButton>
+    <template v-if="slots.prepend" v-slot:prepend>
+      <slot name="prepend"></slot>
     </template>
-    <template v-slot:append v-if="!playing">
+    <template v-if="slots.append" v-slot:append>
+      <slot name="append"></slot>
+    </template>
+    <template v-slot:append v-if="!hideRefresh">
       <ToolbarTooltipButton :icon="getFaPrefix('fa-refresh')" variant="text" size="small" @click="counter++"
         tooltip="Refresh"></ToolbarTooltipButton>
     </template>
     <div style="display: flex; position: relative;">
-      <ClipPathEditor v-if="clipPath" v-model="clipPath"></ClipPathEditor>
-      <img :src="imgSrc" style="object-fit: contain; width: 100%; cursor: pointer;" @click="play">
-      <video autoplay ref="video" playsinline
-        style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: black; object-fit: fill;"
-        :style="{ zIndex: playing ? 1 : -1 }" @click="stop"></video>
+      <slot></slot>
+      <img :src="imgSrc" style="object-fit: contain; width: 100%;" :style="clickable ? 'cursor: pointer' : undefined" @click="emits('img:click')">
     </div>
   </v-card>
 </template>
 <script setup lang="ts">
-import { ClipPathModel } from '@/clip-path-model';
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
-import { BrowserSignalingSession } from '@scrypted/common/src/rtc-signaling';
-import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedInterface, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
-import { computed, onUnmounted, ref, useSlots, watch } from 'vue';
-import ClipPathEditor from '../ClipPathEditor.vue';
+import { Camera } from '@scrypted/types';
+import { ref, useSlots } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 
 const props = defineProps<{
   id: string;
+  hideRefresh?: boolean;
+  clickable?: boolean;
 }>();
-const clipPath = defineModel<ClipPathModel>('clipPath');
+const emits = defineEmits<{
+  (event: 'img:click'): void;
+}>();
 const slots = useSlots();
 
-const device = getDeviceFromId<Camera & RTCSignalingChannel & VideoCamera>(() => props.id);
-watch(() => device.value, () => stop());
-
-const destination = ref<MediaStreamDestination>('Default' as any);
-const destinations: MediaStreamDestination[] = [
-  'Default' as any,
-  'local',
-  'local-recorder',
-  'remote',
-  'low-resolution',
-  'remote-recorder',
-];
-
-const hasRTC = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
-});
-
-
-let pc: Promise<RTCPeerConnection> | undefined;
-function cleanupPeerConnection() {
-  pc?.then(pc => pc.close()).catch(() => { });
-  pc = undefined;
-}
-
-onUnmounted(() => cleanupPeerConnection());
-
-const video = ref<HTMLVideoElement>();
-const playing = ref(false);
-async function play() {
-  if (playing.value)
-    return;
-  if (!device.value)
-    return;
-  playing.value = true;
-
-  cleanupPeerConnection();
-
-  const session = new BrowserSignalingSession();
-  pc = session.pcDeferred.promise;
-
-  const mediaStream = new MediaStream();
-  session.onPeerConnection = async pc => {
-    pc.ontrack = e => {
-      console.log('add track', e.track);
-      mediaStream.addTrack(e.track);
-    }
-  };
-  let control: RTCSessionControl;
-  if (destination.value === 'Default' as any) {
-    control = (await device.value.startRTCSignalingSession(session))!;
-  }
-  else {
-    const mo = await device.value.getVideoStream({ destination: destination.value });
-    const { mediaManager } = connectedClient.value || await connectPluginClient();
-    const channel = await mediaManager.convertMediaObject<RTCSignalingChannel>(mo, ScryptedMimeTypes.RTCSignalingChannel);
-    control = (await channel.startRTCSignalingSession(session))!;
-  }
-  session.pcDeferred.promise.then(pc => {
-    pc.addEventListener('iceconnectionstatechange', () => {
-      console.log('iceConnectionStateChange', pc.iceConnectionState);
-      if (pc.iceConnectionState === 'disconnected'
-        || pc.iceConnectionState === 'failed'
-        || pc.iceConnectionState === 'closed') {
-        control.endSession();
-      }
-    });
-  });
-
-  video.value!.srcObject = mediaStream;
-}
-
-function stop() {
-  if (!playing.value)
-    return;
-  playing.value = false;
-  cleanupPeerConnection();
-}
+const device = getDeviceFromId<Camera>(() => props.id);
 
 const counter = ref(0);
 
@@ -137,7 +44,7 @@ const imgSrc = asyncComputed({
     const d = device.value;
     if (!d) {
       clearOldValue();
-      return;
+      return 'img/scrypted/240x135-000000ff.png';
     }
     // route/device change, old value is from another camera
     if (w === 'device')

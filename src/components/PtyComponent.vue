@@ -4,8 +4,11 @@
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
     <template v-slot:append v-if="!hideButtons">
-      <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text" @click="expand" />
-      <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contrac" />
+      <template v-if="expandButton !== false">
+        <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
+          @click="expand" />
+        <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
+      </template>
       <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
       <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
@@ -13,21 +16,23 @@
     <template v-slot:title>
       <v-card-subtitle>{{ title }}</v-card-subtitle>
     </template>
-    <div class="ml-3 mr-3" ref="terminal"></div>
+    <div class="ml-3 mr-3" ref="terminal" :style="{ height: '100%' }"></div>
   </v-card>
 </template>
 <script setup lang="ts">
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { isDark } from '@/common/colors';
 import { getFaPrefix } from "@/device-icons";
-import { createAsyncQueue } from "@scrypted/common/src/async-queue";
+import { createAsyncQueue, createAsyncQueueFromGenerator } from "@scrypted/common/src/async-queue";
 import { Deferred } from "@scrypted/common/src/deferred";
 import { sleep } from "@scrypted/common/src/sleep";
-import { DeviceProvider } from '@scrypted/types';
+import { DeviceProvider, StreamService } from '@scrypted/types';
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
+import { debounce } from 'lodash';
+import { observeResize } from '@/common/resize-observer';
 
 const props = defineProps<{
   title: string;
@@ -36,6 +41,7 @@ const props = defineProps<{
   hello?: string;
   control?: boolean;
   reconnect?: boolean;
+  expandButton?: boolean;
   copyButton?: boolean;
   hideButtons?: boolean;
   options?: any;
@@ -53,7 +59,7 @@ function expand() {
   expanded.value = true;
   term.resize(term.cols, term.rows * 2.5);
 }
-function contrac() {
+function contract() {
   expanded.value = false;
   term.resize(term.cols, term.rows / 2.5);
 }
@@ -92,6 +98,10 @@ watch(() => dark.value, () => {
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
+const terminalResize = debounce(() => fitAddon.fit(), 50);
+const terminalSize = observeResize(terminal);
+watch(() => terminalSize.value, terminalResize);
+
 watch(() => terminal.value, () => {
   if (!terminal.value)
     return;
@@ -104,6 +114,18 @@ let buffer: Buffer[] = [];
 
 const unmounted = new Deferred<void>();
 onUnmounted(() => unmounted.resolve());
+unmounted.promise.then(() => {
+  window.removeEventListener('resize', terminalResize);
+});
+
+let localQueue: ReturnType<typeof createAsyncQueueFromGenerator>;
+
+watch(() => props.hello, () => {
+  localQueue?.end();
+  localQueue = undefined;
+  if (!props.reconnect)
+    connectPty();
+});
 
 async function connectPty() {
   buffer = [];
@@ -167,15 +189,17 @@ async function connectPty() {
     }
   }
 
+  localQueue = createAsyncQueueFromGenerator(localGenerator());
+
   try {
     await connectPluginClient();
 
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
-    const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || '@scrypted/core');
-    const streamSvc = await plugin.getDevice(props.nativeId);
+    const plugin = systemManager.getDeviceByName<DeviceProvider>("@scrypted/core");
+    const streamSvc = await plugin.getDevice(props.nativeId) as StreamService;
     const streamSvcDirect = await connectRPCObject(streamSvc);
-    const remoteGenerator = await streamSvcDirect.connectStream(localGenerator(), props.options);
+    const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue, props.options);
 
     for await (const message of remoteGenerator) {
       if (!message) {

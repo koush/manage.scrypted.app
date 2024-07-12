@@ -73,16 +73,48 @@
       </v-col>
       <v-col cols="12" md="8">
         <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-        <Camera v-if="hasCamera" :id="id" class="mb-4 never-blur" v-bind:clipPath="clipPath"
-          @cancel:clip-path="cancelClipPath" @save:clip-path="saveClipPath">
-          <template v-slot:prepend v-if="clipPath">
-            <v-card-subtitle class="mt-1">Edit Zone</v-card-subtitle>
-            <ToolbarTooltipButton :icon="getFaPrefix('fa-cancel')" variant="text" size="small"
-              @click="cancelClipPath" tooltip="Cancel"></ToolbarTooltipButton>
-            <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-broom-wide')" variant="text" size="small"
-              @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
-            <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
-              @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
+        <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
+          @img:click="playing = destination">
+          <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
+          </ClipPathEditor>
+          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing">
+          </RTCSignalingChannel>
+          <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
+
+          <template v-slot:prepend>
+            <template v-if="clipPath">
+              <v-card-subtitle class="mt-1">Edit Zone</v-card-subtitle>
+              <ToolbarTooltipButton :icon="getFaPrefix('fa-cancel')" variant="text" size="small" @click="cancelClipPath"
+                tooltip="Cancel"></ToolbarTooltipButton>
+              <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-broom-wide')" variant="text" size="small"
+                @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
+              <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
+                @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
+            </template>
+            <template v-else-if="hasRTC">
+              <template v-if="!playing">
+                <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-play')" variant="text" size="small"
+                  @click="playing = destination" tooltip="Play">
+                </ToolbarTooltipButton>
+                <v-menu>
+                  <template v-slot:activator="{ props }">
+                    <v-btn variant="text" size="small" v-bind="props">
+                      Stream: {{ destination }}
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="(item, index) in destinations" :key="index" :value="index"
+                      @click="destination = item">
+                      <v-list-item-title>{{ item }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </template>
+              <ToolbarTooltipButton v-else color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
+                @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
+              </ToolbarTooltipButton>
+            </template>
+
           </template>
         </Camera>
 
@@ -103,6 +135,7 @@
 
 </template>
 <script setup lang="ts">
+import { ClipPathModel } from '@/clip-path-model';
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
@@ -110,6 +143,7 @@ import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ClipPath, ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import ClipPathEditor from './ClipPathEditor.vue';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import InlineTextField from './InlineTextField.vue';
@@ -118,12 +152,14 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
+import ObjectDetector from './interfaces/ObjectDetector.vue';
+import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
 import Readme from './interfaces/Readme.vue';
 import Scriptable from './interfaces/Scriptable.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
-import { clearConsole, restartPlugin } from './plugin/plugin-apis';
-import { ClipPathModel } from '@/clip-path-model';
+import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
+import { clearConsole, restartPlugin } from './plugin/plugin-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -167,7 +203,18 @@ const hasReadme = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Readme);
 });
 
-watch(() => device.value, () => resetPtys());
+const hasRTC = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
+const hasObjectDetector = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.ObjectDetector);
+});
+
+watch(() => id.value, () => {
+  playing.value = undefined;
+  resetPtys();
+});
 
 function resetPtys() {
   showConsole.value = hasFixedPhysicalLocation(device.value?.type!);
@@ -177,20 +224,27 @@ resetPtys();
 
 const clipPath = ref<ClipPathModel>();
 let clipPathSetting: TrackedSetting;
-function clickButtonSetting(setting: Setting) {
-  if (typeof setting.value === 'string') {
-    try {
-      setting.value = JSON.parse(setting.value);
-      setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+async function clickButtonSetting(setting: Setting) {
+  if (setting.type === 'clippath') {
+    if (typeof setting.value === 'string') {
+      try {
+        setting.value = JSON.parse(setting.value);
+        setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+      }
+      catch (e) {
+        setting.value = undefined;
+      }
     }
-    catch (e) {
+    clipPathSetting = setting;
+    if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
-    }
+    clipPath.value = { points: (setting.value as any) || [] };
+    return;
   }
-  clipPathSetting = setting;
-  if (setting && !Array.isArray(setting.value))
-    setting.value = undefined;
-  clipPath.value = { points: (setting.value as any) || [] };
+
+  if (setting.type === 'button') {
+    await device.value.putSetting(setting.key, undefined);
+  }
 }
 async function cancelClipPath() {
   clipPath.value = undefined;
@@ -212,6 +266,18 @@ watch(() => clipPath.value?.points, () => {
 }, {
   deep: true,
 });
+
+const playing = ref<PlaybackType>();
+const destination = ref<PlaybackType>('Default');
+const destinations: PlaybackType[] = [
+  'Default',
+  'local',
+  'local-recorder',
+  'remote',
+  'low-resolution',
+  'remote-recorder',
+];
+
 </script>
 <style scoped>
 .blur {
@@ -221,5 +287,12 @@ watch(() => clipPath.value?.points, () => {
 
 .never-blur {
   z-index: 2;
+}
+
+.over-camera {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 </style>

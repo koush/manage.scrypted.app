@@ -1,5 +1,5 @@
 <template>
-  <div style="position: absolute; width: 100%; height: 100%;" @click="onClick">
+  <div @click="onClick">
     <div style="position: relative; width: 100%; height: 100%;">
       <svg style="position: absolute;" width="100%" height="100%" viewBox="0 0 1 1" preserveAspectRatio="none">
         <polygon :points="modelValue?.points.map(p => p[0] + ',' + p[1]).join(' ')" fill="#FF000080" />
