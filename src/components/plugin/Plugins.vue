@@ -9,21 +9,7 @@
 
       <v-col cols="12" md="6" lg="4">
         <v-card text="These plugins are currently installed in Scrypted." :prepend-icon="getFaPrefix('fa-puzzle')"
-          title="Plugins">
-          <template v-slot:append>
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn size="x-small" color="primary" v-bind="props">
-                  View: {{ currentStat }}
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item v-for="item in statItems" :key="item" :value="item" @click="currentStat = item">
-                  <v-list-item-title>{{ item }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </template>
+          title="Plugins" class="mb-4">
           <v-list>
             <v-list-item v-for="plugin in plugins" :to="`/device/${plugin.id}`">
               <template v-slot:prepend>
@@ -36,7 +22,7 @@
 
                   <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">v{{
                     plugin.version
-                  }}</v-list-item-subtitle>
+                    }}</v-list-item-subtitle>
                   <div v-if="plugin.info">
                     <v-tooltip v-if="plugin.info" activator="parent" location="bottom">
                       <v-list class="ma-0 pa-0" width="160" theme="dark" style="background: transparent;">
@@ -49,9 +35,8 @@
                       </v-list>
                     </v-tooltip>
                     <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
-                    <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">{{
-                      toShort(currentStat) }}: {{
-                        plugin.info[currentStat]
+                    <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
+                        plugin.info.pid
                       }}</v-list-item-subtitle>
                   </div>
                 </div>
@@ -60,6 +45,32 @@
               <v-list-item-subtitle style="font-size: .8rem">{{ plugin.package }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
+        </v-card>
+
+        <v-card title="Plugin Stats">
+          <v-table>
+            <thead>
+              <tr>
+                <th>Top RPC</th>
+                <th>Top Pending</th>
+                <th>Top Clients</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: .75rem">
+              <tr v-for="(n, i) in chartMax">
+                <td><template v-if="topRpc[i]?.info?.rpcObjects"><span class="bold">{{ topRpc[i]?.info?.rpcObjects
+                      }}</span><span class="float-right">{{
+                        topRpc[i]?.name
+                      }}</span></template><template v-else>N/A</template></td>
+                <td><template v-if="topPending[i]?.info?.pendingResults"><span class="bold">{{
+                  topPending[i]?.info?.pendingResults }}</span><span class="float-right">{{
+                        topPending[i]?.name }}</span></template><template v-else>N/A</template></td>
+                <td><template v-if="topClients[i]?.info?.clientsCount"><span class="bold">{{
+                  topClients[i]?.info?.clientsCount }}</span><span class="float-right">{{
+                        topClients[i]?.name }}</span></template><template v-else>N/A</template></td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card>
       </v-col>
 
@@ -133,19 +144,38 @@ async function updatePlugin(plugin: typeof plugins.value[0]) {
 }
 
 const statItems: (keyof PluginInfo)[] = ['pid', 'clientsCount', 'rpcObjects', 'pendingResults'];
-const currentStat = ref(statItems[0]);
 
-function toShort(stat: keyof PluginInfo) {
-  switch (stat) {
-    case 'pid':
-      return 'pid';
-    case 'clientsCount':
-      return 'cc';
-    case 'rpcObjects':
-      return 'rpc';
-    case 'pendingResults':
-      return 'pr';
-  }
-  return stat;
-}
+const topRpc = computed(() => {
+  return [...plugins.value || []]
+    .filter(p => !!p.info?.rpcObjects).sort((a, b) => b.info?.rpcObjects - a.info?.rpcObjects)
+    .slice(0, 5);
+});
+
+const topPending = computed(() => {
+  return [...plugins.value || []]
+    .filter(p => !!p.info?.pendingResults).sort((a, b) => b.info?.pendingResults - a.info?.pendingResults)
+    .slice(0, 5);
+});
+
+const topClients = computed(() => {
+  return [...plugins.value || []]
+    .filter(p => !!p.info?.clientsCount).sort((a, b) => b.info?.clientsCount - a.info?.clientsCount)
+    .slice(0, 5);
+});
+
+const chartMax = computed(() => {
+  const r = Math.max(topRpc.value.length, topPending.value.length, topClients.value.length);
+  return r;
+});
+
 </script>
+<style scoped>
+.float-right {
+  font-size: .6rem;
+  float: right;
+}
+
+.bold {
+  font-weight: 700;
+}
+</style>
