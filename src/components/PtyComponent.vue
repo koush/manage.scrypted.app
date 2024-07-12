@@ -29,6 +29,7 @@ import { Terminal } from '@xterm/xterm';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import { debounce } from 'lodash';
+import { observeResize } from '@/common/resize-observer';
 
 const props = defineProps<{
   title: string;
@@ -92,7 +93,8 @@ const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
 const terminalResize = debounce(() => fitAddon.fit(), 50);
-window.addEventListener('resize', terminalResize);
+const terminalSize = observeResize(terminal);
+watch(() => terminalSize.value, terminalResize);
 
 watch(() => terminal.value, () => {
   if (!terminal.value)
