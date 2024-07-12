@@ -57,7 +57,7 @@
               </tr>
             </thead>
             <tbody style="font-size: .75rem">
-              <tr v-for="(n, i) in chartMax">
+              <tr v-for="(, i) in chartMax">
                 <td><template v-if="topRpc[i]?.info?.rpcObjects"><span class="bold">{{ topRpc[i]?.info?.rpcObjects
                       }}</span><span class="float-right">{{
                         topRpc[i]?.name
