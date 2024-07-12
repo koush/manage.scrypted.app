@@ -192,7 +192,7 @@ const hasScriptable = computed(() => {
 });
 
 const hasTTYService = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.StreamService) && device.value?.interfaces.includes(ScryptedInterface.TTY || 'TTY');
+  return device.value?.interfaces.includes(ScryptedInterface.StreamService) && device.value?.interfaces.includes(ScryptedInterface.TTY);
 });
 
 const isScryptedPlugin = computed(() => {
