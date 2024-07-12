@@ -144,7 +144,6 @@ async function connectPty() {
   term.onData(data => dataQueueEnqueue(Buffer.from(data, 'utf8')));
   term.onBinary(data => dataQueueEnqueue(Buffer.from(data, 'binary')));
   term.onResize(dim => {
-    console.log("term resized");
     ctrlQueue.enqueue({ dim });
     ctrlQueue.enqueue(Buffer.alloc(0));
   });
