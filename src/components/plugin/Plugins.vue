@@ -22,7 +22,7 @@
                 <v-icon size="x-small">{{ getFaPrefix(typeToIcon(plugin.type)) }}</v-icon>
               </template>
               <template v-slot:append>
-                <div style="display: flex; justify-content: end; flex-direction: column;">
+                <div style="display: flex; justify-content: end; align-items: end; flex-direction: column;">
                   <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
                     color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
 
