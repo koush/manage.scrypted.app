@@ -1,8 +1,14 @@
 <template>
 
   <v-col cols="12" md="8" lg="6">
-    <v-card text="These plugins are currently installed in Scrypted." :prepend-icon="getFaPrefix('fa-puzzle-piece')"
-      title="Install Plugins">
+    <v-card text="These plugins are currently installed in Scrypted.">
+      <template v-slot:prepend>
+        <v-icon size="x-small">{{ getFaPrefix('fa-puzzle-piece') }}</v-icon>
+      </template>
+      <template v-slot:title>
+        <v-card-subtitle class="mt-1">Install Plugins</v-card-subtitle>
+      </template>
+
       <v-text-field v-model="search" density="compact" variant="outlined" class="ma-4" label="Search Plugins"
         persistent-placeholder hint="Keywords. E.g. Hikvision, Unifi, Ring, etc." persistent-hint></v-text-field>
     </v-card>

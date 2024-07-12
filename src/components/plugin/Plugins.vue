@@ -8,8 +8,14 @@
       </v-col>
 
       <v-col cols="12" md="6" lg="4">
-        <v-card text="These plugins are currently installed in Scrypted." :prepend-icon="getFaPrefix('fa-puzzle')"
-          title="Plugins" class="mb-4">
+        <v-card text="These plugins are currently installed in Scrypted." class="mb-4">
+          <template v-slot:prepend>
+            <v-icon size="x-small">{{ getFaPrefix('fa-puzzle') }}</v-icon>
+          </template>
+          <template v-slot:title>
+            <v-card-subtitle class="mt-1">Plugins</v-card-subtitle>
+          </template>
+
           <v-list>
             <v-list-item v-for="plugin in plugins" :to="`/device/${plugin.id}`">
               <template v-slot:prepend>
@@ -22,7 +28,7 @@
 
                   <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">v{{
                     plugin.version
-                    }}</v-list-item-subtitle>
+                  }}</v-list-item-subtitle>
                   <div v-if="plugin.info">
                     <v-tooltip v-if="plugin.info" activator="parent" location="bottom">
                       <v-list class="ma-0 pa-0" width="160" theme="dark" style="background: transparent;">
@@ -35,7 +41,8 @@
                       </v-list>
                     </v-tooltip>
                     <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
-                    <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
+                    <v-list-item-subtitle v-else class="ml-2"
+                      style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
                         plugin.info.pid
                       }}</v-list-item-subtitle>
                   </div>
@@ -47,7 +54,14 @@
           </v-list>
         </v-card>
 
-        <v-card title="Plugin Stats">
+        <v-card >
+          <template v-slot:prepend>
+            <v-icon size="x-small">{{ getFaPrefix('fa-chart-simple') }}</v-icon>
+          </template>
+          <template v-slot:title>
+            <v-card-subtitle class="mt-1">Plugin Stats</v-card-subtitle>
+          </template>
+
           <v-table>
             <thead>
               <tr>
