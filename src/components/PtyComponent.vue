@@ -4,8 +4,11 @@
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
     <template v-slot:append>
-      <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text" @click="expand" />
-      <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
+      <template v-if="expandButton !== false">
+        <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
+          @click="expand" />
+        <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
+      </template>
       <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
       <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
@@ -37,6 +40,7 @@ const props = defineProps<{
   hello?: string;
   control?: boolean;
   reconnect?: boolean;
+  expandButton?: boolean;
   copyButton?: boolean;
   options?: any;
   icon?: string;
