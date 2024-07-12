@@ -18,3 +18,18 @@ export async function clearConsole(id: string) {
   );
   plugins.clearConsole(id);
 }
+
+export interface PluginInfo {
+  clientsCount: number;
+  pid: number;
+  rpcObjects: number;
+  pendingResults: number;
+}
+
+export async function getPluginInfo(pkg: string): Promise<PluginInfo> {
+  const plugins = await connectedClient.value!.systemManager.getComponent(
+    "plugins"
+  );
+  const ret = await plugins.getPluginInfo(pkg);
+  return ret;
+}
