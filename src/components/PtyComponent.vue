@@ -161,7 +161,7 @@ async function connectPty() {
   term.onBinary(data => dataQueueEnqueue(Buffer.from(data, 'binary')));
   term.onResize(dim => {
     ctrlQueue.enqueue({ dim });
-    ctrlQueue.enqueue(Buffer.alloc(0));
+    dataQueue.enqueue(Buffer.alloc(0));
   });
 
   async function* localGenerator() {
