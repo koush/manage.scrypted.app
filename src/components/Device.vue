@@ -202,7 +202,10 @@ const hasObjectDetector = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ObjectDetector);
 });
 
-watch(() => device.value, () => resetPtys());
+watch(() => id.value, () => {
+  playing.value = undefined;
+  resetPtys();
+});
 
 function resetPtys() {
   showConsole.value = hasFixedPhysicalLocation(device.value?.type!);
