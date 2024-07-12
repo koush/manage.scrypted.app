@@ -3,7 +3,7 @@
     <template v-if="icon" v-slot:prepend>
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
-    <template v-slot:append>
+    <template v-slot:append v-if="!hideButtons">
       <template v-if="expandButton !== false">
         <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
           @click="expand" />
@@ -36,12 +36,14 @@ import { observeResize } from '@/common/resize-observer';
 
 const props = defineProps<{
   title: string;
+  pluginId?: string;
   nativeId: string;
   hello?: string;
   control?: boolean;
   reconnect?: boolean;
   expandButton?: boolean;
   copyButton?: boolean;
+  hideButtons?: boolean;
   options?: any;
   icon?: string;
   close?: boolean;
@@ -194,10 +196,10 @@ async function connectPty() {
 
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
-    const termSvcRaw = systemManager.getDeviceByName<DeviceProvider>("@scrypted/core");
-    const termSvc = await termSvcRaw.getDevice(props.nativeId) as StreamService;
-    const termSvcDirect = await connectRPCObject(termSvc);
-    const remoteGenerator = await termSvcDirect.connectStream(localQueue.queue, props.options);
+    const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || "@scrypted/core");
+    const streamSvc = await plugin.getDevice(props.nativeId) as StreamService;
+    const streamSvcDirect = await connectRPCObject(streamSvc);
+    const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue, props.options);
 
     for await (const message of remoteGenerator) {
       if (!message) {
