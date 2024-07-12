@@ -51,6 +51,11 @@ export async function getAlerts(): Promise<ScryptedAlert[]> {
   return ret;
 }
 
+export async function removeAlert(alert: ScryptedAlert) {
+  const alerts = await connectedClient.value!.systemManager.getComponent('alerts')
+  await alerts.removeAlert(alert);
+}
+
 const alertListener = computed<EventListenerRegister>(ov => {
   ov?.removeListener();
   if (!connectedClient.value)

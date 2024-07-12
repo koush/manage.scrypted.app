@@ -63,6 +63,8 @@
         </template>
         <template v-else>
         </template>
+        <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
+          :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
@@ -117,8 +119,8 @@
 
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
-        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :hideButtons="true"
-          :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
+        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :hideButtons="true" :control="true"
+          :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
           :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
           :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
@@ -156,7 +158,7 @@ import Scriptable from './interfaces/Scriptable.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
-import { clearConsole, restartPlugin } from './plugin/plugin-apis';
+import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -274,6 +276,11 @@ const destinations: PlaybackType[] = [
   'low-resolution',
   'remote-recorder',
 ];
+
+const deviceAlerts = computed(() => {
+  const devicePath = `/device/${id.value}`;
+  return scryptedAlerts.value.filter(a => a.path === devicePath);
+});
 
 </script>
 <style scoped>
