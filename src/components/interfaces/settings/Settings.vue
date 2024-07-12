@@ -1,12 +1,11 @@
 <template>
-  <div
-    :style="true || hideBorder ? undefined : `border: 1px solid ${lineHintColor}; border-radius: 16px; overflow: hidden;`">
+  <div>
     <v-expansion-panels flat density="compact" v-model="selectedSettingGroup" variant="accordion"
-      :mandatory="settingsGroups?.length <= 1">
+      :mandatory="totalExpansionPanels <= 1">
 
       <template v-for="group in settingsGroups">
         <v-expansion-panel :value="group">
-          <v-expansion-panel-title v-if="settingsGroups?.length > 1" style="min-height: unset;"
+          <v-expansion-panel-title v-if="totalExpansionPanels > 1" style="min-height: unset;"
             :color="group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
               getTitle(group.title) }}</v-expansion-panel-title>
 
@@ -22,7 +21,7 @@
           <v-expansion-panel-text>
             <template
               v-if="selectedSettingGroup?.title === group.title && group.subgroups.find(check => check.title === selectedSettingSubgroup?.title)">
-              <template v-for="setting in selectedSettingSubgroup.settings">
+              <template v-for="setting in selectedSettingSubgroup?.settings">
                 <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)">
                 </SplatSetting>
               </template>
@@ -38,14 +37,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getLineHintColor } from '@/common/colors';
 import { Setting } from '@scrypted/types';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, useSlots, watch } from 'vue';
+import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
-import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 
-const lineHintColor = getLineHintColor();
+const slots = useSlots();
+
+const totalExpansionPanels = computed(() => {
+  let ret = settingsGroups.value?.length || 0;
+  if (slots['settings-expansion-panels'])
+    ret++;
+  return ret;
+});
 
 function getTitle(title: string) {
   return title || 'General';
