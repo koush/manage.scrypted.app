@@ -48,7 +48,6 @@ export interface ScryptedAlert {
 export async function getAlerts(): Promise<ScryptedAlert[]> {
   const alerts = await connectedClient.value!.systemManager.getComponent('alerts')
   const ret = await alerts.getAlerts();
-  console.warn(ret);
   return ret;
 }
 
