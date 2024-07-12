@@ -14,7 +14,7 @@
             style="width: 100%; background: rgb(var(--v-theme-surface-variant));" v-model="selectedSettingSubgroup"
             column class="pt-0 pb-0" mandatory variant="flat">
             <template v-for="subgroup of group.subgroups">
-              <v-chip :value="subgroup" color="deep-purple-accent-4" size="small" rounded="0" class="ma-0">{{
+              <v-chip :value="subgroup" color="deep-purple" size="small" rounded="0" class="ma-0">{{
                 getTitle(subgroup.title) }}</v-chip>
             </template>
           </v-chip-group>
