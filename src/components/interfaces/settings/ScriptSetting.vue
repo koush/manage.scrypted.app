@@ -25,9 +25,7 @@ let model: MonacoType.editor.ITextModel
 
 onUnmounted(() => {
   currentEditor?.dispose();
-  model?.dispose();
 });
-
 
 const dark = isDark();
 watch(() => dark.value, () => {
@@ -42,12 +40,12 @@ async function createEditor() {
 
   currentEditor?.dispose();
   currentEditor = undefined;
-  model?.dispose();
 
-  model = monaco.editor.createModel(
+  const uri = monaco.Uri.parse('scriptsetting.ts');
+  model = monaco.editor.getModel(uri) || monaco.editor.createModel(
     modelValue.value?.value?.toString() || '',
     'typescript',
-    monaco.Uri.parse('scriptsetting.ts'),
+    uri,
   );
 
   currentEditor = monaco.editor.create(container.value, {
@@ -60,66 +58,77 @@ async function createEditor() {
     model,
   });
 
-  currentEditor.onDidChangeModelContent(e=> {
+  currentEditor.onDidChangeModelContent(e => {
     modelValue.value.value = currentEditor.getValue();
   });
 
-  const f = eval(monacoEvalDefaults);
+  const f = eval(await monacoEvalDefaults);
   f(monaco);
 }
 
 watch(() => container.value, createEditor);
 </script>
 <script lang="ts">
-import { createMonacoEvalDefaultsWithLibs, ScryptedLibs, StandardLibs } from '@scrypted/common/src/eval/monaco-libs';
+import type { ScryptedLibs, StandardLibs } from '@scrypted/common/src/eval/monaco-libs';
 
-// do this for every file in ScryptedLibs
-// @ts-ignore
-import global from '@types/node/globals.d.ts?raw'
-// @ts-ignore
-import buffer from '@types/node/buffer.d.ts?raw';
-// @ts-ignore
-import process from '@types/node/process.d.ts?raw';
-// @ts-ignore
-import events from '@types/node/events.d.ts?raw';
-// @ts-ignore
-import stream from '@types/node/stream.d.ts?raw';
-// @ts-ignore
-import fs from '@types/node/fs.d.ts?raw';
-// @ts-ignore
-import net from '@types/node/net.d.ts?raw';
-// @ts-ignore
-import child_process from '@types/node/child_process.d.ts?raw';
+interface RawModule {
+  default: string;
+}
 
-const standardLibs: StandardLibs = {
-  "@types/node/globals.d.ts": global,
-  "@types/node/buffer.d.ts": buffer,
-  "@types/node/process.d.ts": process,
-  "@types/node/events.d.ts": events,
-  "@types/node/stream.d.ts": stream,
-  "@types/node/fs.d.ts": fs,
-  "@types/node/net.d.ts": net,
-  "@types/node/child_process.d.ts": child_process,
-};
+async function main() {
+  const { createMonacoEvalDefaultsWithLibs } = await import('@scrypted/common/src/eval/monaco-libs');
 
-// do this for every file in ScryptedLibs
-// @ts-ignore
-import settingsMixin from '../../../../node_modules/@scrypted/sdk/dist/src/settings-mixin.d.ts?raw';
-// @ts-ignore
-import storageSettings from '../../../../node_modules/@scrypted/sdk/dist/src/storage-settings.d.ts?raw';
-// @ts-ignore
-import index from '../../../../node_modules/@scrypted/sdk/dist/src/index.d.ts?raw';
-// @ts-ignore
-import types from '../../../../node_modules/@scrypted/types/dist/index.d.ts?raw';
+  // do this for every file in ScryptedLibs
+  // @ts-ignore
+  const global = import('@types/node/globals.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const buffer = import('@types/node/buffer.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const process = import('@types/node/process.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const events = import('@types/node/events.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const stream = import('@types/node/stream.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const fs = import('@types/node/fs.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const net = import('@types/node/net.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const child_process = import('@types/node/child_process.d.ts?raw') as Promise<RawModule>;
 
-const scryptedLibs: ScryptedLibs = {
-  '@types/sdk/index.d.ts': index,
-  '@types/sdk/settings-mixin.d.ts': settingsMixin,
-  '@types/sdk/storage-settings.d.ts': storageSettings,
-  '@types/sdk/types.d.ts': types,
-};
+  const standardLibs: StandardLibs = {
+    "@types/node/globals.d.ts": (await global).default,
+    "@types/node/buffer.d.ts": (await buffer).default,
+    "@types/node/process.d.ts": (await process).default,
+    "@types/node/events.d.ts": (await events).default,
+    "@types/node/stream.d.ts": (await stream).default,
+    "@types/node/fs.d.ts": (await fs).default,
+    "@types/node/net.d.ts": (await net).default,
+    "@types/node/child_process.d.ts": (await child_process).default,
+  };
 
-const monacoEvalDefaults = createMonacoEvalDefaultsWithLibs(standardLibs, scryptedLibs, {});
+  // do this for every file in ScryptedLibs
+  // @ts-ignore
+  const settingsMixin = import('../../../../node_modules/@scrypted/sdk/dist/src/settings-mixin.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const storageSettings = import('../../../../node_modules/@scrypted/sdk/dist/src/storage-settings.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const index = import('../../../../node_modules/@scrypted/sdk/dist/src/index.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
+  const types = import('../../../../node_modules/@scrypted/types/dist/index.d.ts?raw') as Promise<RawModule>;
+
+  const scryptedLibs: ScryptedLibs = {
+    '@types/sdk/index.d.ts': (await index).default,
+    '@types/sdk/settings-mixin.d.ts': (await settingsMixin).default,
+    '@types/sdk/storage-settings.d.ts': (await storageSettings).default,
+    '@types/sdk/types.d.ts': (await types).default,
+  };
+
+  const monacoEvalDefaults = createMonacoEvalDefaultsWithLibs(standardLibs, scryptedLibs, {});
+  return monacoEvalDefaults;
+}
+
+const monacoEvalDefaults = main();
 
 </script>
 <style scoped>

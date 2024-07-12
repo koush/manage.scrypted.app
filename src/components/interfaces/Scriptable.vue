@@ -91,7 +91,7 @@ async function createEditor() {
   model = monaco.editor.createModel(
     scriptSource.script,
     scriptSource.language,
-    monaco.Uri.parse(scriptSource.filename),
+    monaco.Uri.parse(`${props.id}-${scriptSource.filename}`),
   );
 
   currentEditor = monaco.editor.create(container.value, {
