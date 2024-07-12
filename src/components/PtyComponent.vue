@@ -40,7 +40,6 @@ const props = defineProps<{
   options?: any;
   icon?: string;
   close?: boolean;
-  fillScreen?: boolean;
 }>();
 
 const emits = defineEmits<{
