@@ -73,9 +73,12 @@
       </v-col>
       <v-col cols="12" md="8">
         <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-        <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing" @img:click="playing = destination">
-          <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;"></ClipPathEditor>
-          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"></RTCSignalingChannel>
+        <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
+          @img:click="playing = destination">
+          <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
+          </ClipPathEditor>
+          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing">
+          </RTCSignalingChannel>
           <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
 
           <template v-slot:prepend>
@@ -147,6 +150,7 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
+import ObjectDetector from './interfaces/ObjectDetector.vue';
 import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
 import Readme from './interfaces/Readme.vue';
 import Scriptable from './interfaces/Scriptable.vue';
@@ -154,7 +158,6 @@ import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import { clearConsole, restartPlugin } from './plugin/plugin-apis';
-import ObjectDetector from './interfaces/ObjectDetector.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -215,20 +218,27 @@ resetPtys();
 
 const clipPath = ref<ClipPathModel>();
 let clipPathSetting: TrackedSetting;
-function clickButtonSetting(setting: Setting) {
-  if (typeof setting.value === 'string') {
-    try {
-      setting.value = JSON.parse(setting.value);
-      setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+async function clickButtonSetting(setting: Setting) {
+  if (setting.type === 'clippath') {
+    if (typeof setting.value === 'string') {
+      try {
+        setting.value = JSON.parse(setting.value);
+        setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+      }
+      catch (e) {
+        setting.value = undefined;
+      }
     }
-    catch (e) {
+    clipPathSetting = setting;
+    if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
-    }
+    clipPath.value = { points: (setting.value as any) || [] };
+    return;
   }
-  clipPathSetting = setting;
-  if (setting && !Array.isArray(setting.value))
-    setting.value = undefined;
-  clipPath.value = { points: (setting.value as any) || [] };
+
+  if (setting.type === 'button') {
+    await device.value.putSetting(setting.key, undefined);
+  }
 }
 async function cancelClipPath() {
   clipPath.value = undefined;
