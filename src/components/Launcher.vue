@@ -15,13 +15,19 @@
             }}</v-card-subtitle>
           <v-card-subtitle style="text-align: center;" class="scrypted-subtitle2">{{
             connectedClient?.loginResult.hostname
-            }}</v-card-subtitle>
+          }}</v-card-subtitle>
         </template>
         <v-list style="text-align: center;">
-          <v-list-item class="pr-16" v-for="item in launcherItems"
+          <v-list-item class="pr-16" v-for="item in launcherItems.computed.value"
             :prepend-icon="item.icon ? getFaPrefix(item.icon) : undefined" :to="item.to" :href="item.href">
             <v-list-item-title>{{ item.name }}</v-list-item-title>
             <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+          </v-list-item>
+          <v-list-item class="pr-16" v-if="launcherItems.loading.value">
+            <template v-slot:prepend>
+              <v-progress-circular size="small" color="info" indeterminate></v-progress-circular>
+            </template>
+            <v-list-item-title>Loading...</v-list-item-title>
           </v-list-item>
         </v-list>
         <v-card-actions>
@@ -44,7 +50,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { asyncComputed } from '@/common/async-computed';
+import { asyncComputed, asyncComputedRaw } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, getBaseUrl, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix } from '@/device-icons';
@@ -53,7 +59,7 @@ import { LauncherApplication, ScryptedInterface } from '@scrypted/types';
 import { deepPurple } from 'vuetify/lib/util/colors.mjs';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 
-const launcherItems = asyncComputed({
+const launcherItems = asyncComputedRaw({
   async get() {
     const { systemManager } = connectedClient.value || await connectPluginClient();
     const ret = getAllDevices<LauncherApplication>(systemManager)
