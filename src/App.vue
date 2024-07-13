@@ -15,13 +15,21 @@
       <router-view v-slot="{ Component }" style="width: 100%; height: 100%;">
         <component :is="Component" />
       </router-view>
+      <v-snackbar color="warning" :model-value="!connectedClient" :timeout="-1" close-on-content-click>
+        <div style="display: flex; justify-content: center;">
+          <div class="mr-4">
+            <v-icon size="small">{{ getFaPrefix('fa-wifi-slash') }}</v-icon>
+          </div>
+          <div style="margin-top: 2px;" class="mr-6">Disconnected</div>
+        </div>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { cloudLoginRedirect, connectPluginClient, isLoggedIn, setAppDomain, setClientPluginId } from './common/client';
+import { cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientPluginId } from './common/client';
 import CloudLogin from './common/components/CloudLogin.vue';
 import Login from './common/components/Login.vue';
 import { isTouchDevice } from './common/size';
@@ -30,6 +38,7 @@ import AppBar from './components/AppBar.vue';
 import Drawer from './components/Drawer.vue';
 import { useRoute } from 'vue-router';
 import Launcher from './components/Launcher.vue';
+import { getFaPrefix } from './device-icons';
 
 const route = useRoute();
 
@@ -47,5 +56,4 @@ html {
   font-size: 14px !important;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
-
 </style>
