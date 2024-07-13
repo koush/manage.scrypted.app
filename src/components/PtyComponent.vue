@@ -3,14 +3,14 @@
     <template v-if="icon" v-slot:prepend>
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
-    <template v-slot:append v-if="!hideButtons">
+    <template v-slot:append>
       <template v-if="expandButton !== false">
         <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
           @click="expand" />
         <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
       </template>
-      <ToolbarTooltipButton icon="fa-copy" tooltip="Copy Log" variant="text" />
-      <ToolbarTooltipButton icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
+      <ToolbarTooltipButton v-if="copyButton" icon="fa-copy" tooltip="Copy Log" variant="text" />
+      <ToolbarTooltipButton v-if="copyButton" icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
     </template>
     <template v-slot:title>
@@ -43,7 +43,6 @@ const props = defineProps<{
   reconnect?: boolean;
   expandButton?: boolean;
   copyButton?: boolean;
-  hideButtons?: boolean;
   options?: any;
   icon?: string;
   close?: boolean;
@@ -162,7 +161,7 @@ async function connectPty() {
   term.onBinary(data => dataQueueEnqueue(Buffer.from(data, 'binary')));
   term.onResize(dim => {
     ctrlQueue.enqueue({ dim });
-    ctrlQueue.enqueue(Buffer.alloc(0));
+    dataQueue.enqueue(Buffer.alloc(0));
   });
 
   async function* localGenerator() {
