@@ -27,8 +27,10 @@
         <v-card-title>{{ currentAlert.title }}</v-card-title>
       </template>
       <template v-slot:append>
-        <v-btn  variant="text" :disabled="!alertIndex" @click="alertIndex--" :icon="getFaPrefix('fa-arrow-left')"></v-btn>
-        <v-btn  variant="text" :disabled="alertIndex >= scryptedAlerts.length - 1" @click="alertIndex++" :icon="getFaPrefix('fa-arrow-right')"></v-btn>
+        <v-btn variant="text" :disabled="!alertIndex" @click="alertIndex--"
+          :icon="getFaPrefix('fa-arrow-left')"></v-btn>
+        <v-btn variant="text" :disabled="alertIndex >= scryptedAlerts.length - 1" @click="alertIndex++"
+          :icon="getFaPrefix('fa-arrow-right')"></v-btn>
       </template>
       <v-card-text>{{ currentAlert.message }}</v-card-text>
       <v-card-actions>
@@ -68,6 +70,12 @@ watch(() => showAlerts.value, () => alertIndex.value = 0);
 
 const currentAlert = computed(() => {
   return scryptedAlerts.value[alertIndex.value];
+});
+
+// dismissing the alert will remove the dialog before unsetting showAlerts.
+watch(() => currentAlert.value, () => {
+  if (!currentAlert.value)
+    showAlerts.value = false;
 });
 
 const alertDeviceId = computed(() => {
