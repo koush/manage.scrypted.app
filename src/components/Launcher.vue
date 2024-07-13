@@ -50,7 +50,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { asyncComputed, asyncComputedRaw } from '@/common/async-computed';
+import { asyncComputedRaw } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, getBaseUrl, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix } from '@/device-icons';
