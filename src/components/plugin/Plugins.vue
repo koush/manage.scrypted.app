@@ -65,9 +65,9 @@
           <v-table>
             <thead>
               <tr>
-                <th>Top RPC</th>
-                <th>Top Pending</th>
-                <th>Top Clients</th>
+                <th>RPC Objects</th>
+                <th>Pending Results</th>
+                <th>Connections</th>
               </tr>
             </thead>
             <tbody style="font-size: .75rem">
