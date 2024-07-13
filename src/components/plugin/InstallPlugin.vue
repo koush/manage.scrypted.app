@@ -1,7 +1,7 @@
 <template>
 
   <v-col cols="12" md="8" lg="6">
-    <v-card text="These plugins are currently installed in Scrypted.">
+    <v-card text="Search for Plugins created by Scrypted and other developers.">
       <template v-slot:prepend>
         <v-icon size="x-small">{{ getFaPrefix('fa-puzzle-piece') }}</v-icon>
       </template>
