@@ -3,13 +3,13 @@
         <template v-slot:activator="{ props }">
 
             <v-btn variant="text" @click="toggleTheme" v-bind="props" v-if="theme === 'light'">
-                <v-icon>{{ getFaPrefix('fa-moon') }}</v-icon>
+                <v-icon>{{ getFaPrefix('fa-sun-bright') }}</v-icon>
             </v-btn>
             <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else-if="theme === 'dark'">
-                <v-icon>{{ getFaPrefix('fa-moon-over-sun') }}</v-icon>
+                <v-icon>{{ getFaPrefix('fa-moon') }}</v-icon>
             </v-btn>
             <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else>
-                <v-icon>{{ getFaPrefix('fa-sun-bright') }}</v-icon>
+                <v-icon>{{ getFaPrefix('fa-moon-over-sun') }}</v-icon>
             </v-btn>
         </template>
     </v-tooltip>
