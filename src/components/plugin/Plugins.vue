@@ -199,12 +199,4 @@ table td {
 
   border-right: 1px solid #000;
 }
-
-table td:first-child {
-  border-left: none;
-}
-
-table td:last-child {
-  border-right: none;
-}
 </style>
