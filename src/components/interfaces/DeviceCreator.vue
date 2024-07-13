@@ -1,9 +1,12 @@
 <template>
   <v-card :title="`Add ${title}`">
-    <div >
-      <Settings v-if="!id" v-model="idSettings" hide-border />
+    <template v-if="!id">
+      <v-card-text>Add a device by choosing the device type below. If the device type is not available, supported devices can be extended by <router-link variant="text" to="/component/plugin/install">installing a plugin</router-link>.</v-card-text>
+      <Settings v-model="idSettings" hide-border />
+    </template>
+
+      
       <Settings v-if="useId" v-model="settings" hide-border />
-    </div>
 
     <v-card-actions>
       <v-spacer></v-spacer>
