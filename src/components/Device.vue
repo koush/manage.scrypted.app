@@ -159,6 +159,7 @@ import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
+import { isTouchDevice } from '@/common/size';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -216,7 +217,7 @@ watch(() => id.value, () => {
 });
 
 function resetPtys() {
-  showConsole.value = hasFixedPhysicalLocation(device.value?.type!);
+  showConsole.value = hasFixedPhysicalLocation(device.value?.type!) && !isTouchDevice.value;
   showRepl.value = false;
 }
 resetPtys();
