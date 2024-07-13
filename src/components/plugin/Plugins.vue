@@ -28,7 +28,7 @@
 
                   <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">v{{
                     plugin.version
-                  }}</v-list-item-subtitle>
+                    }}</v-list-item-subtitle>
                   <div v-if="plugin.info">
                     <v-tooltip v-if="plugin.info" activator="parent" location="bottom">
                       <v-list class="ma-0 pa-0" width="160" theme="dark" style="background: transparent;">
@@ -54,7 +54,7 @@
           </v-list>
         </v-card>
 
-        <v-card >
+        <v-card>
           <template v-slot:prepend>
             <v-icon size="x-small">{{ getFaPrefix('fa-chart-simple') }}</v-icon>
           </template>
@@ -191,5 +191,20 @@ const chartMax = computed(() => {
 
 .bold {
   font-weight: 700;
+}
+
+table td {
+  border-top: 0px !important;
+  border-bottom: 0px !important;
+
+  border-right: 1px solid #000;
+}
+
+table td:first-child {
+  border-left: none;
+}
+
+table td:last-child {
+  border-right: none;
 }
 </style>
