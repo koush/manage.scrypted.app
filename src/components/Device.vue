@@ -258,7 +258,7 @@ function resetClipPath() {
   clipPath.value?.points.splice(0, clipPath.value?.points.length);
 }
 watch(() => clipPath.value?.points, () => {
-  if (typeof clipPathSetting.originalValue === 'string')
+  if (!clipPathSetting.originalValue || typeof clipPathSetting.originalValue === 'string')
     clipPathSetting.value = JSON.stringify(clipPath.value?.points?.map(p => [p[0] * 100, p[1] * 100]));
   else
     clipPathSetting.value = clipPath.value?.points;
