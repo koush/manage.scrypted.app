@@ -63,8 +63,6 @@
         </template>
         <template v-else>
         </template>
-        <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
-          :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
@@ -117,6 +115,8 @@
           </template>
         </Camera>
 
+        <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
+          :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
         <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :hideButtons="true" :control="true"

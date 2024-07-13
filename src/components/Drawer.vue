@@ -6,7 +6,7 @@
         <v-list-subheader v-if="itemGroup.title && isTouchDevice">{{ itemGroup.title }}</v-list-subheader>
         <v-divider v-if="itemGroup.title && !isTouchDevice"></v-divider>
         <v-list-item v-for="item of itemGroup.items" link :href="item.href" :target="item.target" :to="item.to"
-          :active="item.active?.()" :title="item.title">
+          @click="item.click" :active="item.active?.()" :title="item.title">
           <template v-slot:prepend>
             <template v-if="item.badge">
               <v-badge color="error" :content="item.badge">
@@ -21,13 +21,32 @@
       </template>
     </v-list>
   </v-navigation-drawer>
+  <v-dialog v-model="showAlerts" v-if="currentAlert" location="center" max-width="400">
+    <v-card color="error" :prepend-icon="alertIcon">
+      <template v-slot:title>
+        <v-card-title>{{ currentAlert.title }}</v-card-title>
+      </template>
+      <template v-slot:append>
+        <v-btn  variant="text" :disabled="!alertIndex" @click="alertIndex--" :icon="getFaPrefix('fa-arrow-left')"></v-btn>
+        <v-btn  variant="text" :disabled="alertIndex >= scryptedAlerts.length - 1" @click="alertIndex++" :icon="getFaPrefix('fa-arrow-right')"></v-btn>
+      </template>
+      <v-card-text>{{ currentAlert.message }}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="removeAlert(currentAlert)">Dismiss</v-btn>
+        <v-btn :to="alertDeviceId ? getDeviceRoute(alertDeviceId) : undefined" @click="showAlerts = false">View</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
+import { connectedClient } from '@/common/client';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix } from '@/device-icons';
-import { computed } from 'vue';
+import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { getDeviceRoute } from '@/id-device';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { scryptedAlerts } from './plugin/plugin-apis';
+import { removeAlert, scryptedAlerts } from './plugin/plugin-apis';
 
 defineProps<{
   modelValue: boolean;
@@ -41,7 +60,32 @@ const route = useRoute();
 
 const routeName = computed(() => {
   return route.name;
-})
+});
+
+const alertIndex = ref(0);
+const showAlerts = ref(false);
+watch(() => showAlerts.value, () => alertIndex.value = 0);
+
+const currentAlert = computed(() => {
+  return scryptedAlerts.value[alertIndex.value];
+});
+
+const alertDeviceId = computed(() => {
+  const d = '/device/';
+  if (!currentAlert.value?.path.startsWith(d))
+    return;
+  const id = currentAlert.value.path.substring(d.length);
+  return id;
+});
+
+const alertIcon = computed(() => {
+  if (!alertDeviceId.value)
+    return;
+  const device = connectedClient?.value.systemManager.getDeviceById(alertDeviceId.value);
+  if (!device)
+    return;
+  return typeToIcon(device.type);
+});
 
 interface ItemGroup {
   title: string | undefined;
@@ -52,6 +96,7 @@ interface ItemGroup {
     to?: string;
     target?: string;
     badge?: string;
+    click?: () => void;
     active?: () => boolean;
   }[];
 }
@@ -75,7 +120,9 @@ const itemGroups = computed(() => {
             {
               title: 'Alerts',
               icon: getFaPrefix('fa-message-exclamation'),
-              to: '/alerts',
+              click: () => {
+                showAlerts.value = true;
+              },
               badge: scryptedAlerts.value.length.toString()
             }
           ]
