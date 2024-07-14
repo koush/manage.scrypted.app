@@ -29,7 +29,6 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
-import { getDeviceFromId } from '@/id-device';
 import { onUnmounted, reactive } from 'vue';
 import Pagination from '../Pagination.vue';
 
@@ -40,8 +39,6 @@ const props = defineProps<{
 const emits = defineEmits<{
   (event: 'close'): void;
 }>();
-
-const device = getDeviceFromId(() => props.id);
 
 interface ScryptedLogEntry {
   _id: string;

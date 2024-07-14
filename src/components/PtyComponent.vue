@@ -197,9 +197,9 @@ async function connectPty() {
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
     const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || "@scrypted/core");
-    const streamSvc = await plugin.getDevice(props.nativeId) as StreamService;
+    const streamSvc = await plugin.getDevice(props.nativeId) as StreamService<Buffer | string, Buffer>;
     const streamSvcDirect = await connectRPCObject(streamSvc);
-    const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue, props.options);
+    const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue as AsyncGenerator<Buffer | string>, props.options);
 
     for await (const message of remoteGenerator) {
       if (!message) {

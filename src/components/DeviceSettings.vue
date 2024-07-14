@@ -35,7 +35,7 @@ import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId, registerListener } from '@/id-device';
 import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
@@ -81,6 +81,13 @@ const settings = asyncComputed({
 
 const dirtyCount = computed(() => {
   return settings.value.filter(isDirty).length;
+});
+
+watch(() => dirtyCount.value, () => {
+  const toSave = settings.value.filter(isDirty).filter(s => s.immediate)
+  for (const setting of toSave) {
+    device.value.putSetting(setting.key, setting.value);
+  }
 });
 
 function save() {

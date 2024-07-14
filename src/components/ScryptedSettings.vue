@@ -31,7 +31,7 @@ import { getAllDeviceIds } from '@/common/devices';
 import { getFaPrefix } from '@/device-icons';
 import { registerListeners } from '@/id-device';
 import { ScryptedInterface, ScryptedSystemDevice, Setting, Settings } from '@scrypted/types';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 
@@ -110,6 +110,16 @@ const settings = asyncComputed({
 
 const dirtyCount = computed(() => {
   return settings.value.filter(isDirty).length;
+});
+
+watch(() => dirtyCount.value, async () => {
+  const { systemManager } = connectedClient.value || await connectPluginClient();
+  const toSave = settings.value.filter(isDirty).filter(s => s.immediate)
+  for (const setting of toSave) {
+    const [id, key] = setting.key.split(':', 2);
+    const device = systemManager.getDeviceById<Settings>(id);
+    device.putSetting(key, setting.value);
+  }
 });
 
 async function save() {
