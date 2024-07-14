@@ -34,7 +34,7 @@
           </td>
           <td v-if="mdAndUp && showModel">{{ mixined.device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ mixined.device.info?.ip }}</td>
-          <td><v-btn size="x-small" @click="goDevice(router, mixined.device)"
+          <td><v-btn variant="text" size="x-small" :to="getDeviceRoute(mixined.device.id)"
               :icon="typeToIcon(mixined.device.type)"></v-btn></td>
         </tr>
       </tbody>
@@ -45,7 +45,7 @@
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, goDevice } from '@/id-device';
+import { getDeviceFromId, getDeviceRoute } from '@/id-device';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { MixinProvider } from '@scrypted/types';
 import { computed } from 'vue';
