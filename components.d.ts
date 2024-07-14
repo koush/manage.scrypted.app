@@ -34,6 +34,7 @@ declare module 'vue' {
     Launcher: typeof import('./src/components/Launcher.vue')['default']
     MixinProvider: typeof import('./src/components/interfaces/MixinProvider.vue')['default']
     ObjectDetector: typeof import('./src/components/interfaces/ObjectDetector.vue')['default']
+    Pagination: typeof import('./src/components/Pagination.vue')['default']
     Plugins: typeof import('./src/components/plugin/Plugins.vue')['default']
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
