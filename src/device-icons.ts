@@ -44,6 +44,8 @@ function typeToIconInternal(type?: ScryptedDeviceType) {
 }
 
 export function hasFixedPhysicalLocation(type: ScryptedDeviceType): boolean {
+  if (!type)
+    return false;
   switch (type) {
     case ScryptedDeviceType.Builtin:
     case ScryptedDeviceType.Program:
