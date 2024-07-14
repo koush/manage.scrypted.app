@@ -28,7 +28,7 @@
 
                   <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">v{{
                     plugin.version
-                    }}</v-list-item-subtitle>
+                  }}</v-list-item-subtitle>
                   <div v-if="plugin.info">
                     <v-tooltip v-if="plugin.info" activator="parent" location="bottom">
                       <v-list class="ma-0 pa-0" width="160" theme="dark" style="background: transparent;">
@@ -102,7 +102,7 @@ import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { checkNpmUpdate } from '@/npm';
-import { ScryptedInterface } from '@scrypted/types';
+import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import InstallPluginCard from './InstallPluginCard.vue';
@@ -114,7 +114,18 @@ const { mdAndUp } = useDisplay();
 
 const hasUpdate = new Map<string, boolean>();
 
-const plugins = computed(() => {
+
+interface PluginModel {
+  id: string;
+  name: string;
+  package: string;
+  version: string;
+  type: ScryptedDeviceType;
+  updateAvailable: boolean;
+  info: PluginInfo;
+}
+
+const plugins = computed((ov: PluginModel[]) => {
   if (!connectedClient.value) {
     connectPluginClient();
     return [];
@@ -129,7 +140,7 @@ const plugins = computed(() => {
       version: d.info?.version,
       type: d.type,
       updateAvailable: !!hasUpdate.get(d.id),
-      info: undefined as PluginInfo,
+      info: ov?.find(o => o.id === d.id)?.info,
     }));
 
 
@@ -143,7 +154,7 @@ const plugins = computed(() => {
     plugin.info = await getPluginInfo(plugin.package);
   });
 
-  return plugins;
+  return plugins as PluginModel[];
 });
 
 async function updatePlugin(plugin: typeof plugins.value[0]) {
