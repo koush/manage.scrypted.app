@@ -1,5 +1,6 @@
 <template>
-    <slot name="item" v-for="item in currentPage" :item="item"></slot>
+    <slot name="item" v-for="(item, index) in currentPage" :item="item" :index="index"></slot>
+    <v-divider></v-divider>
     <v-pagination :length="pages.length" v-model="page" rounded density="compact"></v-pagination>
 </template>
 <script setup lang="ts">
