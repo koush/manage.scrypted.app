@@ -45,7 +45,7 @@
                 </ToolbarTooltipButton>
               </template>
               <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
-              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events"></ToolbarTooltipButton>
+              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = !showEvents"></ToolbarTooltipButton>
               <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
               </ToolbarTooltipButton>
               <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings"
@@ -128,6 +128,7 @@
         <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
           nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
           @close="showRepl = false" class="mb-4"></PtyComponent>
+          <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
       </v-col>
     </v-row>
   </v-container>
@@ -160,10 +161,12 @@ import { PlaybackType } from './interfaces/camera-common';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
 import { isTouchDevice } from '@/common/size';
+import ScryptedLogger from './interfaces/ScryptedLogger.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
 const showRepl = ref(false);
+const showEvents = ref(false);
 const editingName = ref(false);
 
 const routeId = getIdFromRoute();

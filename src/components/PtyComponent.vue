@@ -10,11 +10,12 @@
         <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
       </template>
       <ToolbarTooltipButton v-if="copyButton" icon="fa-copy" tooltip="Copy Log" variant="text" />
-      <ToolbarTooltipButton v-if="copyButton" icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text" @click="clear" />
+      <ToolbarTooltipButton v-if="copyButton" icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text"
+        @click="clear" />
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
     </template>
     <template v-slot:title>
-      <v-card-subtitle>{{ title }}</v-card-subtitle>
+      <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">{{ title }}</v-card-subtitle>
     </template>
     <div class="ml-3 mr-3" ref="terminal" :style="{ height: '100%' }"></div>
   </v-card>
