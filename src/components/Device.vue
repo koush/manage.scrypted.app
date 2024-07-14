@@ -117,8 +117,8 @@
 
         <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
           :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
-        <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
+        <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expandButton="true"
           :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
         <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
