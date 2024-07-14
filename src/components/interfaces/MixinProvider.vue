@@ -49,11 +49,9 @@ import { getDeviceFromId, getDeviceRoute } from '@/id-device';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { MixinProvider } from '@scrypted/types';
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { chipColor } from './settings-common';
 
-const router = useRouter();
 const { mdAndUp } = useDisplay()
 
 const props = defineProps<{
