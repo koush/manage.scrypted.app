@@ -119,13 +119,13 @@
           :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
-        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expandButton="true"
+        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
           :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
-        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
+        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)" :expand-button="true"
           :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
           :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
         </PtyComponent>
-        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
+        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')" :expand-button="true"
           nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
           @close="showRepl = false" class="mb-4"></PtyComponent>
           <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
