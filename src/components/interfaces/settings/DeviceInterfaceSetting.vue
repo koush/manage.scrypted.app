@@ -25,7 +25,11 @@ const value = computed({
   get() {
     if (!modelValue.value.multiple) {
       const value = modelValue.value.value as string;
+      if (!value)
+        return;
       const [id, deviceInterface] = value.split('#', 2);
+      if (!id || !deviceInterface)
+        return;
       const device = connectedClient.value?.systemManager.getDeviceById(id);
       const title = device.name + ` (${deviceInterface})`;
 
@@ -81,13 +85,16 @@ const choices = computed(() => {
 
     ret = allDeviceInterfaces.filter(({ device, deviceInterface }) => {
       try {
-        return eval(
-          `(function() { var interfaces = ${JSON.stringify(
-            device.interfaces
-          )}; var deviceInterface = '${deviceInterface}'}; var type='${device.type
-          }'; return ${expression} })`
-        )();
+        const script = `(function() {
+          var interfaces = ${JSON.stringify(device.interfaces)};
+          var deviceInterface = '${deviceInterface}';
+          var type='${device.type}';
+          return ${expression};
+        })`
+
+        return eval(script)();
       } catch (e) {
+        console.warn(e);
         return true;
       }
     });
