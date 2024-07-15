@@ -1,5 +1,5 @@
 <template>
-  <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox">
+  <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox && !modelValue.immediate">
     <v-divider></v-divider>
     <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
       modelValue.title }}</v-list-item-subtitle>
