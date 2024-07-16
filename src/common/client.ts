@@ -334,7 +334,12 @@ export function setClientPluginId(pluginId: string) {
   clientPluginId = pluginId;
 }
 
-let connectionPreferences: ScryptedClientConnectionPreferences;
+export let clientAppVersion: string;
+export function setClientAppVersion(version: string) {
+  clientAppVersion = version;
+}
+
+let connectionPreferences: ScryptedClientConnectionPreferences | undefined;
 export function setClientConnectionPreferences(preferences?: ScryptedClientConnectionPreferences) {
   connectionPreferences = preferences;
 }

@@ -28,8 +28,9 @@
 </template>
 
 <script setup lang="ts">
+import  * as packageJson from '../package.json';
 import { ref } from 'vue';
-import { cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientConnectionPreferences, setClientPluginId } from './common/client';
+import { clientAppVersion, cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientAppVersion, setClientConnectionPreferences, setClientPluginId } from './common/client';
 import CloudLogin from './common/components/CloudLogin.vue';
 import Login from './common/components/Login.vue';
 import { isTouchDevice } from './common/size';
@@ -45,6 +46,8 @@ const route = useRoute();
 const drawer = ref(!isTouchDevice.value);
 getThemeManager().updateTheme();
 
+setClientAppVersion(packageJson.version);
+console.log('management ui version', clientAppVersion);
 setClientPluginId('@scrypted/core');
 setAppDomain('manage.scrypted.app');
 setClientConnectionPreferences({

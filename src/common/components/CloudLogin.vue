@@ -9,7 +9,7 @@
                     }}</v-card-subtitle>
 
                 <v-card-subtitle @click="windowLocationReload" style="text-align: center;"
-                    class="pb-4 scrypted-subtitle2">{{ packageJson.version }}</v-card-subtitle>
+                    class="pb-4 scrypted-subtitle2">{{ clientAppVersion }}</v-card-subtitle>
 
                 <template v-if="waitingCloudLogin">
                     <v-text-field class="pl-8 pr-8 pb-2 pt-8 mb-4" density="comfortable" variant="outlined"
@@ -57,8 +57,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { SCRYPTED_SERVER, cloudLoginRedirect, saveSelfHostedDomain } from '../client';
-import * as packageJson from '../../../package.json';
+import { SCRYPTED_SERVER, clientAppVersion, cloudLoginRedirect, saveSelfHostedDomain } from '../client';
 import { windowLocationReload } from '../platform-shims';
 
 defineProps<{
