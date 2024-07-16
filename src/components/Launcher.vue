@@ -15,7 +15,7 @@
             }}</v-card-subtitle>
           <v-card-subtitle style="text-align: center;" class="scrypted-subtitle2">{{
             connectedClient?.loginResult.hostname
-          }}</v-card-subtitle>
+            }}</v-card-subtitle>
         </template>
         <v-list style="text-align: center;">
           <v-list-item class="pr-16" v-for="item in launcherItems.computed.value"
@@ -51,7 +51,7 @@
 </template>
 <script setup lang="ts">
 import { asyncComputedRaw } from '@/common/async-computed';
-import { connectPluginClient, connectedClient, getBaseUrl, logoutClient } from '@/common/client';
+import { connectPluginClient, connectedClient, getBaseUrl, isScryptedCloudHostname, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix } from '@/device-icons';
 import { combineBaseUrl } from '@scrypted/client/src/index';
@@ -65,7 +65,7 @@ const launcherItems = asyncComputedRaw({
     const ret = getAllDevices<LauncherApplication>(systemManager)
       .filter(d => d.interfaces.includes(ScryptedInterface.LauncherApplication))
       .map(d => {
-        let href = d.applicationInfo?.href;
+        let href = isScryptedCloudHostname() ? d.applicationInfo?.cloudHref || d.applicationInfo?.href : d.applicationInfo?.href;
         if (!href && d.interfaces.includes(ScryptedInterface.HttpRequestHandler)) {
           const appId = d.interfaces.includes(ScryptedInterface.ScryptedPlugin) ? d.pluginId : d.id;
           href = combineBaseUrl(getBaseUrl(), `endpoint/${appId}/public/`);
