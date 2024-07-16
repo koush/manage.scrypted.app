@@ -70,6 +70,7 @@
         <Suspense>
           <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         </Suspense>
+        <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
           @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
@@ -152,7 +153,7 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
-import ObjectDetector from './interfaces/ObjectDetector.vue';
+import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
 import Readme from './interfaces/Readme.vue';
 import Scriptable from './interfaces/Scriptable.vue';
@@ -162,6 +163,7 @@ import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
 import { isTouchDevice } from '@/common/size';
 import ScryptedLogger from './interfaces/ScryptedLogger.vue';
+import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -188,6 +190,10 @@ const canExtendDevices = computed(() => {
 
 const hasCamera = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Camera);
+});
+
+const hasObjectDetection = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.ObjectDetection);
 });
 
 const hasScriptable = computed(() => {
