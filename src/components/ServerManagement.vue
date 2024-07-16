@@ -40,7 +40,8 @@
     </template>
     <v-card-actions>
       <v-btn size="small" color="info" :href="backupUrl">Backup</v-btn>
-      <v-btn size="small" color="success">Restore</v-btn>
+      <v-btn size="small" color="success" @click="restoreFile.click()">Restore</v-btn>
+      <input type="file" ref="restoreFile" style="display: none;" @change="restore" />
       <v-spacer></v-spacer>
 
       <v-btn size="small" color="error"
@@ -98,5 +99,23 @@ async function doUpdateAndRestart() {
   const { systemManager } = connectedClient.value;
   const serviceControl = await systemManager.getComponent("service-control");
   await serviceControl.update();
+}
+
+const restoreFile = ref<HTMLInputElement>();
+
+async function restore() {
+  const file = restoreFile.value.files[0];
+  if (!file)
+    return;
+  console.log(file);
+  const fileBlob = new Blob([file]);
+  const restoreUrl = isScryptedCloudHostname()
+    ? fixupAppDomainLinkUrl('web/component/restore')
+    : combineBaseUrl(baseUrl, 'web/component/restore');
+
+  await fetch(restoreUrl, {
+    method: 'POST',
+    body: fileBlob,
+  });
 }
 </script>
