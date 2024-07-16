@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card v-if="settings?.length">
+        <v-card v-if="settings?.length" class="mb-4">
           <template v-slot:prepend>
             <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
           </template>
@@ -19,6 +19,8 @@
             <SettingsInterface v-model="settings"></SettingsInterface>
           </div>
         </v-card>
+
+        <ServerManagement></ServerManagement>
       </v-col>
     </v-row>
   </v-container>
@@ -34,6 +36,7 @@ import { ScryptedInterface, ScryptedSystemDevice, Setting, Settings } from '@scr
 import { computed, ref, watch } from 'vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
+import ServerManagement from './ServerManagement.vue';
 
 function getScryptedSettingsIds() {
   if (!connectedClient.value)

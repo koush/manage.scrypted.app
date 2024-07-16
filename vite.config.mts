@@ -89,7 +89,7 @@ export default defineConfig({
 		host: '0.0.0.0',
 		port: 4000,
 		proxy: {
-			'^/(login|logout|endpoint|engine.io)': {
+			'^/(login|logout|endpoint|engine.io|web/component/backup)': {
 				target,
 				changeOrigin: true,
 				secure: false,
