@@ -295,8 +295,13 @@ export function setScryptedClientConnectionModeDefault(value: boolean) {
   return localStorage.setItem('scryptedClientConnectionModeDefault', value.toString());
 }
 
+export interface ScryptedClientConnectionPreferences {
+  webrtc?: boolean;
+  direct?: boolean;
+  local?: boolean;
+}
 
-async function connectClientWithPreferences(pluginId: string) {
+async function connectClientWithPreferences(pluginId: string, options?: ScryptedClientConnectionPreferences) {
   const baseUrl = getBaseUrl();
 
   let webrtc: boolean | undefined;
@@ -316,8 +321,10 @@ async function connectClientWithPreferences(pluginId: string) {
   return await connectClient({
     local,
     direct,
-    baseUrl,
     webrtc,
+    ...connectionPreferences,
+    ...options,
+    baseUrl,
     pluginId,
   });
 }
@@ -325,6 +332,11 @@ async function connectClientWithPreferences(pluginId: string) {
 let clientPluginId: string;
 export function setClientPluginId(pluginId: string) {
   clientPluginId = pluginId;
+}
+
+let connectionPreferences: ScryptedClientConnectionPreferences;
+export function setClientConnectionPreferences(preferences?: ScryptedClientConnectionPreferences) {
+  connectionPreferences = preferences;
 }
 
 export async function connectPluginClient() {

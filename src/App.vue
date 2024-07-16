@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientPluginId } from './common/client';
+import { cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientConnectionPreferences, setClientPluginId } from './common/client';
 import CloudLogin from './common/components/CloudLogin.vue';
 import Login from './common/components/Login.vue';
 import { isTouchDevice } from './common/size';
@@ -47,6 +47,9 @@ getThemeManager().updateTheme();
 
 setClientPluginId('@scrypted/core');
 setAppDomain('manage.scrypted.app');
+setClientConnectionPreferences({
+  webrtc: false,
+});
 connectPluginClient();
 
 //
