@@ -7,10 +7,10 @@
         <v-expansion-panel :value="group">
           <v-expansion-panel-title v-if="totalExpansionPanels > 1"
             style="min-height: unset; height: 24px; font-size: .75rem;"
-            :color="group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
+            :color="selectedSettingGroup && group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
               getTitle(group.title) }}</v-expansion-panel-title>
 
-          <v-chip-group v-if="group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
+          <v-chip-group v-if="selectedSettingGroup && group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
             style="width: 100%; background: rgb(var(--v-theme-surface-variant));" v-model="selectedSettingSubgroup"
             column class="pt-0 pb-0" mandatory variant="flat">
             <template v-for="subgroup of group.subgroups">
