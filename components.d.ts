@@ -43,6 +43,7 @@ declare module 'vue' {
     RTCSignalingChannel: typeof import('./src/components/interfaces/RTCSignalingChannel.vue')['default']
     Scriptable: typeof import('./src/components/interfaces/Scriptable.vue')['default']
     ScriptSetting: typeof import('./src/components/interfaces/settings/ScriptSetting.vue')['default']
+    ScryptedCoreDeviceShortcut: typeof import('./src/components/ScryptedCoreDeviceShortcut.vue')['default']
     ScryptedLogger: typeof import('./src/components/interfaces/ScryptedLogger.vue')['default']
     ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
     ScryptedSettings: typeof import('./src/components/ScryptedSettings.vue')['default']

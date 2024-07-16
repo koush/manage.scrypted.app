@@ -6,7 +6,7 @@ import DeviceList from '../components/DeviceList.vue';
 import Launcher from '../components/Launcher.vue';
 import InstallPlugin from '../components/plugin/InstallPlugin.vue';
 import Plugins from '../components/plugin/Plugins.vue';
-import Users from "@/components/Users.vue";
+import ScryptedCoreDeviceShortcut from "@/components/ScryptedCoreDeviceShortcut.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -39,7 +39,17 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/users',
-    component: Users,
+    component: ScryptedCoreDeviceShortcut,
+    props: {
+      nativeId: 'users',
+    },
+  },
+  {
+    path: '/automations',
+    component: ScryptedCoreDeviceShortcut,
+    props: {
+      nativeId: 'automationcore',
+    },
   },
   {
     path: '/',
