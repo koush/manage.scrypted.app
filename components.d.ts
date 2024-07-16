@@ -52,6 +52,5 @@ declare module 'vue' {
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
     ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']
-    Users: typeof import('./src/components/Users.vue')['default']
   }
 }
