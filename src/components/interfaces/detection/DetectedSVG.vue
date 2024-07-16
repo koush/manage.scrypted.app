@@ -2,7 +2,18 @@
   <svg :viewBox="`0 0 ${svgWidth} ${svgHeight}`">
     <rect v-for="r in svgContents.rects" :x="r.boundingBox[0]" :y="r.boundingBox[1]" :width="r.boundingBox[2]"
       :height="r.boundingBox[3]" :stroke="r.stroke" :stroke-width="r.strokeWidth" :fill="r.fill" />
-    <text v-for="t in svgContents.texts" :x="t.point[0]" :y="t.point[1]" fill="white" :font-size="fontSize" background>
+
+    <defs>
+      <filter x="0" y="0" width="1" height="1" id="solid">
+        <feFlood flood-color="blue" result="bg" />
+        <feMerge>
+          <feMergeNode in="bg" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <text v-for="t in svgContents.texts"  filter="url(#solid)" :x="t.point[0]" :y="t.point[1]" fill="white" :font-size="fontSize" background>
       <tspan v-for="ts in t.tspans" :dy="`${ts.dy}em`">{{ ts.content }}</tspan>
     </text>
   </svg>
@@ -78,20 +89,20 @@ const svgContents = computed<SvgContents>(() => {
       }
 
       // get a bounding box for the two texts
-      const textbb: [number, number, number, number] = [...boundingBox];
-      if (!d.label) {
-        textbb[3] = 30;
-        textbb[1] -= 30;
-      }
-      else {
-        textbb[3] = 60;
-        textbb[1] -= 60;
-      }
+      // const textbb: [number, number, number, number] = [...boundingBox];
+      // if (!d.label) {
+      //   textbb[3] = 30;
+      //   textbb[1] -= 30;
+      // }
+      // else {
+      //   textbb[3] = 60;
+      //   textbb[1] -= 60;
+      // }
 
-      ret.rects.push({
-        boundingBox: textbb,
-        fill: '#0000FF40',
-      });
+      // ret.rects.push({
+      //   boundingBox: textbb,
+      //   fill: '#0000FF40',
+      // });
     }
 
     ret.rects.push({
