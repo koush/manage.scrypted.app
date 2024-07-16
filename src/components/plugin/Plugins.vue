@@ -48,7 +48,7 @@
                   </div>
                 </div>
               </template>
-              <v-list-item-title style="font-size: .8rem">{{ plugin.name }}</v-list-item-title>
+              <v-list-item-title style="font-size: .8rem; font-weight: 500; text-transform: uppercase;">{{ plugin.name }}</v-list-item-title>
               <v-list-item-subtitle style="font-size: .8rem">{{ plugin.package }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
