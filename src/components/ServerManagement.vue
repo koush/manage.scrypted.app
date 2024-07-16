@@ -52,7 +52,7 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { connectedClient, connectPluginClient } from '@/common/client';
+import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScryptedCloudHostname } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
 import { ref } from 'vue';
@@ -60,7 +60,9 @@ import { ref } from 'vue';
 const restartDialog = ref(false);
 
 const baseUrl = getCurrentBaseUrl();
-const backupUrl = combineBaseUrl(baseUrl, 'web/component/backup');
+const backupUrl = isScryptedCloudHostname()
+  ? fixupAppDomainLinkUrl('web/component/backup')
+  : combineBaseUrl(baseUrl, 'web/component/backup');
 
 const restartPrompt = "This action will restart the Scrypted service.";
 const restartTitle = ref<string>();
