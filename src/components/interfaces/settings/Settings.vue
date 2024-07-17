@@ -11,7 +11,8 @@
               getTitle(group.title) }}</v-expansion-panel-title>
           <v-tabs
             v-if="selectedSettingGroup && group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
-            v-model="selectedSettingSubgroup" mandatory density="compact" grow
+            v-model="selectedSettingSubgroup" mandatory density="compact" grow center-active show-arrows
+            :prev-icon="getFaPrefix('fa-caret-left')" :next-icon="getFaPrefix('fa-caret-right')"
             :bg-color="dark ? 'deep-purple' : undefined" :color="!dark ? 'deep-purple' : undefined">
             <template v-for="subgroup of group.subgroups">
               <v-tab :value="subgroup" size="small">{{
@@ -43,6 +44,7 @@ import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
 import { isDark } from '@/common/colors';
+import { getFaPrefix } from '@/device-icons';
 
 const slots = useSlots();
 const dark = isDark();
