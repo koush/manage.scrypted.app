@@ -11,21 +11,21 @@
               getTitle(group.title) }}</v-expansion-panel-title>
           <v-tabs
             v-if="selectedSettingGroup && group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
-            v-model="selectedSettingSubgroup" mandatory density="compact" grow bg-color="deep-purple">
+            v-model="selectedSettingSubgroup" mandatory density="compact" grow
+            :bg-color="dark ? 'deep-purple' : undefined" :color="!dark ? 'deep-purple' : undefined">
             <template v-for="subgroup of group.subgroups">
-              <v-tab :value="subgroup"  size="small">{{
+              <v-tab :value="subgroup" size="small">{{
                 getTitle(subgroup.title) }}</v-tab>
             </template>
           </v-tabs>
 
           <v-expansion-panel-text>
-            <template
-              v-if="selectedSettingGroup?.title === group.title && group.subgroups.find(check => check.title === selectedSettingSubgroup?.title)">
+            <v-tabs-window v-model="selectedSettingSubgroup">
               <template v-for="setting in selectedSettingSubgroup?.settings">
                 <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)">
                 </SplatSetting>
               </template>
-            </template>
+            </v-tabs-window>
           </v-expansion-panel-text>
         </v-expansion-panel>
         <v-divider></v-divider>
@@ -42,8 +42,10 @@ import { computed, ref, useSlots, watch } from 'vue';
 import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
+import { isDark } from '@/common/colors';
 
 const slots = useSlots();
+const dark = isDark();
 
 const totalExpansionPanels = computed(() => {
   let ret = settingsGroups.value?.length || 0;
