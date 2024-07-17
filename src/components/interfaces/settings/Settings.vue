@@ -9,15 +9,14 @@
             style="min-height: unset; height: 24px; font-size: .75rem;"
             :color="selectedSettingGroup && group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
               getTitle(group.title) }}</v-expansion-panel-title>
-
-          <v-chip-group v-if="selectedSettingGroup && group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
-            style="width: 100%; background: rgb(var(--v-theme-surface-variant));" v-model="selectedSettingSubgroup"
-            column class="pt-0 pb-0" mandatory variant="flat">
+          <v-tabs
+            v-if="selectedSettingGroup && group.title === selectedSettingGroup?.title && group.subgroups?.length > 1"
+            v-model="selectedSettingSubgroup" mandatory density="compact" grow bg-color="deep-purple">
             <template v-for="subgroup of group.subgroups">
-              <v-chip :value="subgroup" color="deep-purple" size="small" rounded="0" class="ma-0">{{
-                getTitle(subgroup.title) }}</v-chip>
+              <v-tab :value="subgroup"  size="small">{{
+                getTitle(subgroup.title) }}</v-tab>
             </template>
-          </v-chip-group>
+          </v-tabs>
 
           <v-expansion-panel-text>
             <template

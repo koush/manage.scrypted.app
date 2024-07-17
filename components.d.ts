@@ -38,6 +38,7 @@ declare module 'vue' {
     ObjectDetector: typeof import('./src/components/interfaces/detection/ObjectDetector.vue')['default']
     Pagination: typeof import('./src/components/Pagination.vue')['default']
     Plugins: typeof import('./src/components/plugin/Plugins.vue')['default']
+    PluginStats: typeof import('./src/components/plugin/PluginStats.vue')['default']
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
