@@ -11,13 +11,20 @@ import { onUnmounted, ref, watch } from 'vue';
 const props = defineProps<{
   id: string;
   destination?: MediaStreamDestination | 'Default';
+  microphone?: boolean;
 }>();
 
 const device = getDeviceFromId<Camera & RTCSignalingChannel & VideoCamera>(() => props.id);
 watch(() => props.id, () => cleanupPeerConnection());
 
 let pc: Promise<RTCPeerConnection> | undefined;
+let session: BrowserSignalingSession;
+let control: RTCSessionControl;
 function cleanupPeerConnection() {
+  control?.endSession();
+  control = undefined;
+  session?.close();
+  session = undefined;
   playing.value = false;
   pc?.then(pc => pc.close()).catch(() => { });
   pc = undefined;
@@ -40,7 +47,7 @@ async function play() {
   // unsets the playing state
   playing.value = true;
 
-  const session = new BrowserSignalingSession();
+  session = new BrowserSignalingSession();
   pc = session.pcDeferred.promise;
 
   const mediaStream = new MediaStream();
@@ -50,7 +57,7 @@ async function play() {
       mediaStream.addTrack(e.track);
     }
   };
-  let control: RTCSessionControl;
+
   if (props.destination === 'Default') {
     control = (await device.value.startRTCSignalingSession(session))!;
   }
@@ -93,4 +100,18 @@ if (props.destination) {
   playing.value = true;
   play();
 }
+
+function setMicrophone() {
+  if (!control)
+    return;
+  control.setPlayback({
+    audio: !!props.microphone,
+    video: true,
+  });
+  session?.setMicrophone(!!props.microphone);
+}
+
+setMicrophone();
+watch(() => props.microphone, () => setMicrophone());
+
 </script>

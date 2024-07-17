@@ -45,7 +45,8 @@
                 </ToolbarTooltipButton>
               </template>
               <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
-              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = !showEvents"></ToolbarTooltipButton>
+              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = !showEvents">
+              </ToolbarTooltipButton>
               <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
               </ToolbarTooltipButton>
               <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings"
@@ -75,7 +76,8 @@
           @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
           </ClipPathEditor>
-          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing">
+          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
+            :microphone="!!talkback">
           </RTCSignalingChannel>
           <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
 
@@ -108,9 +110,15 @@
                   </v-list>
                 </v-menu>
               </template>
-              <ToolbarTooltipButton v-else color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
-                @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
-              </ToolbarTooltipButton>
+              <template v-else>
+                <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
+                  @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
+                </ToolbarTooltipButton>
+                <ToolbarTooltipButton v-if="hasIntercom" color="error"
+                  :icon="getFaPrefix(!talkback ? 'fa-microphone' : 'fa-microphone-slash')" variant="text" size="small"
+                  @click="talkback = !talkback" tooltip="Talk Back">
+                </ToolbarTooltipButton>
+              </template>
             </template>
 
           </template>
@@ -120,16 +128,17 @@
           :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
-        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
-          :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
-        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)" :expand-button="true"
-          :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')" nativeId="consoleservice"
-          :control="false" :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
+        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true" :control="true"
+          :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
+        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
+          :expand-button="true" :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')"
+          nativeId="consoleservice" :control="false" :options="{ pluginId: device.pluginId }" close
+          @close="showConsole = false" class="mb-4">
         </PtyComponent>
-        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')" :expand-button="true"
-          nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
+        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
+          :expand-button="true" nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
           @close="showRepl = false" class="mb-4"></PtyComponent>
-          <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
+        <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
       </v-col>
     </v-row>
   </v-container>
@@ -216,12 +225,17 @@ const hasRTC = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
 });
 
+const hasIntercom = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Intercom);
+});
+
 const hasObjectDetector = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ObjectDetector);
 });
 
 watch(() => id.value, () => {
   playing.value = undefined;
+  talkback.value = false;
   resetPtys();
 });
 
@@ -277,6 +291,7 @@ watch(() => clipPath.value?.points, () => {
 });
 
 const playing = ref<PlaybackType>();
+const talkback = ref(false);
 const destination = ref<PlaybackType>('Default');
 const destinations: PlaybackType[] = [
   'Default',
