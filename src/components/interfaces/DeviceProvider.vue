@@ -31,6 +31,7 @@
         </tr>
       </tbody>
     </v-table>
+    <DeviceDiscoveryInterface v-if="hasDeviceDiscovery && discovered" :id="id" :discovered-devices="discovered"></DeviceDiscoveryInterface>
     <v-card-actions v-if="hasDeviceCreator || hasDeviceDiscovery">
       <v-dialog max-width="500" v-if="hasDeviceCreator">
         <template v-slot:activator="{ props: activatorProps }">
@@ -43,7 +44,7 @@
           </DeviceCreatorInterface>
         </template>
       </v-dialog>
-      <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small">Discover</v-btn>
+      <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small" @click="discoverDevices">Discover</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -51,12 +52,13 @@
 import { getAllDevices } from '@/common/devices';
 import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, goDevice } from '@/id-device';
-import { DeviceDiscovery, DeviceProvider, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
-import { computed } from 'vue';
+import { getDeviceFromId, goDevice, registerListener } from '@/id-device';
+import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
+import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './DeviceCreator.vue';
+import DeviceDiscoveryInterface from './DeviceDiscovery.vue';
 
 const router = useRouter();
 const { mdAndUp } = useDisplay()
@@ -91,4 +93,20 @@ const hasDeviceCreator = computed(() => {
 const hasDeviceDiscovery = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceDiscovery);
 });
+
+const discovered = ref<DiscoveredDevice[]>();
+async function discoverDevices() {
+  discovered.value = await device.value.discoverDevices(true);
+}
+
+watch(() => props.id, () => {
+  discovered.value = undefined;
+});
+
+registerListener(device, {
+  event: ScryptedInterface.DeviceDiscovery,
+}, async () => {
+  discovered.value = await device.value.discoverDevices();
+});
+
 </script>

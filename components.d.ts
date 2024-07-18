@@ -20,6 +20,7 @@ declare module 'vue' {
     DetectedSVG: typeof import('./src/components/interfaces/detection/DetectedSVG.vue')['default']
     Device: typeof import('./src/components/Device.vue')['default']
     DeviceCreator: typeof import('./src/components/interfaces/DeviceCreator.vue')['default']
+    DeviceDiscovery: typeof import('./src/components/interfaces/DeviceDiscovery.vue')['default']
     DeviceInterfaceSetting: typeof import('./src/components/interfaces/settings/DeviceInterfaceSetting.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
