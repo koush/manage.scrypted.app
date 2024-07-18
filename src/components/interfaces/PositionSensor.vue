@@ -1,5 +1,5 @@
 <template>
-  <v-card :style="{ height: '100%', width: '100%' }">
+  <v-card :style="{ height: '300px', width: '100%' }">
     <l-map ref="map" :zoom="zoom()" :center="position<PointExpression>()"
       :options="{
         zoomControl: false,
