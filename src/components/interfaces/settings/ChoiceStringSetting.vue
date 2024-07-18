@@ -1,5 +1,5 @@
 <template>
-  <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox && !modelValue.immediate">
+  <template v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox && !modelValue.immediate && !modelValue.readonly">
     <v-divider></v-divider>
     <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
       modelValue.title }}</v-list-item-subtitle>
@@ -19,8 +19,9 @@
   </template>
   <component v-else :is="component" class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
     :label="modelValue.title" :hint="modelValue.description" v-model="modelValue.value" :items="modelValue.choices"
-    :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
-    :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description" persistent-placeholder>
+    :multiple="modelValue.multiple" :chips="modelValue.multiple"
+    :closable-chips="modelValue.multiple && !modelValue.readonly" :persistent-hint="!!modelValue.description"
+    :hide-details="!modelValue.description" persistent-placeholder>
     <template v-if="modelValue.multiple" v-slot:chip="{ props }">
       <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"></v-chip>
     </template>
