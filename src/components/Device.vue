@@ -3,6 +3,10 @@
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device">
       <v-col cols="12" md="4">
+        <template v-if="isTouchDevice">
+          <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
+            :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
+        </template>
         <template v-if="device">
           <v-card class="mb-4">
             <template v-slot:prepend>
@@ -125,8 +129,10 @@
           </template>
         </Camera>
 
-        <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
-          :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
+        <template v-if="!isTouchDevice">
+          <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
+            :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
+        </template>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true" :control="true"

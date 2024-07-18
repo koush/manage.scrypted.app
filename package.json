@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@fortawesome/fontawesome-free": "^6.6.0",
     "@popperjs/core": "^2.11.8",
     "@scrypted/client": "file:../scrypted/packages/client",
     "@scrypted/common": "file:../scrypted/common",
@@ -22,30 +22,30 @@
     "lodash": "^4.17.21",
     "markdown-it": "^14.1.0",
     "monaco-editor": "^0.50.0",
-    "semver": "^7.6.2",
+    "semver": "^7.6.3",
     "v-calendar": "^3.1.2",
-    "vue": "^3.4.31",
+    "vue": "^3.4.32",
     "vue-router": "^4.4.0",
-    "vuetify": "^3.6.12"
+    "vuetify": "^3.6.13"
   },
   "devDependencies": {
-    "@babel/types": "^7.24.8",
-    "@scrypted/sdk": "^0.3.42",
+    "@babel/types": "^7.24.9",
+    "@scrypted/sdk": "^0.3.45",
     "@types/highlight.js": "^10.1.0",
-    "@types/lodash": "^4.17.6",
+    "@types/lodash": "^4.17.7",
     "@types/markdown-it": "^14.1.1",
-    "@types/node": "^20.14.10",
+    "@types/node": "^20.14.11",
     "@types/semver": "^7.5.8",
     "@vitejs/plugin-vue": "^5.0.5",
     "sass": "^1.77.8",
     "typescript": "^5.5.3",
-    "unplugin-vue-components": "^0.27.2",
-    "vite": "^5.3.3",
+    "unplugin-vue-components": "^0.27.3",
+    "vite": "^5.3.4",
     "vite-plugin-pwa": "^0.20.0",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-tsc": "^2.0.26"
   },
   "optionalDependencies": {
-    "@fortawesome/fontawesome-pro": "^6.5.2"
+    "@fortawesome/fontawesome-pro": "^6.6.0"
   }
 }
