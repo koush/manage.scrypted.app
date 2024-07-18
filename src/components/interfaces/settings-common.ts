@@ -9,6 +9,13 @@ export function getChipVariant() {
   });
 }
 
+export function getButtonVariant() {
+  const dark = isDark();
+  return computed(() => {
+    return dark.value ? 'flat' : 'outlined';
+  });
+}
+
 export const chipColor = "light-blue-darken-3";
 
 export interface SettingsSubgroup {

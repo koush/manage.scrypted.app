@@ -4,7 +4,7 @@
     name }}</v-list-item-subtitle>
 
   <v-card-actions>
-    <v-btn-group density="compact" variant="outlined" color="deep-purple" :model-value="state">
+    <v-btn-group density="compact" :variant="buttonVariant" :color="chipColor" :model-value="state">
       <v-btn v-for="action in actionable" size="x-small" class="ml-0 mr-0" :active="action === activeAction"
         @click="action?.click()" :key="action.name" :prepend-icon="getFaPrefix(action.icon)"
         :value="action.value">{{ action.name
@@ -21,6 +21,9 @@
 <script setup lang="ts">
 import { getFaPrefix } from '@/device-icons';
 import { computed } from 'vue';
+import { chipColor, getButtonVariant } from '../settings-common';
+
+const buttonVariant = getButtonVariant();
 
 const props = defineProps<{
   name: string;

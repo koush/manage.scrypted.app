@@ -4,27 +4,9 @@
       <v-icon size="xx-small">{{ getFaPrefix('fa-database') }}</v-icon>
     </template>
     <template v-slot:title>
-      <v-card-subtitle v-if="!hasDeviceCreator" class="pt-1 pl-4" style="text-transform: uppercase;">
+      <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
         Providing Things
       </v-card-subtitle>
-      <template v-else>
-        <div style="display: flex; align-items: center">
-          <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
-            Providing Things
-          </v-card-subtitle>
-          <v-dialog max-width="500">
-            <template v-slot:activator="{ props: activatorProps }">
-              <v-btn v-bind="activatorProps" variant="elevated" color="success" class="ml-4" size="small">Add
-                {{ title }}</v-btn>
-            </template>
-            <template v-slot:default="{ isActive }">
-              <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false"
-                @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
-              </DeviceCreatorInterface>
-            </template>
-          </v-dialog>
-        </div>
-      </template>
     </template>
     <v-card-subtitle>
       These things were created by {{ device.name }}.
@@ -49,6 +31,20 @@
         </tr>
       </tbody>
     </v-table>
+    <v-card-actions v-if="hasDeviceCreator || hasDeviceDiscovery">
+      <v-dialog max-width="500" v-if="hasDeviceCreator">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn v-bind="activatorProps" variant="flat" color="success" class="ml-4" size="small">Add
+            {{ title }}</v-btn>
+        </template>
+        <template v-slot:default="{ isActive }">
+          <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false"
+            @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
+          </DeviceCreatorInterface>
+        </template>
+      </v-dialog>
+      <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small">Discover</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 <script setup lang="ts">
@@ -56,7 +52,7 @@ import { getAllDevices } from '@/common/devices';
 import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, goDevice } from '@/id-device';
-import { DeviceProvider, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
+import { DeviceDiscovery, DeviceProvider, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
@@ -69,7 +65,7 @@ const props = defineProps<{
   id: string;
 }>();
 
-const device = getDeviceFromId<DeviceProvider & ScryptedSystemDevice>(() => props.id);
+const device = getDeviceFromId<DeviceProvider & DeviceDiscovery & ScryptedSystemDevice>(() => props.id);
 
 const title = computed(() => {
   return device.value?.systemDevice?.deviceCreator || "Device";
@@ -90,5 +86,9 @@ const showIp = computed(() => {
 
 const hasDeviceCreator = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator);
+});
+
+const hasDeviceDiscovery = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.DeviceDiscovery);
 });
 </script>
