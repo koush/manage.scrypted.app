@@ -70,6 +70,7 @@ export default defineConfig({
 		}),
 		Components(),
 	],
+	base: './',
 	define: { 'process.env': {} },
 	resolve: {
 		alias: {
