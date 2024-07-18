@@ -70,6 +70,7 @@ watch(() => container.value, createEditor);
 </script>
 <script lang="ts">
 import type { ScryptedLibs, StandardLibs } from '@scrypted/common/src/eval/monaco-libs';
+import { getBaseUrl } from '@/common/client';
 
 interface RawModule {
   default: string;
@@ -130,6 +131,18 @@ async function main() {
 
 const monacoEvalDefaults = main();
 
+window.MonacoEnvironment = {
+  getWorkerUrl: function (workerId, label) {
+    const baseUrl = new URL(getBaseUrl());
+    baseUrl.search = '';
+    baseUrl.hash = '';
+    const baseUrlWorker = new URL('vs/base/worker/workerMain.js', baseUrl);
+    return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+              self.MonacoEnvironment = { baseUrl: '${baseUrl}' };
+              importScripts('${baseUrlWorker}');
+          `)}`;
+  }
+};
 </script>
 <style scoped>
 .shrink {

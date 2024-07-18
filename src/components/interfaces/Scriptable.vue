@@ -20,6 +20,7 @@ import { Scriptable, ScriptSource } from '@scrypted/types';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 import type * as MonacoType from 'monaco-editor';
+import { getBaseUrl } from '@/common/client';
 
 const monaco = await import('monaco-editor');
 
@@ -115,9 +116,13 @@ watch(() => device.value, createEditor);
 <script lang="ts">
 window.MonacoEnvironment = {
   getWorkerUrl: function (workerId, label) {
+    const baseUrl = new URL(getBaseUrl());
+    baseUrl.search = '';
+    baseUrl.hash = '';
+    const baseUrlWorker = new URL('vs/base/worker/workerMain.js', baseUrl);
     return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-              self.MonacoEnvironment = { baseUrl: '${window.location.origin}/' };
-              importScripts('${window.location.origin}/vs/base/worker/workerMain.js');
+              self.MonacoEnvironment = { baseUrl: '${baseUrl}' };
+              importScripts('${baseUrlWorker}');
           `)}`;
   }
 };
