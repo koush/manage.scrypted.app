@@ -17,7 +17,7 @@
       :state="hasPause && device.paused ? 'pause' : (device.running ? 'start' : 'stop')" :name="device.type">
     </StateToggle>
 
-    <StateToggle v-if="hasPtz" :states="ptzActions" :state="null" :name="device.type"></StateToggle>
+    <StateToggle v-if="hasPtz" :states="ptzActions" :state="null" name="Pan/Tilt/Zoom"></StateToggle>
   </v-card>
 </template>
 <script setup lang="ts">
@@ -134,7 +134,7 @@ const hasPtz = computed(() => {
 const ptzActions = computed(() => {
   // this is actually stateless, but we want the buttons to never be active.
   const ret = [
-    ...device.value.ptzCapabilities?.zoom ? [
+    ...device.value.ptzCapabilities?.tilt ? [
       {
         name: 'Up',
         icon: 'fa-arrow-up',
@@ -192,5 +192,5 @@ const ptzActions = computed(() => {
   return ret;
 });
 
-const show = computed(() => hasOnOff.value || hasLock.value || hasStartStop.value);
+const show = computed(() => hasOnOff.value || hasLock.value || hasStartStop.value || hasPtz.value);
 </script>

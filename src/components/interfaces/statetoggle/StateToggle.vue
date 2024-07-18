@@ -11,7 +11,7 @@
         }}</v-btn>
     </v-btn-group>
 
-    <template v-if="!activeAction?.click">
+    <template v-if="activeAction && !activeAction?.click">
       <v-spacer></v-spacer>
       <v-btn variant="flat" :color="activeAction.color" size="x-small" class="ml-0 mr-0" :active="true" disabled
         :key="activeAction.name" :prepend-icon="getFaPrefix(activeAction.icon)">{{ activeAction.name }}</v-btn>
