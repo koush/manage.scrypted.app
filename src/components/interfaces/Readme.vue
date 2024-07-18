@@ -50,6 +50,7 @@ const innerHtml = asyncComputed({
     const ret = mdit.render(md);
     return ret;
   },
+  default: '',
   watch: {
     device: () => device.value,
   },

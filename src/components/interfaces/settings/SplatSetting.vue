@@ -1,5 +1,7 @@
 <template>
-  <ChoiceStringSetting v-if="modelValue.choices" :model-value="modelValue"></ChoiceStringSetting>
+  <ReadonlyRangeSetting v-if="modelValue.type === 'number' && modelValue.readonly && modelValue.range" :model-value="modelValue"></ReadonlyRangeSetting>
+  <ChoiceStringSetting v-else-if="modelValue.choices" :model-value="modelValue"></ChoiceStringSetting>
+  <MultipleStringSetting v-else-if="isStringType(modelValue.type) && modelValue.multiple" :model-value="modelValue"></MultipleStringSetting>
   <StringSetting v-else-if="isStringType(modelValue.type)" :model-value="modelValue"></StringSetting>
   <BooleanSetting v-else-if="modelValue.type === 'boolean'" :model-value="modelValue"></BooleanSetting>
   <ButtonSetting v-else-if="modelValue.type === 'button'" :model-value="modelValue"
@@ -30,6 +32,8 @@ import ScriptSetting from './ScriptSetting.vue';
 import DaySetting from './DaySetting.vue';
 import HtmlSetting from './HtmlSetting.vue';
 import DeviceInterfaceSetting from './DeviceInterfaceSetting.vue';
+import ReadonlyRangeSetting from './ReadonlyRangeSetting.vue';
+import MultipleStringSetting from './MultipleStringSetting.vue';
 
 const modelValue = defineModel<Setting>();
 watchModelValue(modelValue);
