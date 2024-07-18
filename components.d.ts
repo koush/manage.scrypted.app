@@ -53,6 +53,8 @@ declare module 'vue' {
     ServerManagement: typeof import('./src/components/ServerManagement.vue')['default']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
     SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
+    StateToggle: typeof import('./src/components/interfaces/statetoggle/StateToggle.vue')['default']
+    StateToggles: typeof import('./src/components/interfaces/statetoggle/StateToggles.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
     ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']

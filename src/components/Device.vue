@@ -64,6 +64,7 @@
         </template>
         <template v-else>
         </template>
+        <StateToggles :id="id" class="mb-4"></StateToggles>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
@@ -173,6 +174,7 @@ import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plug
 import { isTouchDevice } from '@/common/size';
 import ScryptedLogger from './interfaces/ScryptedLogger.vue';
 import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
+import StateToggles from './interfaces/statetoggle/StateToggles.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
