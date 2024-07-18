@@ -77,6 +77,9 @@
           <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         </Suspense>
         <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
+        <Suspense>
+          <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
+        </Suspense>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
           @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
@@ -181,6 +184,7 @@ import { isTouchDevice } from '@/common/size';
 import ScryptedLogger from './interfaces/ScryptedLogger.vue';
 import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
+import PositionSensor from './interfaces/PositionSensor.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -215,6 +219,10 @@ const hasObjectDetection = computed(() => {
 
 const hasScriptable = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Scriptable);
+});
+
+const hasPositionSensor = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.PositionSensor);
 });
 
 const hasTTYService = computed(() => {
