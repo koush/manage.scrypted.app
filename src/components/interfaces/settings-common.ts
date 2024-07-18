@@ -12,7 +12,7 @@ export function getChipVariant() {
 export function getButtonVariant() {
   const dark = isDark();
   return computed(() => {
-    return dark.value ? 'flat' : 'outlined';
+    return dark.value ? 'outlined' : 'outlined';
   });
 }
 

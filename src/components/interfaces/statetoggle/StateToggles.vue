@@ -5,9 +5,16 @@
     </template>
     <template v-slot:title>
       <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
-        Controls
+        Status and Controls
       </v-card-subtitle>
     </template>
+
+    <StateToggle v-if="hasMotionSensor" :states="motionActions" :state="device.motionDetected">
+    </StateToggle>
+
+    <StateToggle v-if="hasBinarySensor" :states="binarySensorActions" :state="device.binaryState">
+    </StateToggle>
+
     <StateToggle v-if="hasOnOff" :states="onOffActions" :state="device.on"
       :name="device.type === ScryptedDeviceType.Camera ? 'Indicator Light' : device.type"></StateToggle>
 
@@ -22,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { Lock, LockState, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
+import { BinarySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -35,7 +42,54 @@ const emits = defineEmits<{
   (event: 'run'): void;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor>(() => props.id);
+
+const hasMotionSensor = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
+});
+
+const motionActions = computed(() => [
+  {
+    name: 'Motion',
+    icon: 'fa-wind',
+    value: true,
+    click: () => { },
+    disabled: true,
+  },
+  {
+    name: 'No Motion',
+    icon: 'fa-empty-set',
+    value: false,
+    default: true,
+    click: () => { },
+    disabled: true,
+  },
+]);
+
+const hasBinarySensor = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.BinarySensor);
+});
+
+const binarySensorActions = computed(() => {
+  const ret = [
+    {
+      name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Ringing' : 'Active',
+      icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell-ring' : 'fa-sensor-on',
+      value: true,
+      click: () => { },
+      disabled: true,
+    },
+    {
+      name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Not Ringing' : 'Idle',
+      icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell' : 'fa-sensor',
+      value: false,
+      default: true,
+      click: () => { },
+      disabled: true,
+    },
+  ];
+  return ret;
+});
 
 const hasOnOff = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.OnOff);
@@ -192,5 +246,8 @@ const ptzActions = computed(() => {
   return ret;
 });
 
-const show = computed(() => hasOnOff.value || hasLock.value || hasStartStop.value || hasPtz.value);
+const show = computed(() =>
+  hasOnOff.value || hasLock.value || hasStartStop.value
+  || hasPtz.value || hasMotionSensor.value || hasBinarySensor.value
+);
 </script>

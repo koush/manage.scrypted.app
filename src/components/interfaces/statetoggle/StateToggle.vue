@@ -1,13 +1,17 @@
 <template>
-  <v-divider class="mt-2 mb-2"></v-divider>
-  <v-list-item-subtitle class="shrink ml-3 mr-3">{{
-    name }}</v-list-item-subtitle>
+  <template v-if="name">
+    <v-divider class="mt-2 mb-2"></v-divider>
+    <v-list-item-subtitle class="shrink ml-3 mr-3">{{
+      name }}</v-list-item-subtitle>
+  </template>
 
   <v-card-actions>
-    <v-btn-group density="compact" :variant="buttonVariant" :color="chipColor" :model-value="state">
-      <v-btn v-for="action in actionable" size="x-small" class="ml-0 mr-0" :active="action === activeAction"
-        @click="action?.click()" :key="action.name" :prepend-icon="getFaPrefix(action.icon)"
-        :value="action.value">{{ action.name
+    <v-btn-group density="compact" :color="chipColor" :model-value="state">
+      <v-btn v-for="action in actionable" size="x-small" class="ml-0 mr-0"
+        :style="action.disabled ? 'cursor: initial;' : undefined" :ripple="!action.disabled"
+        :variant="activeAction === action ? 'flat' : 'outlined'" @click="action?.click()" :key="action.name"
+        :prepend-icon="getFaPrefix(action.icon)" :value="action.value">{{
+          action.name
         }}</v-btn>
     </v-btn-group>
 
@@ -21,18 +25,17 @@
 <script setup lang="ts">
 import { getFaPrefix } from '@/device-icons';
 import { computed } from 'vue';
-import { chipColor, getButtonVariant } from '../settings-common';
-
-const buttonVariant = getButtonVariant();
+import { chipColor } from '../settings-common';
 
 const props = defineProps<{
-  name: string;
+  name?: string;
   state: any;
   states: {
     name: string;
     icon: string;
     value: any;
     default?: boolean;
+    disabled?: boolean;
     click?: () => void;
     color?: string;
   }[];
