@@ -22,13 +22,13 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
+import { adoptDevice, createDevice } from '@/device-creator';
 import { getDeviceFromId } from '@/id-device';
-import { DeviceCreator, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice, Setting } from '@scrypted/types';
+import { DeviceCreator, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import Settings from './settings/Settings.vue';
 import { TrackedSetting, normalizeBoolean, normalizeNumber } from './settings/setting-modelvalue';
-import { useRouter } from 'vue-router';
-import { adoptDevice, createDevice } from '@/device-creator';
 
 const props = defineProps<{
   id?: string;

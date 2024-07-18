@@ -34,18 +34,15 @@
 
 <script setup lang="ts">
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, goDeviceId } from '@/id-device';
-import { sleep } from '@scrypted/server/src/sleep';
-import { DeviceCreatorSettings, DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedSystemDevice, Setting } from '@scrypted/types';
+import { getDeviceFromId } from '@/id-device';
+import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './DeviceCreator.vue';
 
 const { mdAndUp } = useDisplay();
 const dialog = ref(false);
 const discoveredDevice = ref<DiscoveredDevice>();
-const router = useRouter();
 
 const props = defineProps<{
   id: string;
