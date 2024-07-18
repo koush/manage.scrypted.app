@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
+import 'leaflet/dist/leaflet.css';
 import { getDeviceFromId } from '@/id-device';
 import { PositionSensor } from '@scrypted/types';
 
-await import('leaflet/dist/leaflet.css');
 const leaflet = await import('@vue-leaflet/vue-leaflet');
 const { LMap, LTileLayer, LMarker, LControlAttribution } = leaflet;
 
