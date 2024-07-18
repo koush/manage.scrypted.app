@@ -116,7 +116,7 @@ watch(() => device.value, createEditor);
 <script lang="ts">
 window.MonacoEnvironment = {
   getWorkerUrl: function (workerId, label) {
-    const baseUrl = new URL(getBaseUrl());
+    const baseUrl = new URL(document.baseURI);
     baseUrl.search = '';
     baseUrl.hash = '';
     const baseUrlWorker = new URL('vs/base/worker/workerMain.js', baseUrl);
