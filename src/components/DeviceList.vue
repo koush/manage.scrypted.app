@@ -114,10 +114,14 @@ const devices = computed(() => {
 
   const all = getAllDevices();
   const ret = all.filter(d => {
-    if (d.interfaces.includes(ScryptedInterface.ScryptedPlugin))
+    if (d.interfaces.includes(ScryptedInterface.ScryptedPlugin) && !hasFixedPhysicalLocation(d.type!))
       return false;
     // if this is this is a sub device ofanother device that has a fixed physical location, don't show it.
     const provider = connectedClient.value?.systemManager.getDeviceById(d.providerId!);
+    if (provider.id === d.id) {
+      // this is the root plugin device which has a fixed physical location type, so show it
+      return true;
+    }
     if (!provider?.type)
       return true;
     if (hasFixedPhysicalLocation(provider.type))
