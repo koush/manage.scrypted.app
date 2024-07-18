@@ -22,9 +22,11 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LMarker, LControlAttribution } from "@vue-leaflet/vue-leaflet";
 import { getDeviceFromId } from '@/id-device';
 import { PositionSensor } from '@scrypted/types';
+
+const leaflet = await import('@vue-leaflet/vue-leaflet');
+const { LMap, LTileLayer, LMarker, LControlAttribution } = leaflet;
 
 const props = defineProps<{
   id: string;

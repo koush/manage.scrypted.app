@@ -77,7 +77,9 @@
           <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         </Suspense>
         <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
-        <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
+        <Suspense>
+          <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
+        </Suspense>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
           @img:click="playing = destination">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
