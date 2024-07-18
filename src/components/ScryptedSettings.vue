@@ -89,18 +89,20 @@ const settings = asyncComputed({
     });
 
     const stacked = await Promise.all(all);
-    const flat = stacked.flat()
+    const flat = stacked.flat();
+
+    const sorted =flat
       .sort((s1, s2) => {
         // alphabetical unless the group title is General
         if (s1.group === s2.group)
-          return s1.title.localeCompare(s2.title);
+          return flat.indexOf(s1) - flat.indexOf(s2);
         if (s1.group === 'General')
           return -1;
         if (s2.group === 'General')
           return 1;
         return s1.group.localeCompare(s2.group);
       })
-    return flat.map(trackSetting);
+    return sorted.map(trackSetting);
   },
   default(previousValue) {
     return previousValue || [];
