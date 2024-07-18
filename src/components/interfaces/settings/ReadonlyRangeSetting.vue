@@ -3,9 +3,11 @@
     <v-divider class="mt-2 mb-2"></v-divider>
     <v-list-item-subtitle class="shrink ml-3 mr-3 mb-1" v-if="modelValue.title">{{
       modelValue.title }}</v-list-item-subtitle>
-    <v-progress-linear :color="chipColor" :model-value="n" :max="modelValue.range[1]" height="20" rounded>
+    <v-progress-linear :color="color" :model-value="n" :max="modelValue.range[1]" height="20" rounded>
       <template v-slot:default>
-        {{ modelValue.value }}/{{ modelValue.range[1] }} {{ modelValue.placeholder }}
+        <div :style="dark ? undefined : 'color: white;'">
+          {{ modelValue.value }}/{{ modelValue.range[1] }} {{ modelValue.placeholder }}
+        </div>
       </template>
     </v-progress-linear>
     <v-list-item-subtitle class="shrink ml-3 mr-3 mt-1" v-if="modelValue.description">{{
@@ -17,6 +19,12 @@
 import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { chipColor } from '../settings-common';
+import { isDark } from '@/common/colors';
+const dark = isDark();
+
+const color = computed(() => {
+  return dark.value ? chipColor : 'light-blue-darken-1';
+});
 
 const modelValue = defineModel<Setting>();
 
