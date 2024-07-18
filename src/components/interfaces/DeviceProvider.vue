@@ -39,8 +39,7 @@
             {{ title }}</v-btn>
         </template>
         <template v-slot:default="{ isActive }">
-          <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false"
-            @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
+          <DeviceCreatorInterface :id="id" @click:cancel="isActive.value = false" @created="isActive.value = false">
           </DeviceCreatorInterface>
         </template>
       </v-dialog>
@@ -50,7 +49,6 @@
 </template>
 <script setup lang="ts">
 import { getAllDevices } from '@/common/devices';
-import { createDevice } from '@/device-creator';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, goDevice, registerListener } from '@/id-device';
 import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';

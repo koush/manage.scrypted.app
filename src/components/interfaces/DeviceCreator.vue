@@ -1,17 +1,20 @@
 <template>
-  <v-card :title="`Add ${title}`">
+  <v-card :title="`Add ${props.title || title}`">
     <template v-if="!id">
-      <v-card-text>Add a device by choosing the device type below. If the device type is not available, supported devices can be extended by <router-link variant="text" to="/component/plugin/install">installing Plugins</router-link>.</v-card-text>
+      <v-card-text>Add a device by choosing the device type below. If the device type is not available, supported
+        devices can be extended by <router-link variant="text" to="/component/plugin/install">installing
+          Plugins</router-link>.</v-card-text>
       <Settings v-model="idSettings" hide-border />
     </template>
 
+    <Settings v-if="useId" v-model="settings" hide-border />
 
-      <Settings v-if="useId" v-model="settings" hide-border />
+    <v-alert v-if="createError" class="ml-4 mr-4" color="error">{{ createError }}</v-alert>
 
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn text="Cancel" @click="emits('click:cancel')"></v-btn>
-      <v-btn v-if="useId" text="Add" @click="emits('click:create', useId, settings)" color="success"></v-btn>
+      <v-btn v-if="useId" text="Add" @click="tryCreateDevice" color="success"></v-btn>
     </v-card-actions>
   </v-card>
 
@@ -20,18 +23,22 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
 import { getDeviceFromId } from '@/id-device';
-import { DeviceCreator, ScryptedInterface, ScryptedSystemDevice, Setting } from '@scrypted/types';
+import { DeviceCreator, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice, Setting } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import Settings from './settings/Settings.vue';
 import { TrackedSetting, normalizeBoolean, normalizeNumber } from './settings/setting-modelvalue';
+import { useRouter } from 'vue-router';
+import { adoptDevice, createDevice } from '@/device-creator';
 
 const props = defineProps<{
-  id?: string,
+  id?: string;
+  discoveredDevice?: DiscoveredDevice;
+  title?: string;
 }>();
 
-const emits  = defineEmits<{
+const emits = defineEmits<{
   (event: 'click:cancel'): void;
-  (event: 'click:create', id: string, settings: Setting[]): void;
+  (event: 'created'): void;
 }>();
 
 const useId = ref<string>(props.id);
@@ -66,6 +73,9 @@ watch(() => idSettings.value?.[0]?.value, async () => {
 
 const settings = asyncComputed({
   async get() {
+    if (props.discoveredDevice)
+      return props.discoveredDevice?.settings || [];
+
     if (!device.value.interfaces.includes(ScryptedInterface.DeviceCreator))
       return;
     const settings = await device.value.getCreateDeviceSettings();
@@ -90,4 +100,22 @@ const settings = asyncComputed({
   }
 });
 
+const router = useRouter();
+const createError = ref<string>();
+
+async function tryCreateDevice() {
+  try {
+    if (props.discoveredDevice)
+      await adoptDevice(router, useId.value, props.discoveredDevice.nativeId, settings.value);
+    else
+      await createDevice(router, useId.value, settings.value);
+  }
+  catch (e) {
+    createError.value = (e as Error).message;
+    return;
+  }
+
+  createError.value = undefined;
+  emits('created');
+}
 </script>

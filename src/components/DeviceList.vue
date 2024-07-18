@@ -13,8 +13,7 @@
                 </template>
 
                 <template v-slot:default="{ isActive }">
-                  <DeviceCreatorInterface @click:cancel="isActive.value = false"
-                    @click:create="(id, settings) => { isActive.value = false; createDevice(router, id, settings); }">
+                  <DeviceCreatorInterface @click:cancel="isActive.value = false" @created="isActive.value = false">
                   </DeviceCreatorInterface>
                 </template>
               </v-dialog>
@@ -70,7 +69,6 @@
 <script setup lang="ts">
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { createDevice } from '@/device-creator';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { goDevice } from '@/id-device';
 import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';

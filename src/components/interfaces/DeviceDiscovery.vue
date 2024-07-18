@@ -1,46 +1,58 @@
 <template>
-    <v-card-subtitle>
-      These things were discovered by {{ device.name }}.
-    </v-card-subtitle>
-    <v-table density="compact">
-        <thead>
-            <tr>
-                <th style="width: 32px;"></th>
-                <th class="text-left">
-                    Name
-                </th>
-                <th class="text-left" v-if="mdAndUp && showModel">Model</th>
-                <th class="text-left" v-if="mdAndUp && showIp">IP</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="device in discoveredDevices" :key="device.nativeId"
-                style="cursor: pointer;">
-                <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                <td>{{ device.name }}</td>
-                <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
-                <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
-            </tr>
-        </tbody>
-    </v-table>
+  <v-card-subtitle class="mt-8">
+    These things were discovered by {{ device.name }} and can be added to Scrypted.
+  </v-card-subtitle>
+  <v-dialog max-width="500" v-model="dialog">
+    <DeviceCreatorInterface :id="id" :discovered-device="discoveredDevice" :title="discoveredDevice?.name"
+      @created="dialog = false">
+    </DeviceCreatorInterface>
+  </v-dialog>
+
+  <v-table density="compact">
+    <thead>
+      <tr>
+        <th style="width: 32px;"></th>
+        <th class="text-left">
+          Name
+        </th>
+        <th class="text-left" v-if="mdAndUp && showModel">Model</th>
+        <th class="text-left" v-if="mdAndUp && showIp">IP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="device in discoveredDevices" :key="device.nativeId" style="cursor: pointer;">
+        <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
+        <td><v-btn @click="adoptDevice(device)" size="small" variant="text"
+            :prepend-icon="getFaPrefix('fa-circle-plus')">{{ device.name }}</v-btn></td>
+        <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
+        <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
+      </tr>
+    </tbody>
+  </v-table>
 
 </template>
 
 <script setup lang="ts">
-import { typeToIcon } from '@/device-icons';
-import { getDeviceFromId } from '@/id-device';
-import { DeviceProvider, DiscoveredDevice } from '@scrypted/types';
-import { computed } from 'vue';
+import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { getDeviceFromId, goDeviceId } from '@/id-device';
+import { sleep } from '@scrypted/server/src/sleep';
+import { DeviceCreatorSettings, DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedSystemDevice, Setting } from '@scrypted/types';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import DeviceCreatorInterface from './DeviceCreator.vue';
 
-const { mdAndUp } = useDisplay()
+const { mdAndUp } = useDisplay();
+const dialog = ref(false);
+const discoveredDevice = ref<DiscoveredDevice>();
+const router = useRouter();
 
 const props = defineProps<{
-    id: string;
-    discoveredDevices: DiscoveredDevice[];
+  id: string;
+  discoveredDevices: DiscoveredDevice[];
 }>();
 
-const device = getDeviceFromId<DeviceProvider>(() => props.id);
+const device = getDeviceFromId<DeviceProvider & DeviceDiscovery & ScryptedSystemDevice>(() => props.id);
 
 const showModel = computed(() => {
   return props.discoveredDevices.some(d => d.info?.model);
@@ -50,4 +62,8 @@ const showIp = computed(() => {
   return props.discoveredDevices.some(d => d.info?.ip);
 });
 
+async function adoptDevice(d: DiscoveredDevice) {
+  discoveredDevice.value = d;
+  dialog.value = true;
+}
 </script>
