@@ -41,6 +41,7 @@ declare module 'vue' {
     Pagination: typeof import('./src/components/Pagination.vue')['default']
     Plugins: typeof import('./src/components/plugin/Plugins.vue')['default']
     PluginStats: typeof import('./src/components/plugin/PluginStats.vue')['default']
+    PositionSensor: typeof import('./src/components/interfaces/PositionSensor.vue')['default']
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
     ReadonlyRangeSetting: typeof import('./src/components/interfaces/settings/ReadonlyRangeSetting.vue')['default']

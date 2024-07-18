@@ -17,6 +17,7 @@
     "@scrypted/sdk": "file:../scrypted/sdk",
     "@scrypted/server": "file:../scrypted/server",
     "@scrypted/types": "^0.3.43",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "buffer": "^6.0.3",
