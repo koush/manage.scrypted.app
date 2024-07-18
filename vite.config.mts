@@ -38,25 +38,25 @@ export default defineConfig({
 				"short_name": "Scrypted",
 				"icons": [
 					{
-						"src": "https://nvr.scrypted.app/img/icons/manifest-icon-192.maskable.png",
+						"src": "img/icons/manifest-icon-192.maskable.png",
 						"sizes": "192x192",
 						"type": "image/png",
 						"purpose": "any"
 					},
 					{
-						"src": "https://nvr.scrypted.app/img/icons/manifest-icon-192.maskable.png",
+						"src": "img/icons/manifest-icon-192.maskable.png",
 						"sizes": "192x192",
 						"type": "image/png",
 						"purpose": "maskable"
 					},
 					{
-						"src": "https://nvr.scrypted.app/img/icons/manifest-icon-512.maskable.png",
+						"src": "img/icons/manifest-icon-512.maskable.png",
 						"sizes": "512x512",
 						"type": "image/png",
 						"purpose": "any"
 					},
 					{
-						"src": "https://nvr.scrypted.app/img/icons/manifest-icon-512.maskable.png",
+						"src": "img/icons/manifest-icon-512.maskable.png",
 						"sizes": "512x512",
 						"type": "image/png",
 						"purpose": "maskable"
