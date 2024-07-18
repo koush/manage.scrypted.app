@@ -8,10 +8,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Setting } from '@scrypted/types';
-import { onUnmounted, ref, watch } from 'vue';
 import { getLineHintColor, isDark } from '@/common/colors';
+import { Setting } from '@scrypted/types';
 import type * as MonacoType from 'monaco-editor';
+import { onUnmounted, ref, watch } from 'vue';
 
 const monaco = await import('monaco-editor');
 
@@ -70,7 +70,6 @@ watch(() => container.value, createEditor);
 </script>
 <script lang="ts">
 import type { ScryptedLibs, StandardLibs } from '@scrypted/common/src/eval/monaco-libs';
-import { getBaseUrl } from '@/common/client';
 
 interface RawModule {
   default: string;

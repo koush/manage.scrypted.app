@@ -17,10 +17,9 @@
 import { isDark } from '@/common/colors';
 import { getDeviceFromId } from '@/id-device';
 import { Scriptable, ScriptSource } from '@scrypted/types';
+import type * as MonacoType from 'monaco-editor';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
-import type * as MonacoType from 'monaco-editor';
-import { getBaseUrl } from '@/common/client';
 
 const monaco = await import('monaco-editor');
 
