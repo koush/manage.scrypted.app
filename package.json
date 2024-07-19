@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "node scripts/post-install.js && ./scripts/copy-monaco-worker.sh",
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "SCRYPTED_PWA=true vue-tsc --noEmit && SCRYPTED_PWA=true vite build",
     "core-build": "vue-tsc --noEmit && vite build --emptyOutDir --outDir ../scrypted/plugins/core/fs/dist",
     "preview": "vite preview"
   },

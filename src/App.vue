@@ -28,9 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import  * as packageJson from '../package.json';
+import * as packageJson from '../package.json';
 import { ref } from 'vue';
-import { clientAppVersion, cloudLoginRedirect, connectedClient, connectPluginClient, isLoggedIn, setAppDomain, setClientAppVersion, setClientConnectionPreferences, setClientPluginId } from './common/client';
+import { clientAppVersion, cloudLoginRedirect, connectedClient, connectPluginClient, isAppDomain, isLoggedIn, setAppDomain, setClientAppVersion, setClientConnectionPreferences, setClientPluginId } from './common/client';
 import CloudLogin from './common/components/CloudLogin.vue';
 import Login from './common/components/Login.vue';
 import { isTouchDevice } from './common/size';
@@ -53,6 +53,15 @@ setAppDomain('manage.scrypted.app');
 setClientConnectionPreferences({
   webrtc: false,
 });
+
+if (!isAppDomain()) {
+  // unregister any service workers if not running from manage.scrypted.app
+  // todo: remove, this as it is handled by npm run build now.
+  navigator.serviceWorker?.getRegistration().then(registration => {
+    registration?.unregister();
+  });
+}
+
 connectPluginClient();
 
 //

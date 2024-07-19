@@ -1,12 +1,12 @@
 // Plugins
-import Components from 'unplugin-vue-components/vite'
 import Vue from '@vitejs/plugin-vue'
-import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import Components from 'unplugin-vue-components/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
-import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite'
 
 const target = 'http://localhost:11080';
 
@@ -23,7 +23,8 @@ export default defineConfig({
 		}),
 		// https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
 		Vuetify(),
-		VitePWA({
+		// only use pwa in production, and not in the plugin.
+		...[process.env.SCRYPTED_PWA ? VitePWA({
 			workbox: {
 				maximumFileSizeToCacheInBytes: 10000000,
 			},
@@ -67,7 +68,9 @@ export default defineConfig({
 				"background_color": "#000000",
 				"theme_color": "#424242"
 			}
-		}),
+		})
+			: undefined,
+		],
 		Components(),
 	],
 	base: './',
