@@ -9,7 +9,7 @@
     <v-btn-group density="compact" :color="chipColor" :model-value="state">
       <v-btn v-for="action in actionable" size="x-small" class="ml-0 mr-0"
         :style="action.disabled ? 'cursor: initial;' : undefined" :ripple="!action.disabled"
-        :variant="activeAction === action ? 'flat' : 'outlined'" @click="action?.click()" :key="action.name"
+        :variant="activeAction === action ? 'flat' : (action.disabled ? 'text' : 'outlined')"  @click="action?.click()" :key="action.name"
         :prepend-icon="getFaPrefix(action.icon)" :value="action.value">{{
           action.name
         }}</v-btn>

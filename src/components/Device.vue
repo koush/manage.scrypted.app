@@ -69,10 +69,17 @@
         <template v-else>
         </template>
         <StateToggles :id="id" class="mb-4"></StateToggles>
+        <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
+        </VideoClipsInterface>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
       <v-col cols="12" md="8">
+        <template v-if="!isTouchDevice">
+          <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
+            :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
+        </template>
+
         <Suspense>
           <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
         </Suspense>
@@ -87,6 +94,8 @@
           <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
             :microphone="!!talkback">
           </RTCSignalingChannel>
+          <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls
+            style="width: 100%; height: 100; object-fit: contain;"></video>
           <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
 
           <template v-slot:prepend>
@@ -98,6 +107,11 @@
                 @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
               <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
                 @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
+            </template>
+            <template v-if="videoClip">
+              <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
+                @click="videoClip = undefined" :tooltip="`Stop Playback`">
+              </ToolbarTooltipButton>
             </template>
             <template v-else-if="hasRTC">
               <template v-if="!playing">
@@ -132,10 +146,6 @@
           </template>
         </Camera>
 
-        <template v-if="!isTouchDevice">
-          <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
-            :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
-        </template>
         <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
         <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
         <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true" :control="true"
@@ -158,9 +168,10 @@
 import { ClipPathModel } from '@/clip-path-model';
 import { connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
+import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
-import { ClipPath, ScryptedInterface, Setting, Settings } from '@scrypted/types';
+import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import ClipPathEditor from './ClipPathEditor.vue';
@@ -172,19 +183,19 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
-import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
+import PositionSensor from './interfaces/PositionSensor.vue';
 import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
 import Readme from './interfaces/Readme.vue';
 import Scriptable from './interfaces/Scriptable.vue';
-import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
-import { PlaybackType } from './interfaces/camera-common';
-import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
-import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
-import { isTouchDevice } from '@/common/size';
 import ScryptedLogger from './interfaces/ScryptedLogger.vue';
+import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
+import VideoClipsInterface from './interfaces/VideoClips.vue';
+import { PlaybackType } from './interfaces/camera-common';
 import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
+import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
+import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
-import PositionSensor from './interfaces/PositionSensor.vue';
+import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -199,7 +210,7 @@ const props = defineProps<{
 }>();
 
 const id = computed(() => props.id || routeId.value);
-const device = getDeviceFromId<Settings>(() => id.value);
+const device = getDeviceFromId<Settings & VideoClips>(() => id.value);
 
 const hasOrCanCreateDevices = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator) || getAllDevices().find(d => d.providerId === id.value);
@@ -239,6 +250,19 @@ const hasReadme = computed(() => {
 
 const hasRTC = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+});
+
+const hasVideoClips = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.VideoClips);
+});
+
+const showVideoClips = computed(() => {
+  if (!hasCamera.value)
+    return false;
+  if (hasVideoClips.value)
+    return true;
+  // it could potentially save video clips, so offer it.
+  return device.value?.type === ScryptedDeviceType.Camera || device.value?.type === ScryptedDeviceType.Doorbell;
 });
 
 const hasIntercom = computed(() => {
@@ -323,6 +347,17 @@ const deviceAlerts = computed(() => {
   return scryptedAlerts.value.filter(a => a.path === devicePath);
 });
 
+const videoClip = ref<string>();
+async function playVideoClip(vc: VideoClip) {
+  console.warn(vc);
+  let href = vc.resources?.video?.href;
+  if (!href) {
+    const mo = await device.value.getVideoClip(vc.videoId);
+
+    href = (await connectedClient.value.mediaManager.convertMediaObject(mo, ScryptedMimeTypes.LocalUrl)).toString();
+  }
+  videoClip.value = href;
+}
 </script>
 <style scoped>
 .blur {

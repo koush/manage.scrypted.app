@@ -48,52 +48,63 @@ const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
 });
 
-const motionActions = computed(() => [
-  {
-    name: 'Motion',
-    icon: 'fa-wind',
-    value: true,
-    click: () => { },
-    disabled: true,
-  },
-  {
-    name: 'No Motion',
-    icon: 'fa-empty-set',
-    value: false,
-    default: true,
-    click: () => { },
-    disabled: true,
-  },
-]);
+const motionActions = computed(() => {
+  if (device.value.motionDetected) {
+    return [
+      {
+        name: 'Motion',
+        icon: 'fa-wind',
+        value: true,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  return [
+    {
+      name: 'No Motion',
+      icon: 'fa-empty-set',
+      value: undefined,
+      // default: true,
+      click: () => { },
+      disabled: true,
+    },
+  ]
+});
 
 const hasBinarySensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.BinarySensor);
 });
 
 const binarySensorActions = computed(() => {
-  const ret = [
-    {
-      name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Ringing' : 'Active',
-      icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell-ring' : 'fa-sensor-on',
-      value: true,
-      click: () => { },
-      disabled: true,
-    },
+  if (device.value.binaryState) {
+    return [
+      {
+        name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Ringing' : 'Active',
+        icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell-ring' : 'fa-sensor-on',
+        value: true,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  return [
     {
       name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Not Ringing' : 'Idle',
       icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell' : 'fa-sensor',
-      value: false,
-      default: true,
+      value: undefined,
       click: () => { },
       disabled: true,
     },
   ];
-  return ret;
 });
 
 const hasOnOff = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.OnOff);
 });
+
 const onOffActions = computed(() => [
   {
     name: 'Off',

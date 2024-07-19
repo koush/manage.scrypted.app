@@ -91,7 +91,11 @@ const choices = computed(() => {
         return -1;
       if (h2 && !h1)
         return 1;
-      // prefer cameras (if both are physical)
+      // prefer doorbells/cameras (if both are physical)
+      if (d1.type === ScryptedDeviceType.Doorbell)
+        return -1;
+      if (d2.type === ScryptedDeviceType.Doorbell)
+        return 1;
       if (d1.type === ScryptedDeviceType.Camera)
         return -1;
       if (d2.type === ScryptedDeviceType.Camera)
