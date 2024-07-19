@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { isDark } from '@/common/colors';
+import { observeResize } from '@/common/resize-observer';
 import { getFaPrefix } from "@/device-icons";
 import { createAsyncQueue, createAsyncQueueFromGenerator } from "@scrypted/common/src/async-queue";
 import { Deferred } from "@scrypted/common/src/deferred";
@@ -30,10 +31,9 @@ import { sleep } from "@scrypted/common/src/sleep";
 import { DeviceProvider, StreamService } from '@scrypted/types';
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
+import debounce from 'lodash/debounce';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
-import { debounce } from 'lodash';
-import { observeResize } from '@/common/resize-observer';
 
 const props = defineProps<{
   title: string;

@@ -13,12 +13,15 @@
 </template>
 <script setup lang="ts">
 import markdownit from 'markdown-it';
-import hljs from 'highlight.js';
 import { Readme } from '@scrypted/types';
 import { getDeviceFromId } from '@/id-device';
 import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { getLineHintColor } from '@/common/colors';
+import hljs from 'highlight.js/lib/core';
+import typescript from 'highlight.js/lib/languages/typescript';
+
+hljs.registerLanguage('typescript', typescript);
 
 const props = defineProps<{
   id: string;
