@@ -33,26 +33,26 @@
           On NPM</v-btn>
       </v-card-actions>
     </v-card>
-  </v-col>
-  <v-dialog v-model="installingDialog" max-width="400">
-    <v-card :title="installFailure ? 'Plugin Install Failed' : 'Installing Plugin'">
-      <template v-slot:append>
-        <v-progress-circular v-if="!installFailure" size="x-small" indeterminate class="ma-8"> </v-progress-circular>
-        <v-icon color="error">{{ getFaPrefix('fa-circle-exclamation') }}</v-icon>
-      </template>
+    <v-dialog v-model="installingDialog" max-width="400">
+      <v-card :title="installFailure ? 'Plugin Install Failed' : 'Installing Plugin'">
+        <template v-slot:append>
+          <v-progress-circular v-if="!installFailure" size="x-small" indeterminate class="ma-8"> </v-progress-circular>
+          <v-icon color="error">{{ getFaPrefix('fa-circle-exclamation') }}</v-icon>
+        </template>
 
-      <v-card-text>
-        <div style="white-space: pre-wrap;">
-          {{ installingText }}
-        </div>
-      </v-card-text>
-      <v-card-actions v-if="installFailure">
-        <v-spacer>
-        </v-spacer>
-        <v-btn variant="text" color="info" @click="installingDialog = false">Cancel</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        <v-card-text>
+          <div style="white-space: pre-wrap;">
+            {{ installingText }}
+          </div>
+        </v-card-text>
+        <v-card-actions v-if="installFailure">
+          <v-spacer>
+          </v-spacer>
+          <v-btn variant="text" color="info" @click="installingDialog = false">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-col>
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
@@ -114,6 +114,7 @@ async function install(plugin: Plugin) {
     installingText.value = `Installing ${plugin.name}...`;
     installFailure.value = false;
     installingDialog.value = true;
+
     await installPlugin(plugin.name);
     const id = connectedClient.value.systemManager.getDeviceById(plugin.name);
     goDevice(router, id);
