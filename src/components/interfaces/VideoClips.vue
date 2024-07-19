@@ -31,7 +31,7 @@
 
     <template v-if="hasVideoClips">
       <v-divider></v-divider>
-      <v-virtual-scroll :height="400" :items="filteredVideoClips" :item-height="80">
+      <v-virtual-scroll :height="isTouchPhone ? 200 : 400" :items="filteredVideoClips" :item-height="80">
         <template v-slot:default="{ item }">
           <div style="display: flex; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2" @click="emits('click:clip', item)">
             <img :src="fixupAppDomainImageUrl(item.resources?.thumbnail?.href)"
@@ -67,6 +67,7 @@ import { ScryptedInterface, VideoClip, VideoClips } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 import { fixupAppDomainImageUrl } from '@/common/client';
+import { isTouchPhone } from '@/common/size';
 
 const dark = isDark();
 
