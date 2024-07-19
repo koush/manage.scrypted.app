@@ -49,6 +49,7 @@ import { getDeviceRoute } from '@/id-device';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { removeAlert, scryptedAlerts } from '../internal-apis';
+import { getPluginMonitors } from '@/npm';
 
 defineProps<{
   modelValue: boolean;
@@ -109,13 +110,18 @@ interface ItemGroup {
   }[];
 }
 
+const { pluginUpdateCount } = getPluginMonitors();
+
 const itemGroups = computed(() => {
   const itemGroups: ItemGroup[] = [
     {
       title: undefined,
       items: [
         { title: 'Devices', icon: getFaPrefix('fa-house-signal'), to: '/device', active: () => routeName.value === 'Device' || routeName.value === 'DeviceList' },
-        { title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin' },
+        ...(pluginUpdateCount.value
+          ? [{ title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin', badge: pluginUpdateCount.value.toString() }]
+          : [{ title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin' }]
+        )
       ]
     },
     {

@@ -1,4 +1,11 @@
 import semver from 'semver';
+import throttle from 'lodash/throttle';
+import { connectedClient } from './common/client';
+import { computed, reactive, ref } from 'vue';
+import { getAllDevices } from './common/devices';
+import { ScryptedInterface } from '@scrypted/types';
+import { createInterval } from './common/clock';
+import { asyncComputed } from './common/async-computed';
 
 export interface PluginUpdateCheck {
   updateAvailable?: string;
@@ -12,9 +19,21 @@ export interface NpmVersion {
   time: string;
 }
 
+const throttles = new Map<string, () => Promise<any>>();
+const cache = ref<Record<string, PluginUpdateCheck>>({});
+
 export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: string): Promise<PluginUpdateCheck> {
-  const response = await fetch(`https://registry.npmjs.org/${npmPackage}`);
-  const data = await response.json();
+  let f = throttles.get(npmPackage);
+  if (!f) {
+    f = throttle(async () => {
+      const response = await fetch(`https://registry.npmjs.org/${npmPackage}`);
+      const json = await response.json();
+      cache.value[npmPackage] = json;
+      return json;
+    }, 60 * 1000);
+    throttles.set(npmPackage, f);
+  }
+  const data = await f();
   const { time } = data;
   const versions = Object.values(data.versions).sort((a: any, b: any) => semver.compare(a.version, b.version)).reverse();
   let updateAvailable: any;
@@ -54,4 +73,59 @@ export async function checkNpmUpdate(npmPackage: string, npmPackageVersion: stri
       };
     }),
   };
+}
+
+export interface PluginLatestVersions {
+  [pluginId: string]: string;
+}
+
+export function getPluginMonitors() {
+  const pluginCheckInterval = createInterval(24 * 60 * 60 * 1000);
+  const pluginLatestVersions = asyncComputed({
+    async get() {
+      const all = getAllDevices();
+      const plugins = all.filter(d => d.interfaces.includes(ScryptedInterface.ScryptedPlugin));
+
+      const ret: PluginLatestVersions = reactive({});
+      plugins.forEach(async plugin => {
+        try {
+          const status = await checkNpmUpdate(plugin.pluginId, plugin.info?.version);
+          ret[plugin.id] = status.versions.find(v => v.tag === 'latest')?.version;
+        }
+        catch (e) {
+        }
+      });
+
+      return ret;
+    },
+    default: {} as PluginLatestVersions,
+    watch: {
+      connectedClient: () => connectedClient.value,
+      pluginCheckInterval: () => pluginCheckInterval.count.value,
+      cache: () => cache.value,
+    },
+  });
+
+  const pluginUpdateCount = computed(() => {
+    if (!connectedClient.value)
+      return 0;
+    const all = getAllDevices();
+    const plugins = all.filter(d => d.interfaces.includes(ScryptedInterface.ScryptedPlugin));
+    let count = 0;
+    for (const plugin of plugins) {
+      const latest = pluginLatestVersions.value[plugin.id];
+      if (hasNewerVersion(plugin.info?.version, latest))
+        count++;
+    }
+    return count;
+  });
+
+  return {
+    pluginUpdateCount,
+    pluginLatestVersions,
+  }
+}
+
+export function hasNewerVersion(version: string, latest: string) {
+  return latest && version && semver.lt(version, latest);
 }
