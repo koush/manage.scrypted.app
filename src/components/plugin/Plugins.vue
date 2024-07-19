@@ -68,15 +68,16 @@
 </template>
 
 <script setup lang="ts">
-import { connectPluginClient, connectedClient } from '@/common/client';
+import { connectedClient, connectPluginClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { checkNpmUpdate } from '@/npm';
-import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
+import { ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import InstallPluginCard from './InstallPluginCard.vue';
-import { getPluginInfo, installPlugin, PluginInfo } from './plugin-apis';
+import { getPluginInfo, installPlugin, PluginInfo } from '../../internal-apis';
+import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
 
 const error = ref<string>();
@@ -84,17 +85,6 @@ const error = ref<string>();
 const { mdAndUp } = useDisplay();
 
 const hasUpdate = new Map<string, boolean>();
-
-
-interface PluginModel {
-  id: string;
-  name: string;
-  package: string;
-  version: string;
-  type: ScryptedDeviceType;
-  updateAvailable: boolean;
-  info: PluginInfo;
-}
 
 const plugins = computed((ov: PluginModel[]) => {
   if (!connectedClient.value) {

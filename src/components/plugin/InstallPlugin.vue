@@ -59,7 +59,7 @@ import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { sleep } from '@scrypted/common/src/sleep';
 import { ref } from 'vue';
-import { installPlugin } from './plugin-apis';
+import { installPlugin } from '../../internal-apis';
 import { connectedClient } from '@/common/client';
 import { goDevice } from '@/id-device';
 import { useRouter } from 'vue-router';

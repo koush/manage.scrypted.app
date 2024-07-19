@@ -49,7 +49,7 @@ import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
-import { scryptedAlerts } from './plugin/plugin-apis';
+import { scryptedAlerts } from '../internal-apis';
 
 defineProps<{
   modelValue: boolean;

@@ -195,7 +195,7 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
-import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from './plugin/plugin-apis';
+import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../internal-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);

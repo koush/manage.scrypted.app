@@ -33,7 +33,7 @@ import { checkNpmUpdate, NpmVersion } from '@/npm';
 import { ScryptedPlugin } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Pagination from '../Pagination.vue';
-import { installPlugin } from '../plugin/plugin-apis';
+import { installPlugin } from '../../internal-apis';
 
 const menu = ref(false);
 

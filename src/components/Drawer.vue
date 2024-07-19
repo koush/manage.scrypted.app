@@ -48,7 +48,7 @@ import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceRoute } from '@/id-device';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { removeAlert, scryptedAlerts } from './plugin/plugin-apis';
+import { removeAlert, scryptedAlerts } from '../internal-apis';
 
 defineProps<{
   modelValue: boolean;
