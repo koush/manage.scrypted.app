@@ -88,13 +88,13 @@
           <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
         </Suspense>
         <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
-          @img:click="playing = destination">
+          @img:click="playing = destination" ref="camera">
           <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
           </ClipPathEditor>
           <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
             :microphone="!!talkback">
           </RTCSignalingChannel>
-          <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls
+          <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
             style="width: 100%; height: 100; object-fit: contain;"></video>
           <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
 
@@ -172,7 +172,7 @@ import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
-import { computed, nextTick, ref, watch } from 'vue';
+import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import ClipPathEditor from './ClipPathEditor.vue';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
@@ -302,6 +302,7 @@ async function clickButtonSetting(setting: Setting) {
     if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
     clipPath.value = { points: (setting.value as any) || [] };
+    scrollToCamera();
     return;
   }
 
@@ -357,6 +358,12 @@ async function playVideoClip(vc: VideoClip) {
     href = (await connectedClient.value.mediaManager.convertMediaObject(mo, ScryptedMimeTypes.LocalUrl)).toString();
   }
   videoClip.value = href;
+  scrollToCamera();
+}
+
+const camera = ref<ComponentPublicInstance>();
+function scrollToCamera() {
+  camera.value?.$el.scrollIntoView();
 }
 </script>
 <style scoped>
