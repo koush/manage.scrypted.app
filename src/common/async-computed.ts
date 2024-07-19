@@ -78,11 +78,7 @@ export function asyncComputedRaw<T, V extends string>(options: {
             updating: false,
             value,
         };
-        setTimeout(() => {
-            if (token === myToken)
-                loading.value = false;
-
-        }, 500)
+        loading.value = false;
     }
 
     const recompute = async (oldValue: T, newWatchValue: any, oldWatchValue: any, watch?: V) => {
