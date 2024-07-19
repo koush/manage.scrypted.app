@@ -1,5 +1,4 @@
 <template>
-
   <v-col cols="12" md="8" lg="6">
     <v-card text="Search for Plugins created by Scrypted and other developers.">
       <template v-slot:prepend>
@@ -27,21 +26,43 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="flat" color="deep-purple-accent-4" size="x-small"
-          :prepend-icon="getFaPrefix('fa-download')">Install</v-btn>
+        <v-btn variant="flat" color="deep-purple-accent-4" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
+          @click="install(plugin)">Install</v-btn>
         <v-btn variant="outlined" color="info" size="x-small" prepend-icon="fab fa-npm" :href="plugin.link"
           target="_blank">View
           On NPM</v-btn>
       </v-card-actions>
     </v-card>
   </v-col>
+  <v-dialog v-model="installingDialog" max-width="400">
+    <v-card :title="installFailure ? 'Plugin Install Failed' : 'Installing Plugin'">
+      <template v-slot:append>
+        <v-progress-circular v-if="!installFailure" size="x-small" indeterminate class="ma-8"> </v-progress-circular>
+        <v-icon color="error">{{ getFaPrefix('fa-circle-exclamation') }}</v-icon>
+      </template>
 
+      <v-card-text>
+        <div style="white-space: pre-wrap;">
+          {{ installingText }}
+        </div>
+      </v-card-text>
+      <v-card-actions v-if="installFailure">
+        <v-spacer>
+        </v-spacer>
+        <v-btn variant="text" color="info" @click="installingDialog = false">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { sleep } from '@scrypted/common/src/sleep';
 import { ref } from 'vue';
+import { installPlugin } from './plugin-apis';
+import { connectedClient } from '@/common/client';
+import { goDevice } from '@/id-device';
+import { useRouter } from 'vue-router';
 
 const search = ref<string>();
 
@@ -49,7 +70,7 @@ interface Plugin {
   name: string;
   description: string;
   version: string;
-  package: string;
+  username: string;
   date: string;
   npm: string;
   link: string;
@@ -71,7 +92,7 @@ const plugins = asyncComputed({
       description: o.package.description.replace(' for Scrypted', ''),
       name: o.package.name,
       version: o.package.version,
-      package: o.package.publisher.username,
+      username: o.package.publisher.username,
       date: new Date(o.package.date).toLocaleDateString(),
       link: o.package.links.npm,
     })) as Plugin[];
@@ -84,4 +105,23 @@ const plugins = asyncComputed({
   }
 });
 
+const installingDialog = ref(false);
+const installingText = ref<string>();
+const installFailure = ref(false);
+const router = useRouter();
+async function install(plugin: Plugin) {
+  try {
+    installingText.value = `Installing ${plugin.name}...`;
+    installFailure.value = false;
+    installingDialog.value = true;
+    await installPlugin(plugin.name);
+    const id = connectedClient.value.systemManager.getDeviceById(plugin.name);
+    goDevice(router, id);
+    installingDialog.value = false;
+  }
+  catch (e) {
+    installFailure.value = true;
+    installingText.value = `${plugin.name} failed to install.\n\n${(e as Error).message}`;
+  }
+}
 </script>

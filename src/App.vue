@@ -58,7 +58,10 @@ if (!isAppDomain()) {
   // unregister any service workers if not running from manage.scrypted.app
   // todo: remove, this as it is handled by npm run build now.
   navigator.serviceWorker?.getRegistration().then(registration => {
-    registration?.unregister();
+    if (registration) {
+      console.warn('unregistering service worker', registration);
+      registration.unregister();
+    }
   });
 }
 
