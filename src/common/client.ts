@@ -12,6 +12,7 @@ export const connectedClient = shallowRef<ScryptedClientStatic>();
 export let clientPromise: Promise<ScryptedClientStatic> | undefined;
 // assume logged in unless login response explicitly fails.
 export const isLoggedIn = ref(true);
+export const hasLogin = ref<boolean|undefined>();
 export const cloudLoginRedirect = ref<string>();
 
 export const SCRYPTED_SERVER = window.location.hostname === 'beta.scrypted.app' ? 'home-dev.scrypted.app' : 'home.scrypted.app';
@@ -251,6 +252,7 @@ export async function connectClient(options: ScryptedClientOptions): Promise<Scr
         throw e;
       }
       isLoggedIn.value = false;
+      hasLogin.value = e.result.hasLogin;
     }
     console.error('connection error', e);
     clientPromise = undefined;
