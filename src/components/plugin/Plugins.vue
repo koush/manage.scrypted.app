@@ -27,13 +27,13 @@
                     <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
                       color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
                     <v-list-item-subtitle v-else class="ml-2"
-                      style="font-size: .8rem; width: 64px; text-align: end;">v{{
+                      style="font-size: .8rem; text-align: end;">v{{
                         plugin.version
                       }}</v-list-item-subtitle>
                     <div v-if="plugin.info">
                       <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
                       <v-list-item-subtitle v-else class="ml-2"
-                        style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
+                        style="font-size: .8rem; text-align: end;">pid: {{
                           plugin.info.pid
                         }}</v-list-item-subtitle>
                     </div>
