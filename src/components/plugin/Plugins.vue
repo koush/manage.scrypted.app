@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-alert v-if="error" color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
+    <v-alert v-if="error" closable color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
     <v-row>
       <v-col v-if="!mdAndUp" cols="12" md="6" lg="4">
