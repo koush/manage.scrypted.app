@@ -30,7 +30,7 @@
                     plugin.version
                   }}</v-list-item-subtitle>
                   <div v-if="plugin.info">
-                    <v-tooltip v-if="plugin.info" activator="parent" location="bottom">
+                    <!-- <v-tooltip activator="parent" location="bottom">
                       <v-list class="ma-0 pa-0" width="160" theme="dark" style="background: transparent;">
                         <v-list-item v-for="key in statItems" :key="key">
                           <template v-slot:append>
@@ -39,7 +39,7 @@
                           <v-list-item-subtitle>{{ key }}</v-list-item-subtitle>
                         </v-list-item>
                       </v-list>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
                     <v-list-item-subtitle v-else class="ml-2"
                       style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
