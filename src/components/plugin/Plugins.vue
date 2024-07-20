@@ -23,22 +23,25 @@
               </template>
               <template v-slot:append>
                 <div style="display: flex; justify-content: end; align-items: end; flex-direction: column;">
-                  <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
-                    color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
-
-                  <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; width: 64px; text-align: end;">v{{
-                    plugin.version
-                  }}</v-list-item-subtitle>
-                  <div v-if="plugin.info">
-                    <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
+                  <template v-if="plugin.updateAvailable !== undefined">
+                    <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
+                      color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
                     <v-list-item-subtitle v-else class="ml-2"
-                      style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
-                        plugin.info.pid
+                      style="font-size: .8rem; width: 64px; text-align: end;">v{{
+                        plugin.version
                       }}</v-list-item-subtitle>
-                  </div>
+                    <div v-if="plugin.info">
+                      <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
+                      <v-list-item-subtitle v-else class="ml-2"
+                        style="font-size: .8rem; width: 64px; text-align: end;">pid: {{
+                          plugin.info.pid
+                        }}</v-list-item-subtitle>
+                    </div>
+                  </template>
                 </div>
               </template>
-              <v-list-item-title style="font-size: .8rem; font-weight: 500; text-transform: uppercase;">{{ plugin.name }}</v-list-item-title>
+              <v-list-item-title style="font-size: .8rem; font-weight: 500; text-transform: uppercase;">{{ plugin.name
+                }}</v-list-item-title>
               <v-list-item-subtitle style="font-size: .8rem">{{ plugin.package }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
@@ -69,6 +72,7 @@ import InstallPluginCard from './InstallPluginCard.vue';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
+import { sleep } from '@scrypted/server/src/sleep';
 
 const error = ref<string>();
 
@@ -110,11 +114,13 @@ const plugins = computed((ov: PluginModel[]) => {
 
 async function updatePlugin(plugin: typeof plugins.value[0]) {
   try {
+    plugin.updateAvailable = undefined;
     await installPlugin(plugin.package);
     plugin.updateAvailable = false;
     hasUpdate.set(plugin.id, false);
   }
   catch (e) {
+    plugin.updateAvailable = true;
     error.value = (e as any).message;
   }
 }
