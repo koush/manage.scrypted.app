@@ -38,7 +38,7 @@
               <template v-for="(item, index) in row">
                 <v-divider v-if="index" vertical></v-divider>
                 <div :style="`width: ${100 / clipColumnCount}%`"
-                  style="display: flex; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2"
+                  style="display: flex; height: 80px; font-size: .8rem; cursor: pointer;" class="pa-2"
                   @click="emits('click:clip', item)">
                   <img :src="fixupAppDomainImageUrl(item.resources?.thumbnail?.href)"
                     style="aspect-ratio: 16/9; object-fit: cover;" class="rounded-lg">
