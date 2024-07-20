@@ -102,7 +102,9 @@ const emits = defineEmits<{
 }>();
 
 const dialog = ref(false);
-const date = ref(Date.now());
+const nowDay = new Date();
+nowDay.setHours(0, 0, 0, 0);
+const date = ref(nowDay.getTime());
 
 const device = getDeviceFromId<VideoClips>(() => props.id);
 
@@ -115,8 +117,8 @@ const smartDetectionsOnly = ref(true);
 const videoClips = asyncComputed({
   async get() {
     const clips = await device.value.getVideoClips({
-      startTime: date.value - 24 * 60 * 60 * 1000,
-      endTime: date.value,
+      endTime: date.value + 24 * 60 * 60 * 1000,
+      startTime: date.value,
     });
     return clips;
   },
