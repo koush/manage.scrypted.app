@@ -37,7 +37,8 @@
             <div style="display: flex;">
               <template v-for="(item, index) in row">
                 <v-divider v-if="index" vertical></v-divider>
-                <div style="display: flex; flex: 1; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2"
+                <div :style="`width: ${100 / clipColumnCount}%`"
+                  style="display: flex; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2"
                   @click="emits('click:clip', item)">
                   <img :src="fixupAppDomainImageUrl(item.resources?.thumbnail?.href)"
                     style="aspect-ratio: 16/9; object-fit: cover;" class="rounded-lg">
@@ -91,7 +92,9 @@ const containerSize = observeResize(container);
 const clipColumnCount = computed(() => {
   if (!containerSize.value)
     return 1;
-  return Math.max(1, Math.floor(containerSize.value.width / 240));
+  const ret = Math.max(1, Math.floor(containerSize.value.width / 240));
+  console.warn(ret);
+  return ret;
 });
 
 const emits = defineEmits<{
@@ -188,16 +191,15 @@ const couldRecord = computed(() => {
 });
 </script>
 <style scoped>
-
 .container {
-    -ms-overflow-style: none;
-    /* Internet Explorer 10+ */
-    scrollbar-width: none;
-    /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .container::-webkit-scrollbar {
-    display: none;
-    /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
 </style>
