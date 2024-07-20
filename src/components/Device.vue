@@ -45,13 +45,13 @@
               <template v-if="isScryptedPlugin">
                 <v-btn size="small" color="info"
                   @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
-                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Log" @click="showConsole = !showConsole">
+                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Log" @click="showConsole = true; scrollToComponent(() => consoleCard)">
                 </ToolbarTooltipButton>
               </template>
-              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = !showConsole">Log</v-btn>
-              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = !showEvents">
+              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = true; scrollToComponent(() => consoleCard)">Log</v-btn>
+              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = true; scrollToComponent(() => eventsCard);">
               </ToolbarTooltipButton>
-              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = !showRepl">
+              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = true; scrollToComponent(() => replCard);">
               </ToolbarTooltipButton>
               <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings"
                 :href="device.info.managementUrl" target="_blank"></ToolbarTooltipButton>
@@ -156,15 +156,15 @@
           <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
             :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
           </PtyComponent>
-          <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
+          <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
             :expand-button="true" :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')"
             nativeId="consoleservice" :control="false" :options="{ pluginId: device.pluginId }" close
             @close="showConsole = false" class="mb-4">
           </PtyComponent>
-          <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
+          <PtyComponent v-if="showRepl" ref="replCard" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
             :expand-button="true" nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
             @close="showRepl = false" class="mb-4"></PtyComponent>
-          <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
+          <ScryptedLogger v-if="showEvents" ref="eventsCard" :id="id" @close="showEvents = false"></ScryptedLogger>
         </template>
       </DeviceLayout>
 
@@ -311,7 +311,7 @@ async function clickButtonSetting(setting: Setting) {
     if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
     clipPath.value = { points: (setting.value as any) || [] };
-    scrollToCamera();
+    scrollToComponent(() => cameraCard.value);
     return;
   }
 
@@ -367,13 +367,19 @@ async function playVideoClip(vc: VideoClip) {
     href = (await connectedClient.value.mediaManager.convertMediaObject(mo, ScryptedMimeTypes.LocalUrl)).toString();
   }
   videoClip.value = fixupAppDomainImageUrl(href);
-  scrollToCamera();
+  scrollToComponent(() => cameraCard.value);
 }
 
-const camera = ref<ComponentPublicInstance>();
-function scrollToCamera() {
-  camera.value?.$el.scrollIntoView();
+const cameraCard = ref<ComponentPublicInstance>();
+const consoleCard = ref<ComponentPublicInstance>();
+const eventsCard = ref<ComponentPublicInstance>();
+const replCard = ref<ComponentPublicInstance>();
+
+async function scrollToComponent(component: () => ComponentPublicInstance) {
+  await nextTick();
+  component()?.$el.scrollIntoView();
 }
+
 </script>
 <style scoped>
 .blur {
