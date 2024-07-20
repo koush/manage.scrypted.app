@@ -166,7 +166,7 @@
 </template>
 <script setup lang="ts">
 import { ClipPathModel } from '@/clip-path-model';
-import { connectedClient } from '@/common/client';
+import { connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
@@ -357,7 +357,7 @@ async function playVideoClip(vc: VideoClip) {
 
     href = (await connectedClient.value.mediaManager.convertMediaObject(mo, ScryptedMimeTypes.LocalUrl)).toString();
   }
-  videoClip.value = href;
+  videoClip.value = fixupAppDomainImageUrl(href);
   scrollToCamera();
 }
 
