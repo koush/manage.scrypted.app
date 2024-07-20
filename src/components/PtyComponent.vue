@@ -4,7 +4,7 @@
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
     <template v-slot:append>
-      <ToolbarTooltipButton v-if="copyButton" icon="fa-copy" tooltip="Copy Log" variant="text" />
+      <ToolbarTooltipButton v-if="copyButton" icon="fa-copy" tooltip="Copy Log" variant="text" @click="copyLog" />
       <ToolbarTooltipButton v-if="copyButton" icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text"
         @click="clear" />
         <template v-if="expandButton !== false">
@@ -221,5 +221,10 @@ async function connectPty() {
       return;
     connectPty();
   }
+}
+
+function copyLog() {
+  const text = Buffer.concat(buffer).toString();
+  navigator.clipboard.writeText(text);
 }
 </script>
