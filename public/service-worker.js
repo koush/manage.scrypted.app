@@ -8,3 +8,4 @@ self.addEventListener('activate', event => {
     })
   );
 });
+skipWaiting();

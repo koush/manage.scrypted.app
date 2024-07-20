@@ -27,6 +27,8 @@ export default defineConfig({
 		...[process.env.SCRYPTED_PWA ? VitePWA({
 			workbox: {
 				maximumFileSizeToCacheInBytes: 10000000,
+				clientsClaim: true,
+				skipWaiting: true,
 			},
 			useCredentials: true,
 			registerType: 'autoUpdate',
