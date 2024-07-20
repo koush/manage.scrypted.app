@@ -26,11 +26,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="flat" color="deep-purple-accent-4" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
-          @click="install(plugin)">Install</v-btn>
         <v-btn variant="outlined" color="info" size="x-small" prepend-icon="fab fa-npm" :href="plugin.link"
           target="_blank">View
           On NPM</v-btn>
+        <v-btn variant="flat" color="deep-purple-accent-4" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
+          @click="install(plugin)">Install</v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="installingDialog" max-width="400">
