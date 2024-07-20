@@ -116,6 +116,7 @@ const videoClips = asyncComputed({
   async get() {
     const clips = await device.value.getVideoClips({
       startTime: date.value - 24 * 60 * 60 * 1000,
+      endTime: date.value,
     });
     return clips;
   },
