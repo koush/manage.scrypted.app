@@ -2,7 +2,7 @@
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device">
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" xl="2">
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
@@ -74,92 +74,100 @@
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
       </v-col>
-      <v-col cols="12" md="8">
-        <template v-if="!isTouchDevice">
-          <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
-            :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
-        </template>
-
-        <Suspense>
-          <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
-        </Suspense>
-        <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
-        <Suspense>
-          <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
-        </Suspense>
-        <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
-          @img:click="playing = destination" ref="camera">
-          <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
-          </ClipPathEditor>
-          <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
-            :microphone="!!talkback">
-          </RTCSignalingChannel>
-          <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
-            style="width: 100%; height: 100; object-fit: contain;"></video>
-          <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
-
-          <template v-slot:prepend>
-            <template v-if="clipPath">
-              <v-card-subtitle class="mt-1">Edit Zone</v-card-subtitle>
-              <ToolbarTooltipButton :icon="getFaPrefix('fa-cancel')" variant="text" size="small" @click="cancelClipPath"
-                tooltip="Cancel"></ToolbarTooltipButton>
-              <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-broom-wide')" variant="text" size="small"
-                @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
-              <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
-                @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
-            </template>
-            <template v-if="videoClip">
-              <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
-                @click="videoClip = undefined" :tooltip="`Stop Playback`">
-              </ToolbarTooltipButton>
-            </template>
-            <template v-else-if="hasRTC">
-              <template v-if="!playing">
-                <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-play')" variant="text" size="small"
-                  @click="playing = destination" tooltip="Play">
-                </ToolbarTooltipButton>
-                <v-menu>
-                  <template v-slot:activator="{ props }">
-                    <v-btn variant="text" size="small" v-bind="props">
-                      Stream: {{ destination }}
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item v-for="(item, index) in destinations" :key="index" :value="index"
-                      @click="destination = item">
-                      <v-list-item-title>{{ item }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </template>
-              <template v-else>
-                <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
-                  @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
-                </ToolbarTooltipButton>
-                <ToolbarTooltipButton v-if="hasIntercom" color="error"
-                  :icon="getFaPrefix(!talkback ? 'fa-microphone' : 'fa-microphone-slash')" variant="text" size="small"
-                  @click="talkback = !talkback" tooltip="Talk Back">
-                </ToolbarTooltipButton>
-              </template>
-            </template>
-
+      <DeviceLayout>
+        <template v-slot:default>
+          <template v-if="!isTouchDevice">
+            <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable
+              density="compact" :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
           </template>
-        </Camera>
 
-        <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
-        <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
-        <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true" :control="true"
-          :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4"></PtyComponent>
-        <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
-          :expand-button="true" :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')"
-          nativeId="consoleservice" :control="false" :options="{ pluginId: device.pluginId }" close
-          @close="showConsole = false" class="mb-4">
-        </PtyComponent>
-        <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
-          :expand-button="true" nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
-          @close="showRepl = false" class="mb-4"></PtyComponent>
-        <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
-      </v-col>
+          <Suspense>
+            <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
+          </Suspense>
+          <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
+          <Suspense>
+            <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
+          </Suspense>
+          <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
+            @img:click="playing = destination" ref="camera">
+            <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
+            </ClipPathEditor>
+            <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
+              :microphone="!!talkback">
+            </RTCSignalingChannel>
+            <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
+              style="width: 100%; height: 100; object-fit: contain;"></video>
+            <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
+
+            <template v-slot:prepend>
+              <template v-if="clipPath">
+                <v-card-subtitle class="mt-1">Edit Zone</v-card-subtitle>
+                <ToolbarTooltipButton :icon="getFaPrefix('fa-cancel')" variant="text" size="small"
+                  @click="cancelClipPath" tooltip="Cancel"></ToolbarTooltipButton>
+                <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-broom-wide')" variant="text" size="small"
+                  @click="resetClipPath" tooltip="Clear Points"></ToolbarTooltipButton>
+                <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-check')" variant="text" size="small"
+                  @click="saveClipPath" tooltip="Save Points"></ToolbarTooltipButton>
+              </template>
+              <template v-if="videoClip">
+                <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
+                  @click="videoClip = undefined" :tooltip="`Stop Playback`">
+                </ToolbarTooltipButton>
+              </template>
+              <template v-else-if="hasRTC">
+                <template v-if="!playing">
+                  <ToolbarTooltipButton color="success" :icon="getFaPrefix('fa-play')" variant="text" size="small"
+                    @click="playing = destination" tooltip="Play">
+                  </ToolbarTooltipButton>
+                  <v-menu>
+                    <template v-slot:activator="{ props }">
+                      <v-btn variant="text" size="small" v-bind="props">
+                        Stream: {{ destination }}
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item v-for="(item, index) in destinations" :key="index" :value="index"
+                        @click="destination = item">
+                        <v-list-item-title>{{ item }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
+                <template v-else>
+                  <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
+                    @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
+                  </ToolbarTooltipButton>
+                  <ToolbarTooltipButton v-if="hasIntercom" color="error"
+                    :icon="getFaPrefix(!talkback ? 'fa-microphone' : 'fa-microphone-slash')" variant="text" size="small"
+                    @click="talkback = !talkback" tooltip="Talk Back">
+                  </ToolbarTooltipButton>
+                </template>
+              </template>
+
+            </template>
+          </Camera>
+
+          <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
+          <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
+
+        </template>
+        <template v-slot:extra>
+
+          <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
+            :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
+          </PtyComponent>
+          <PtyComponent v-if="showConsole" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
+            :expand-button="true" :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')"
+            nativeId="consoleservice" :control="false" :options="{ pluginId: device.pluginId }" close
+            @close="showConsole = false" class="mb-4">
+          </PtyComponent>
+          <PtyComponent v-if="showRepl" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
+            :expand-button="true" nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
+            @close="showRepl = false" class="mb-4"></PtyComponent>
+          <ScryptedLogger v-if="showEvents" :id="id" @close="showEvents = false"></ScryptedLogger>
+        </template>
+      </DeviceLayout>
+
     </v-row>
   </v-container>
 
@@ -174,8 +182,10 @@ import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../internal-apis';
 import ClipPathEditor from './ClipPathEditor.vue';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
+import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import InlineTextField from './InlineTextField.vue';
 import PtyComponent from './PtyComponent.vue';
@@ -195,7 +205,6 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
-import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../internal-apis';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -273,7 +282,7 @@ const hasObjectDetector = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ObjectDetector);
 });
 
-watch(() => id.value, () => {
+watch(() => device.value, () => {
   playing.value = undefined;
   talkback.value = false;
   resetPtys();

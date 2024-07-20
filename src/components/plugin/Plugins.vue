@@ -72,7 +72,6 @@ import InstallPluginCard from './InstallPluginCard.vue';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
-import { sleep } from '@scrypted/server/src/sleep';
 
 const error = ref<string>();
 
