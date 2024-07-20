@@ -68,11 +68,11 @@
         </template>
         <template v-else>
         </template>
-        <StateToggles :id="id" class="mb-4"></StateToggles>
         <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
         </VideoClipsInterface>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
+        <StateToggles :id="id" class="mb-4"></StateToggles>
       </v-col>
       <DeviceLayout>
         <template v-slot:default>

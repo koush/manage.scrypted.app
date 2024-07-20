@@ -31,26 +31,36 @@
 
     <template v-if="hasVideoClips">
       <v-divider></v-divider>
-      <v-virtual-scroll :height="isTouchPhone ? 200 : 400" :items="filteredVideoClips" :item-height="80">
-        <template v-slot:default="{ item }">
-          <div style="display: flex; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2" @click="emits('click:clip', item)">
-            <img :src="fixupAppDomainImageUrl(item.resources?.thumbnail?.href)"
-              style="aspect-ratio: 16/9; object-fit: cover;" class="rounded-lg">
-            <div class="ml-2">
-              <div>
-                {{ new Date(item.startTime).toLocaleTimeString() }}
-              </div>
-              <div>{{ toDurationString(item.duration) }}</div>
-              <div v-if="item.detectionClasses?.length">
-                {{ item.detectionClasses.join(', ') }}
-              </div>
+      <div ref="container" style="width: 100%;">
+        <v-virtual-scroll class="container" :height="isTouchPhone ? 200 : 400" :items="clipRows" :item-height="80">
+          <template v-slot:default="{ item: row }">
+            <div style="display: flex;">
+              <template v-for="(item, index) in row">
+                <v-divider v-if="index" vertical></v-divider>
+                <div style="display: flex; flex: 1; height: 80px; font-size: .8rem; cursor: pointer;" class="ma-2"
+                  @click="emits('click:clip', item)">
+                  <img :src="fixupAppDomainImageUrl(item.resources?.thumbnail?.href)"
+                    style="aspect-ratio: 16/9; object-fit: cover;" class="rounded-lg">
+                  <div class="ml-2">
+                    <div style="font-weight: 550;">
+                      {{ new Date(item.startTime).toLocaleTimeString() }}
+                    </div>
+                    <div>{{ toDurationString(item.duration) }}</div>
+                    <div v-if="item.detectionClasses?.length">
+                      {{ item.detectionClasses.join(', ') }}
+                    </div>
+                  </div>
+                </div>
+              </template>
             </div>
-          </div>
-        </template>
-      </v-virtual-scroll>
+            <v-divider></v-divider>
+          </template>
+        </v-virtual-scroll>
+      </div>
     </template>
     <template v-else>
-      <v-card-text>This camera is not recording or the recordings are unavailable in Scrypted. Upgrade to Scrypted NVR for 24/7 recording.</v-card-text>
+      <v-card-text>This camera is not recording or the recordings are unavailable in Scrypted. Upgrade to Scrypted NVR
+        for 24/7 recording.</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn size="small" href="https://demo.scrypted.app/#/demo" target="_blank" color="info">View Demo</v-btn>
@@ -60,20 +70,29 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
+import { fixupAppDomainImageUrl } from '@/common/client';
 import { isDark } from '@/common/colors';
+import { observeResize } from '@/common/resize-observer';
+import { isTouchPhone } from '@/common/size';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { ScryptedInterface, VideoClip, VideoClips } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
-import { fixupAppDomainImageUrl } from '@/common/client';
-import { isTouchPhone } from '@/common/size';
 
 const dark = isDark();
 
 const props = defineProps<{
   id: string;
 }>();
+
+const container = ref<HTMLDivElement>();
+const containerSize = observeResize(container);
+const clipColumnCount = computed(() => {
+  if (!containerSize.value)
+    return 1;
+  return Math.max(1, Math.floor(containerSize.value.width / 240));
+});
 
 const emits = defineEmits<{
   (event: 'click:clip', clip: VideoClip): void;
@@ -110,6 +129,15 @@ const filteredVideoClips = computed(() => {
 
   const ret = videoClips.value.filter(v => v.detectionClasses?.find(d => d !== 'motion'));
   return ret.reverse();
+});
+
+const clipRows = computed(() => {
+  const rows: VideoClip[][] = [];
+  // create rows of length clipColumnCount
+  for (let i = 0; i < filteredVideoClips.value.length; i += clipColumnCount.value) {
+    rows.push(filteredVideoClips.value.slice(i, i + clipColumnCount.value));
+  }
+  return rows;
 });
 
 function modSub(v: number, ...na: number[]) {
@@ -149,13 +177,27 @@ const hasVideoClips = computed(() => {
 const couldRecord = computed(() => {
   const pluginId = device.value.pluginId;
   if (device)
-  switch (pluginId) {
-    case '@scrypted/reolink':
-    case '@scrypted/onvif':
-    case '@scrypted/rtsp':
-    case '@scrypted/amcrest':
-    case '@scrypted/hikvision':
-      return true;
-  }
+    switch (pluginId) {
+      case '@scrypted/reolink':
+      case '@scrypted/onvif':
+      case '@scrypted/rtsp':
+      case '@scrypted/amcrest':
+      case '@scrypted/hikvision':
+        return true;
+    }
 });
 </script>
+<style scoped>
+
+.container {
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+</style>
