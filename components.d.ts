@@ -37,6 +37,7 @@ declare module 'vue' {
     Launcher: typeof import('./src/components/Launcher.vue')['default']
     MixinProvider: typeof import('./src/components/interfaces/MixinProvider.vue')['default']
     MultipleStringSetting: typeof import('./src/components/interfaces/settings/MultipleStringSetting.vue')['default']
+    Notifier: typeof import('./src/components/interfaces/Notifier.vue')['default']
     OauthClient: typeof import('./src/components/interfaces/OauthClient.vue')['default']
     ObjectDetection: typeof import('./src/components/interfaces/detection/ObjectDetection.vue')['default']
     ObjectDetector: typeof import('./src/components/interfaces/detection/ObjectDetector.vue')['default']

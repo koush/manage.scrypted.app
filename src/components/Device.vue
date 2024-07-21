@@ -77,6 +77,7 @@
         </template>
         <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
         </VideoClipsInterface>
+        <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
@@ -213,6 +214,7 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
+import Notifier from './interfaces/Notifier.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -276,6 +278,10 @@ const hasRTC = computed(() => {
 
 const hasVideoClips = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.VideoClips);
+});
+
+const hasNotifier = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.Notifier);
 });
 
 const showVideoClips = computed(() => {
