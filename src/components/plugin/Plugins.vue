@@ -66,16 +66,15 @@
 import { connectedClient, connectPluginClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
+import { getDeviceRoute } from '@/id-device';
 import { checkNpmUpdate } from '@/npm';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
-import InstallPluginCard from './InstallPluginCard.vue';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
+import InstallPluginCard from './InstallPluginCard.vue';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
-import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
-import { getDeviceRoute } from '@/id-device';
 
 const error = ref<string>();
 
