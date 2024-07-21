@@ -8,7 +8,7 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 
-const target = 'http://localhost:11080';
+const target = 'http://localhost:11090';
 
 // https://vitejs.dev/config/
 export default defineConfig({

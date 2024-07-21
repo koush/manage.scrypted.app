@@ -2,13 +2,17 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <v-card title="Devices" :prepend-icon="getFaPrefix('fa-microchip')">
+        <v-card>
+          <template v-slot:prepend>
+            <v-icon size="small" :icon="getFaPrefix('fa-microchip')"></v-icon>
+          </template>
           <template v-slot:title>
             <div style="display: flex; align-items: center">
-              <div>Devices</div>
-              <v-dialog max-width="500">
-                <template v-slot:activator="{ props: activatorProps }">
-                  <v-btn v-bind="activatorProps" variant="elevated" color="success" class="ml-4" size="small">Add
+              <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">Devices</v-card-subtitle>
+
+              <v-dialog max-width="500" v-model="addDeviceDialog">
+                <template v-if="deviceGroups.length > 1" v-slot:activator="{ props: activatorProps }">
+                  <v-btn v-bind="activatorProps" variant="flat" color="success" class="ml-4" size="x-small">Add
                     Device</v-btn>
                 </template>
 
@@ -17,50 +21,68 @@
                   </DeviceCreatorInterface>
                 </template>
               </v-dialog>
+              <v-btn v-if="deviceGroups.length > 1" size="x-small" class="ml-4" color="info"
+                to="/component/plugin/install" variant="outlined">Install Plugin</v-btn>
             </div>
           </template>
 
-          <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
-            <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
-              :prepend-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"
-              size="small" :color="isDefaultFilter ? 'deep-purple-accent-4' : 'info'"
-              @click="e => clickChip(deviceGroup, e)" variant="flat" :rounded="0" class="pl-3 ma-0"> {{
-                deviceGroup
-              }} ({{ devices.filter(d => (hasFixedPhysicalLocation(d.type!) ? d.type : other) ===
-                deviceGroup).length }})</v-chip>
-          </v-chip-group>
-          <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText" style="transform: scale(.75, .75)"
-            title="Search" label="Search" density="compact"></v-text-field>
-          <v-table density="compact">
-            <thead>
-              <tr>
-                <th style="width: 32px;"></th>
-                <th class="text-left">
-                  Name
-                </th>
-                <th class="text-left" v-if="mdAndUp && showModel">Model</th>
-                <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
-                <th class="text-left" v-if="mdAndUp && showIp">IP</th>
-                <th class="text-left" v-if="mdAndUp">
-                  Plugin
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="device in devicePage" :key="device.id" @click="goDevice(router, device)"
-                style="cursor: pointer;">
-                <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                <td style="text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
-                <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
-                <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
-                <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
-                <td v-if="mdAndUp"><v-btn color="info" size="small" variant="text" @click.stop
-                    :to="`/device/${connectedClient!.systemManager.getDeviceById(device.pluginId).id}`">{{
-                      connectedClient!.systemManager.getDeviceById(device.pluginId).name }}</v-btn></td>
-              </tr>
-            </tbody>
-          </v-table>
-          <v-pagination :length="devicePages.length" v-model="page" rounded density="compact"></v-pagination>
+          <template v-if="deviceGroups.length <= 1">
+            <div
+              style="height: 300px; display: flex; text-align: center; flex-direction: column; justify-content: center; align-items: center;">
+              <div>Welcome to Scrypted.</div>
+              <div>Get started by installing the plugin that supports your hardware. Then add the device below or within the plugin.</div>
+              <div style="display: flex;" class="mt-4">
+                <v-btn variant="flat" size="x-small" class="ml-4" color="info" to="/component/plugin/install">Install
+                  Plugin</v-btn>
+                <v-btn variant="flat" color="success" class="ml-4" size="x-small" @click="addDeviceDialog = true">Add
+                  Device</v-btn>
+              </div>
+
+            </div>
+          </template>
+          <template v-else>
+            <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
+              <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
+                :prepend-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"
+                size="small" :color="isDefaultFilter ? 'deep-purple-accent-4' : 'info'"
+                @click="e => clickChip(deviceGroup, e)" variant="flat" :rounded="0" class="pl-3 ma-0"> {{
+                  deviceGroup
+                }} ({{ devices.filter(d => (hasFixedPhysicalLocation(d.type!) ? d.type : other) ===
+                  deviceGroup).length }})</v-chip>
+            </v-chip-group>
+            <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText"
+              style="transform: scale(.75, .75)" title="Search" label="Search" density="compact"></v-text-field>
+            <v-table density="compact">
+              <thead>
+                <tr>
+                  <th style="width: 32px;"></th>
+                  <th class="text-left">
+                    Name
+                  </th>
+                  <th class="text-left" v-if="mdAndUp && showModel">Model</th>
+                  <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
+                  <th class="text-left" v-if="mdAndUp && showIp">IP</th>
+                  <th class="text-left" v-if="mdAndUp">
+                    Plugin
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="device in devicePage" :key="device.id" @click="goDevice(router, device)"
+                  style="cursor: pointer;">
+                  <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
+                  <td style="text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
+                  <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
+                  <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
+                  <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
+                  <td v-if="mdAndUp"><v-btn color="info" size="small" variant="text" @click.stop
+                      :to="`/device/${connectedClient!.systemManager.getDeviceById(device.pluginId).id}`">{{
+                        connectedClient!.systemManager.getDeviceById(device.pluginId).name }}</v-btn></td>
+                </tr>
+              </tbody>
+            </v-table>
+            <v-pagination :length="devicePages.length" v-model="page" rounded density="compact"></v-pagination>
+          </template>
         </v-card>
       </v-col>
     </v-row>
@@ -216,5 +238,7 @@ const showManufacturer = computed(() => {
 const showModel = computed(() => {
   return devicePage.value?.some(d => d.info?.model);
 });
+
+const addDeviceDialog = ref(false);
 
 </script>
