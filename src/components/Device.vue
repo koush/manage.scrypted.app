@@ -230,7 +230,8 @@ const id = computed(() => props.id || routeId.value);
 const device = getDeviceFromId<Settings & VideoClips>(() => id.value);
 
 const hasOrCanCreateDevices = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator) || getAllDevices().find(d => d.providerId === id.value);
+  return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator)
+    || getAllDevices().find(d => d.providerId === id.value && d.id !== id.value);
 });
 
 const canExtendDevices = computed(() => {
