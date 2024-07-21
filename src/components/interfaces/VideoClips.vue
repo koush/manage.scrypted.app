@@ -93,7 +93,6 @@ const clipColumnCount = computed(() => {
   if (!containerSize.value)
     return 1;
   const ret = Math.max(1, Math.floor(containerSize.value.width / 240));
-  console.warn(ret);
   return ret;
 });
 
