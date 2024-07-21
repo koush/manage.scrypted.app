@@ -36,29 +36,36 @@
             <template v-slot:append
               v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp && !editingName">
               <div style="display: flex; align-items: center;">
-                <v-btn :to="`/device/${device.providerId}`" variant="text" size="small" density="compact">{{
+                <v-btn :to="`/device/${device.providerId}`" variant="text" size="x-small" density="compact">{{
                   connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
               </div>
             </template>
 
             <v-card-actions>
+              <OauthClient v-if="hasOauthClient" :id="id"></OauthClient>
               <template v-if="isScryptedPlugin">
                 <v-btn size="x-small" color="info"
                   @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
-                <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Log" @click="showConsole = true; scrollToComponent(() => consoleCard)">
+                <ToolbarTooltipButton size="x-small" icon="fa-rectangle-history" tooltip="Log"
+                  @click="showConsole = true; scrollToComponent(() => consoleCard)">
                 </ToolbarTooltipButton>
               </template>
-              <v-btn v-else class="ml-1" size="small" color="info" @click="showConsole = true; scrollToComponent(() => consoleCard)">Log</v-btn>
-              <ToolbarTooltipButton icon="fa-clock-rotate-left" tooltip="Events" @click="showEvents = true; scrollToComponent(() => eventsCard);">
+              <v-btn v-else class="ml-1" size="x-small" color="info"
+                @click="showConsole = true; scrollToComponent(() => consoleCard)">Log</v-btn>
+              <ToolbarTooltipButton size="x-small" icon="fa-clock-rotate-left" tooltip="Events"
+                @click="showEvents = true; scrollToComponent(() => eventsCard);">
               </ToolbarTooltipButton>
-              <ToolbarTooltipButton icon="fa-rectangle-terminal" tooltip="REPL" @click="showRepl = true; scrollToComponent(() => replCard);">
+              <ToolbarTooltipButton size="x-small" icon="fa-rectangle-terminal" tooltip="REPL"
+                @click="showRepl = true; scrollToComponent(() => replCard);">
               </ToolbarTooltipButton>
-              <ToolbarTooltipButton v-if="device.info?.managementUrl" icon="fa-wrench" tooltip="Manufacturer Settings"
-                :href="device.info.managementUrl" target="_blank"></ToolbarTooltipButton>
+              <ToolbarTooltipButton v-if="device.info?.managementUrl" size="x-small" icon="fa-wrench"
+                tooltip="Manufacturer Settings" :href="device.info.managementUrl" target="_blank">
+              </ToolbarTooltipButton>
               <v-spacer></v-spacer>
               <DeleteDeviceDialog :id="id">
                 <template v-slot:activator="{ activatorProps }">
-                  <ToolbarTooltipButton v-bind="activatorProps" icon="fa-trash" tooltip="Delete" color="error">
+                  <ToolbarTooltipButton v-bind="activatorProps" size="x-small" icon="fa-trash" tooltip="Delete"
+                    color="error">
                   </ToolbarTooltipButton>
                 </template>
 
@@ -156,14 +163,14 @@
           <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
             :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
           </PtyComponent>
-          <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true" @clear="clearConsole(id)"
-            :expand-button="true" :copyButton="true" title="Log" :hello="(device.nativeId || 'undefined')"
-            nativeId="consoleservice" :control="false" :options="{ pluginId: device.pluginId }" close
-            @close="showConsole = false" class="mb-4">
+          <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true"
+            @clear="clearConsole(id)" :expand-button="true" :copyButton="true" title="Log"
+            :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
+            :options="{ pluginId: device.pluginId }" close @close="showConsole = false" class="mb-4">
           </PtyComponent>
-          <PtyComponent v-if="showRepl" ref="replCard" :copyButton="true" title="REPL" :hello="(device.nativeId || 'undefined')"
-            :expand-button="true" nativeId="replservice" :control="false" :options="{ pluginId: device.pluginId }" close
-            @close="showRepl = false" class="mb-4"></PtyComponent>
+          <PtyComponent v-if="showRepl" ref="replCard" :copyButton="true" title="REPL"
+            :hello="(device.nativeId || 'undefined')" :expand-button="true" nativeId="replservice" :control="false"
+            :options="{ pluginId: device.pluginId }" close @close="showRepl = false" class="mb-4"></PtyComponent>
           <ScryptedLogger v-if="showEvents" ref="eventsCard" :id="id" @close="showEvents = false"></ScryptedLogger>
         </template>
       </DeviceLayout>
@@ -193,6 +200,7 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
+import OauthClient from './interfaces/OauthClient.vue';
 import PositionSensor from './interfaces/PositionSensor.vue';
 import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
 import Readme from './interfaces/Readme.vue';
@@ -251,6 +259,10 @@ const hasTTYService = computed(() => {
 
 const isScryptedPlugin = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ScryptedPlugin);
+});
+
+const hasOauthClient = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.OauthClient);
 });
 
 const hasReadme = computed(() => {
