@@ -37,7 +37,7 @@
       <v-card :title="installFailure ? 'Plugin Install Failed' : 'Installing Plugin'">
         <template v-slot:append>
           <v-progress-circular v-if="!installFailure" size="x-small" indeterminate class="ma-8"> </v-progress-circular>
-          <v-icon color="error">{{ getFaPrefix('fa-circle-exclamation') }}</v-icon>
+          <v-icon color="error" v-else>{{ getFaPrefix('fa-circle-exclamation') }}</v-icon>
         </template>
 
         <v-card-text>
