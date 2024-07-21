@@ -84,7 +84,7 @@ const plugins = asyncComputed({
       return;
 
     let url = 'https://registry.npmjs.org/-/v1/search?text=keywords:scrypted';
-    if ((search.value?.length || 0) > 3)
+    if ((search.value?.length || 0) > 2)
       url += `+${search.value}`;
     const response = await fetch(url);
     const json = await response.json();
