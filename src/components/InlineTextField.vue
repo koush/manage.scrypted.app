@@ -1,18 +1,20 @@
 <template>
   <v-btn v-if="!editing" :size="size" density="compact" variant="text"
-    :append-icon="editIcon ? getFaPrefix('fa-pencil') : undefined"
-    @click="editing = true; emit('update:editing', editing);">{{ modelValue }}</v-btn>
-  <component :items="items" :is="component" hide-details style="transform: scale(.60, .60); transform-origin: 0 50%;"
-    density="compact" variant="outlined" v-else v-model="internalModelValue">
-    <template v-slot:append-inner>
-      <v-btn class="pa-0 inner-btn" variant="text" @click="cancel">
-        <v-icon>{{ getFaPrefix('fa-cancel') }}</v-icon>
-      </v-btn>
-      <v-btn class="pa-0 inner-btn" color="success" variant="text" @click="save">
-        <v-icon>{{ getFaPrefix('fa-check') }}</v-icon>
-      </v-btn>
-    </template>
-  </component>
+    :append-icon="editIcon ? getFaPrefix('fa-pencil') : undefined" @click="editing = true; emit('editing');"
+    v-on:keyup.enter="save">{{ modelValue }}</v-btn>
+  <v-form v-else @submit="save" style="width: 100%;">
+    <component :items="items" :is="component" hide-details style="transform: scale(.60, .60); transform-origin: 0 50%; width: 166.66%;"
+      density="compact" variant="outlined" v-model="internalModelValue">
+      <template v-slot:append-inner>
+        <v-btn class="pa-0 inner-btn" variant="text" @click="cancel">
+          <v-icon>{{ getFaPrefix('fa-cancel') }}</v-icon>
+        </v-btn>
+        <v-btn class="pa-0 inner-btn" color="success" variant="text" @click="save">
+          <v-icon>{{ getFaPrefix('fa-check') }}</v-icon>
+        </v-btn>
+      </template>
+    </component>
+  </v-form>
 </template>
 <script setup lang="ts">
 import { getFaPrefix } from '@/device-icons';
@@ -34,8 +36,9 @@ const component = computed(() => {
 })
 
 const emit = defineEmits<{
-  (event: 'update:modelValue', value?: string): void;
-  (event: 'update:editing', editing: boolean): void;
+  (event: 'editing'): void;
+  (event: 'cancel'): void;
+  (event: 'save', value: string): void;
 }>();
 
 const internalModelValue = ref(modelValue.value);
@@ -48,13 +51,13 @@ const editing = ref(false);
 function cancel() {
   internalModelValue.value = modelValue.value;
   editing.value = false;
-  emit('update:editing', editing.value);
+  emit('cancel');
 }
 
 function save() {
   editing.value = false;
   modelValue.value = internalModelValue.value;
-  emit('update:editing', editing.value);
+  emit('save', internalModelValue.value);
 }
 
 </script>

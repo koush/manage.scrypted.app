@@ -16,7 +16,7 @@
             <template v-slot:title>
               <template v-if="!isScryptedPlugin">
                 <div style="display: flex; align-items: center;">
-                  <InlineTextField :model-value="device.name" size="small" @update:editing="v => editingName = v">
+                  <InlineTextField :model-value="device.name" size="small" @save="updateName">
                   </InlineTextField>
                   <v-card-subtitle class="mt-1" v-if="!editingName">ID: {{ device.id }}</v-card-subtitle>
                 </div>
@@ -380,6 +380,9 @@ async function scrollToComponent(component: () => ComponentPublicInstance) {
   component()?.$el.scrollIntoView();
 }
 
+function updateName(value: string) {
+  device.value.setName(value);
+}
 </script>
 <style scoped>
 .blur {
