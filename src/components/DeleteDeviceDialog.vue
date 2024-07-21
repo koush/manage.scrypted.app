@@ -44,7 +44,7 @@ async function deleteDevice() {
   const device = connectedClient.value?.systemManager.getDeviceById(props.id);
   const providerId = device?.providerId === props.id ? undefined : device?.providerId;
   const id = props.id;
-  router.replace(providerId ? getDeviceRoute(providerId) : '/device');
+  router.replace(providerId ? getDeviceRoute(providerId) : '/component/plugin');
   await nextTick();
   await connectedClient.value?.systemManager.removeDevice(id);
 }
