@@ -15,6 +15,10 @@
           <template v-slot:title>
             <v-card-subtitle class="mt-1">Plugins</v-card-subtitle>
           </template>
+          <template v-slot:append>
+            <v-btn size="x-small" variant="text" :prepend-icon="getFaPrefix('fa-bolt-auto')" :to="autoUpdateHref">Auto
+              Updates</v-btn>
+          </template>
 
           <v-list>
             <v-list-item v-for="plugin in plugins" :to="`/device/${plugin.id}`">
@@ -26,15 +30,13 @@
                   <template v-if="plugin.updateAvailable !== undefined">
                     <v-btn v-if="plugin.updateAvailable" size="x-small" :prepend-icon="getFaPrefix('fa-download')"
                       color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
-                    <v-list-item-subtitle v-else class="ml-2"
-                      style="font-size: .8rem; text-align: end;">v{{
-                        plugin.version
+                    <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; text-align: end;">v{{
+                      plugin.version
                       }}</v-list-item-subtitle>
                     <div v-if="plugin.info">
                       <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
-                      <v-list-item-subtitle v-else class="ml-2"
-                        style="font-size: .8rem; text-align: end;">pid: {{
-                          plugin.info.pid
+                      <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; text-align: end;">pid: {{
+                        plugin.info.pid
                         }}</v-list-item-subtitle>
                     </div>
                   </template>
@@ -72,6 +74,8 @@ import InstallPluginCard from './InstallPluginCard.vue';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
+import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import { getDeviceRoute } from '@/id-device';
 
 const error = ref<string>();
 
@@ -123,4 +127,14 @@ async function updatePlugin(plugin: typeof plugins.value[0]) {
     error.value = (e as any).message;
   }
 }
+
+const autoUpdateHref = computed(() => {
+  if (!connectedClient.value)
+    return;
+  const { systemManager } = connectedClient.value;
+  const id = systemManager.getDeviceById('@scrypted/core', 'automation:update-plugins')?.id;
+  if (!id)
+    return;
+  return getDeviceRoute(id);
+});
 </script>
