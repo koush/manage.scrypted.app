@@ -27,8 +27,8 @@ function updateStrings() {
 watch(() => modelValue.value.value, updateStrings, { immediate: true });
 updateStrings();
 watch(() => strings.value, () => {
-  const mv = (modelValue.value.value as string[]).filter(v => v);
-  const nv = strings.value.filter(v => v);
+  const mv = (modelValue.value.value as string[])?.filter(v => v);
+  const nv = strings.value?.filter(v => v);
   if (JSON.stringify(mv) === JSON.stringify(nv))
     return;
   modelValue.value.value = nv;

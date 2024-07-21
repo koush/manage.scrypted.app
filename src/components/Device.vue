@@ -43,7 +43,7 @@
 
             <v-card-actions>
               <template v-if="isScryptedPlugin">
-                <v-btn size="small" color="info"
+                <v-btn size="x-small" color="info"
                   @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
                 <ToolbarTooltipButton icon="fa-rectangle-history" tooltip="Log" @click="showConsole = true; scrollToComponent(() => consoleCard)">
                 </ToolbarTooltipButton>
