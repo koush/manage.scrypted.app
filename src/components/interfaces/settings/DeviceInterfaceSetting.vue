@@ -45,12 +45,15 @@ const value = computed({
     return values.map(value => {
       const [id, deviceInterface] = value.split('#', 2);
       const device = connectedClient.value?.systemManager.getDeviceById(id);
+      if (!device)
+        return;
       const title = device.name + ` (${deviceInterface})`;
       return {
         title,
         value,
       }
-    });
+    })
+      .filter(v => v);
   },
   set(value) {
     if (!Array.isArray(value))

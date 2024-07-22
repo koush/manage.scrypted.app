@@ -96,7 +96,7 @@ const mixinList = computed(() => {
 
 async function toggleMixin(mixined: typeof mixinList.value[0], state: boolean) {
   mixined.value = state;
-  const mixins = mixined.device.mixins.filter(m => m !== props.id);
+  const mixins = mixined.device.mixins?.filter(m => m !== props.id) || [];
   if (state)
     mixins.push(props.id);
   await mixined.device.setMixins(mixins);
