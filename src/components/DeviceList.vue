@@ -30,7 +30,8 @@
             <div
               style="height: 300px; display: flex; text-align: center; flex-direction: column; justify-content: center; align-items: center;">
               <div>Welcome to Scrypted.</div>
-              <div>Get started by installing the plugin that supports your hardware. Then add the device below or within the plugin.</div>
+              <div>Get started by installing the plugin that supports your hardware. Then add the device below or within
+                the plugin.</div>
               <div style="display: flex;" class="mt-4">
                 <v-btn variant="flat" size="x-small" class="ml-4" color="info" to="/component/plugin/install">Install
                   Plugin</v-btn>
@@ -76,8 +77,7 @@
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
                   <td v-if="mdAndUp"><v-btn color="info" size="small" variant="text" @click.stop
-                      :to="`/device/${connectedClient!.systemManager.getDeviceById(device.pluginId).id}`">{{
-                        connectedClient!.systemManager.getDeviceById(device.pluginId).name }}</v-btn></td>
+                      :to="getDevicePluginRoute(device)">{{ getDevicePluginName(device) }}</v-btn></td>
                 </tr>
               </tbody>
             </v-table>
@@ -92,8 +92,8 @@
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { goDevice } from '@/id-device';
-import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
+import { getDeviceRoute, goDevice } from '@/id-device';
+import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
@@ -105,6 +105,20 @@ const other = 'Other' as ScryptedDeviceType;
 const { lgAndUp, mdAndUp } = useDisplay();
 
 const isDefaultFilter = ref(true);
+
+function getDevicePluginRoute(device: ScryptedDevice) {
+  const id = connectedClient.value?.systemManager.getDeviceById(device.pluginId)?.id
+  if (!id)
+    return;
+  return getDeviceRoute(id);
+}
+
+function getDevicePluginName(device: ScryptedDevice) {
+  const devicePlugin = connectedClient.value?.systemManager.getDeviceById(device.pluginId);
+  if (!devicePlugin)
+    return 'Unknown Plugin';
+  return devicePlugin.name;
+}
 
 function clickChip(deviceGroup: ScryptedDeviceType, e: MouseEvent | KeyboardEvent) {
   const i = deviceGroups.value.indexOf(deviceGroup);
