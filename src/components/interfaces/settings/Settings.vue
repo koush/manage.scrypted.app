@@ -62,7 +62,7 @@ function getTitle(title: string) {
 
 const modelValue = defineModel<TrackedSetting[]>();
 const props = defineProps<{
-  extraGroups?: SettingsGroup[];
+  extraGroups?: string[];
   hideBorder?: boolean;
 }>();
 
@@ -108,10 +108,10 @@ const settingsGroups = computed(() => {
 
 const selectedSettingGroup = ref<SettingsGroup>(settingsGroups.value?.[0]);
 watch(() => settingsGroups.value, () => {
-  if (props.extraGroups?.includes(selectedSettingGroup.value))
+  if (props.extraGroups?.includes(selectedSettingGroup.value?.title))
     return;
   selectedSettingGroup.value = settingsGroups.value.find(v => v.title === selectedSettingGroup.value?.title)
-    || settingsGroups.value[0] || props.extraGroups?.[0];
+    || settingsGroups.value[0];
 });
 
 const selectedSettingSubgroup = ref<SettingsSubgroup>(settingsGroups.value?.[0]?.subgroups?.[0]);

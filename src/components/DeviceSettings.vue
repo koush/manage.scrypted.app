@@ -13,7 +13,7 @@
         color="success">Save</v-btn>
     </template>
     <div>
-      <SettingsInterface v-model="settings" :extra-groups="[extensions]"
+      <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
           <v-expansion-panel :value="extensions">
