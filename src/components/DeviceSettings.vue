@@ -13,7 +13,7 @@
         color="success">Save</v-btn>
     </template>
     <div>
-      <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
+      <SettingsInterface v-model="settings" :extra-groups="extraGroups"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
           <v-expansion-panel :value="extensions">
@@ -34,12 +34,12 @@
 import { asyncComputed } from '@/common/async-computed';
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId, registerListener } from '@/id-device';
-import { ScryptedInterface, Setting, Settings } from '@scrypted/types';
+import { ScryptedDeviceType, ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
+import { SettingsGroup } from './interfaces/settings-common';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
-import { SettingsGroup } from './interfaces/settings-common';
 
 const props = defineProps<{
   id: string;
@@ -52,6 +52,17 @@ const emits = defineEmits<{
 const device = getDeviceFromId<Settings>(() => props.id);
 const extensions: SettingsGroup = { title: 'Extensions', subgroups: [] };
 
+const isScryptedPlugin = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.ScryptedPlugin);
+});
+
+const extraGroups = computed(() => {
+  const groups = ['Extensions'];
+  if (!isScryptedPlugin.value)
+    groups.unshift('Edit');
+  return groups;
+});
+
 const refreshSettings = ref(0);
 
 registerListener(device, {
@@ -61,12 +72,34 @@ registerListener(device, {
 });
 
 const settings = asyncComputed({
-  async get({ clearOldValue }) {
+  async get() {
+    let settings: Setting[];
     if (!device.value.interfaces.includes(ScryptedInterface.Settings)) {
-      clearOldValue();
-      return;
+      settings = [];
     }
-    const settings = await device.value.getSettings();
+    else {
+      settings = await device.value.getSettings();
+    }
+
+    if (!isScryptedPlugin.value) {
+      settings.push(
+        {
+          group: 'Edit',
+          title: 'Name',
+          key: 'ui:name',
+          value: device.value.name,
+        },
+        {
+          group: 'Edit',
+          title: 'Type',
+          key: 'ui:type',
+          value: device.value.type,
+          choices: Object.keys(ScryptedDeviceType),
+          combobox: true,
+        },
+      );
+    }
+
     const ret = settings.map(trackSetting);
     return ret;
   },
@@ -93,7 +126,19 @@ watch(() => dirtyCount.value, () => {
 function save() {
   const toSave = settings.value.filter(isDirty);
   for (const setting of toSave) {
-    device.value.putSetting(setting.key, setting.value);
+    if (setting.key.startsWith('ui:')) {
+      const key = setting.key.substring(3);
+      setting.originalValue = setting.value;
+      if (key === 'name') {
+        device.value.setName(setting.value?.toString());
+      }
+      else if (key === 'type') {
+        device.value.setType(setting.value?.toString() as ScryptedDeviceType);
+      }
+    }
+    else {
+      device.value.putSetting(setting.key, setting.value);
+    }
   }
 }
 

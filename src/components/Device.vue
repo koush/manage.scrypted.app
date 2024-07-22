@@ -10,22 +10,13 @@
         <template v-if="device">
           <v-card class="mb-4">
             <template v-slot:prepend>
-              <v-icon size="xx-small" :icon="typeToIcon(device.type)"></v-icon>
+              <v-icon size="xx-small" class="mt-1" :icon="typeToIcon(device.type)"></v-icon>
             </template>
 
             <template v-slot:title>
-              <template v-if="!isScryptedPlugin">
-                <div style="display: flex; align-items: center;">
-                  <InlineTextField :model-value="device.name" size="small" @save="updateName">
-                  </InlineTextField>
-                  <v-card-subtitle class="mt-1" v-if="!editingName">ID: {{ device.id }}</v-card-subtitle>
-                </div>
-              </template>
-              <template v-else>
-                <div style="display: flex;">
-                  <v-btn size="small" density="compact" variant="text">{{ device.name }}</v-btn>
-                </div>
-              </template>
+              <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
+                {{ device.name }}
+              </v-card-subtitle>
             </template>
 
             <template v-slot:append v-if="isScryptedPlugin">
@@ -79,7 +70,7 @@
         </VideoClipsInterface>
         <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
-        <Readme v-if="hasReadme" :id="id"></Readme>
+        <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
       </v-col>
       <DeviceLayout>
@@ -195,12 +186,12 @@ import ClipPathEditor from './ClipPathEditor.vue';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
-import InlineTextField from './InlineTextField.vue';
 import PtyComponent from './PtyComponent.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';
+import Notifier from './interfaces/Notifier.vue';
 import OauthClient from './interfaces/OauthClient.vue';
 import PositionSensor from './interfaces/PositionSensor.vue';
 import RTCSignalingChannel from './interfaces/RTCSignalingChannel.vue';
@@ -214,7 +205,6 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
-import Notifier from './interfaces/Notifier.vue';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -397,10 +387,6 @@ const replCard = ref<ComponentPublicInstance>();
 async function scrollToComponent(component: () => ComponentPublicInstance) {
   await nextTick();
   component()?.$el.scrollIntoView();
-}
-
-function updateName(value: string) {
-  device.value.setName(value);
 }
 </script>
 <style scoped>
