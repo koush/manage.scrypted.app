@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="settings?.length">
+  <v-card>
     <template v-slot:prepend>
       <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
     </template>
@@ -13,7 +13,7 @@
         color="success">Save</v-btn>
     </template>
     <div>
-      <SettingsInterface v-model="settings" :extra-groups="['Extensions']"
+      <SettingsInterface v-model="settings" :extra-groups="[extensions]"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
           <v-expansion-panel :value="extensions">
