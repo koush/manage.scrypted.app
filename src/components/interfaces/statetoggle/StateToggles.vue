@@ -15,6 +15,9 @@
     <StateToggle v-if="hasBinarySensor" :states="binarySensorActions" :state="device.binaryState">
     </StateToggle>
 
+    <StateToggle v-if="hasBattery" :states="batteryActions" :state="device.batteryLevel">
+    </StateToggle>
+
     <StateToggle v-if="hasOnOff" :states="onOffActions" :state="device.on"
       :name="device.type === ScryptedDeviceType.Camera ? 'Indicator Light' : device.type"></StateToggle>
 
@@ -29,7 +32,7 @@
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { BinarySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
+import { Battery, BinarySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -42,7 +45,7 @@ const emits = defineEmits<{
   (event: 'run'): void;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery>(() => props.id);
 
 const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
@@ -98,6 +101,22 @@ const binarySensorActions = computed(() => {
       click: () => { },
       disabled: true,
     },
+  ];
+});
+
+const hasBattery = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.Battery);
+});
+
+const batteryActions = computed(() => {
+  return [
+    {
+      name: `${device.value.batteryLevel || 0}%`,
+      icon: 'fa-battery-full',
+      value: undefined,
+      click: () => { },
+      disabled: true,
+    }
   ];
 });
 
