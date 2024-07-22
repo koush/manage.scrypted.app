@@ -5,8 +5,8 @@
     </template>
 
     <template v-slot:append v-if="hasVideoClips">
-      <ToolbarTooltipButton v-if="hasSmartDetections" :active="smartDetectionsOnly"
-        @click="smartDetectionsOnly = !smartDetectionsOnly" tooltip="Filter unidentified motion" icon="fa-wind"
+      <ToolbarTooltipButton v-if="hasSmartDetections" :active="!smartDetectionsOnly"
+        @click="smartDetectionsOnly = !smartDetectionsOnly" tooltip="Show unidentified motion" icon="fa-wind"
         variant="text" :color="smartDetectionsOnly ? 'info' : undefined"></ToolbarTooltipButton>
       <v-dialog width="unset" v-model="dialog">
         <template v-slot:activator="{ props }">
