@@ -56,9 +56,17 @@ const isScryptedPlugin = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.ScryptedPlugin);
 });
 
+const isEditable = computed(() => {
+  if (isScryptedPlugin.value)
+    return false;
+  if (device.value?.providedType === ScryptedDeviceType.Builtin)
+    return false;
+  return true;
+});
+
 const extraGroups = computed(() => {
   const groups = ['Extensions'];
-  if (!isScryptedPlugin.value)
+  if (isEditable.value)
     groups.unshift('Edit');
   return groups;
 });
@@ -81,7 +89,7 @@ const settings = asyncComputed({
       settings = await device.value.getSettings();
     }
 
-    if (!isScryptedPlugin.value) {
+    if (isEditable.value) {
       settings.push(
         {
           group: 'Edit',

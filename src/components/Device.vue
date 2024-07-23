@@ -25,7 +25,7 @@
               </div>
             </template>
             <template v-slot:append
-              v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp && !editingName">
+              v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp">
               <div style="display: flex; align-items: center;">
                 <v-btn :to="`/device/${device.providerId}`" variant="text" size="x-small" density="compact">{{
                   connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
@@ -210,7 +210,6 @@ const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
 const showRepl = ref(false);
 const showEvents = ref(false);
-const editingName = ref(false);
 
 const routeId = getIdFromRoute();
 
