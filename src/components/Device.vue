@@ -146,8 +146,9 @@
             </template>
           </Camera>
 
+          <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>
           <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
-          <DeviceProvider v-if="hasOrCanCreateDevices" class="mb-4" :id="id"></DeviceProvider>
+          <DeviceProvider v-if="!hasDeviceCreator && hasDevices" class="mb-4" :id="id"></DeviceProvider>
 
         </template>
         <template v-slot:extra>
@@ -220,9 +221,12 @@ const props = defineProps<{
 const id = computed(() => props.id || routeId.value);
 const device = getDeviceFromId<Settings & VideoClips>(() => id.value);
 
-const hasOrCanCreateDevices = computed(() => {
-  return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator)
-    || getAllDevices().find(d => d.providerId === id.value && d.id !== id.value);
+const hasDeviceCreator = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator);
+});
+
+const hasDevices = computed(() => {
+  return getAllDevices().find(d => d.providerId === id.value && d.id !== id.value);
 });
 
 const canExtendDevices = computed(() => {
