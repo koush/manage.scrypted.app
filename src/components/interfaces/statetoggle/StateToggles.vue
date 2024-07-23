@@ -115,11 +115,12 @@ const entrySensorActions = computed(() => {
   if (device.value.entryOpen === 'jammed') {
     return [
       {
-        name: 'Opened',
+        name: 'Jammed',
         icon: 'fa-traffic-cone',
         value: undefined,
         click: () => { },
         disabled: true,
+        color: 'error',
       }
     ];
   }
@@ -127,7 +128,7 @@ const entrySensorActions = computed(() => {
   if (device.value.entryOpen) {
     return [
       {
-        name: 'Jammed',
+        name: 'Opened',
         icon: 'fa-door-open',
         value: undefined,
         click: () => { },
