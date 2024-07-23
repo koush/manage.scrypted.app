@@ -3,12 +3,10 @@
     <v-alert v-if="error" closable color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
     <v-row>
-      <v-col v-if="!mdAndUp" cols="12" md="6" lg="4">
-        <InstallPluginCard></InstallPluginCard>
-      </v-col>
-
       <v-col cols="12" md="6" lg="4">
-        <v-card text="These plugins are currently installed in Scrypted." class="mb-4">
+        <v-card class="mb-4">
+          <v-card-text>Plugins are the primary way to extend Scrypted by adding new devices and capabilities.</v-card-text>
+          <v-card-text>These plugins are currently installed in Scrypted.</v-card-text>
           <template v-slot:prepend>
             <v-icon size="x-small">{{ getFaPrefix('fa-puzzle') }}</v-icon>
           </template>
@@ -16,8 +14,11 @@
             <v-card-subtitle class="mt-1">Plugins</v-card-subtitle>
           </template>
           <template v-slot:append>
-            <v-btn size="x-small" variant="flat" color="info" :prepend-icon="getFaPrefix('fa-bolt-auto')" :to="autoUpdateHref">Auto
+            <v-btn size="x-small" variant="flat" color="info" :prepend-icon="getFaPrefix('fa-bolt-auto')"
+              :to="autoUpdateHref" class="mr-2">Auto
               Updates</v-btn>
+            <v-btn size="x-small" variant="flat" color="success" :prepend-icon="getFaPrefix('fa-download')"
+              to="/component/plugin/install">Install</v-btn>
           </template>
 
           <v-list>
@@ -32,12 +33,12 @@
                       color="info" @click.prevent="updatePlugin(plugin)" class="mb-1">Update</v-btn>
                     <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; text-align: end;">v{{
                       plugin.version
-                      }}</v-list-item-subtitle>
+                    }}</v-list-item-subtitle>
                     <div v-if="plugin.info">
                       <v-chip v-if="!plugin.info.pid" size="x-small" variant="flat" color="red" text="Crashed"></v-chip>
                       <v-list-item-subtitle v-else class="ml-2" style="font-size: .8rem; text-align: end;">pid: {{
                         plugin.info.pid
-                        }}</v-list-item-subtitle>
+                      }}</v-list-item-subtitle>
                     </div>
                   </template>
                 </div>
@@ -53,7 +54,6 @@
       </v-col>
 
       <v-col v-if="mdAndUp" cols="12" md="6" lg="4">
-        <InstallPluginCard class="mb-4"></InstallPluginCard>
         <PluginStats :plugins="plugins"></PluginStats>
       </v-col>
 
@@ -72,7 +72,6 @@ import { ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
-import InstallPluginCard from './InstallPluginCard.vue';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
 
