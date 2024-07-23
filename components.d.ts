@@ -33,7 +33,6 @@ declare module 'vue' {
     HtmlSetting: typeof import('./src/components/interfaces/settings/HtmlSetting.vue')['default']
     InlineTextField: typeof import('./src/components/InlineTextField.vue')['default']
     InstallPlugin: typeof import('./src/components/plugin/InstallPlugin.vue')['default']
-    InstallPluginCard: typeof import('./src/components/plugin/InstallPluginCard.vue')['default']
     Launcher: typeof import('./src/components/Launcher.vue')['default']
     MixinProvider: typeof import('./src/components/interfaces/MixinProvider.vue')['default']
     MultipleStringSetting: typeof import('./src/components/interfaces/settings/MultipleStringSetting.vue')['default']

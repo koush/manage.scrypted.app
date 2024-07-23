@@ -12,6 +12,9 @@
     <StateToggle v-if="hasMotionSensor" :states="motionActions" :state="device.motionDetected">
     </StateToggle>
 
+    <StateToggle v-if="hasEntrySensor" :states="entrySensorActions" :state="device.entryOpen">
+    </StateToggle>
+
     <StateToggle v-if="hasBinarySensor" :states="binarySensorActions" :state="device.binaryState">
     </StateToggle>
 
@@ -32,7 +35,7 @@
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { Battery, BinarySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
+import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -45,7 +48,7 @@ const emits = defineEmits<{
   (event: 'run'): void;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor>(() => props.id);
 
 const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
@@ -97,6 +100,46 @@ const binarySensorActions = computed(() => {
     {
       name: device.value?.type === ScryptedDeviceType.Doorbell ? 'Not Ringing' : 'Idle',
       icon: device.value?.type === ScryptedDeviceType.Doorbell ? 'fa-bell' : 'fa-sensor',
+      value: undefined,
+      click: () => { },
+      disabled: true,
+    },
+  ];
+});
+
+const hasEntrySensor = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.EntrySensor);
+});
+
+const entrySensorActions = computed(() => {
+  if (device.value.entryOpen === 'jammed') {
+    return [
+      {
+        name: 'Opened',
+        icon: 'fa-traffic-cone',
+        value: undefined,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  if (device.value.entryOpen) {
+    return [
+      {
+        name: 'Jammed',
+        icon: 'fa-door-open',
+        value: undefined,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  return [
+    {
+      name: 'Closed',
+      icon: 'fa-door-closed',
       value: undefined,
       click: () => { },
       disabled: true,
