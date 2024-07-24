@@ -14,7 +14,7 @@
             <v-card-subtitle class="mt-1">Plugins</v-card-subtitle>
           </template>
           <template v-slot:append>
-            <v-btn size="x-small" variant="flat" color="info" :prepend-icon="getFaPrefix('fa-bolt-auto')"
+            <v-btn size="x-small" variant="outlined" color="info" :prepend-icon="getFaPrefix('fa-bolt-auto')"
               :to="autoUpdateHref" class="mr-2">Auto
               Updates</v-btn>
             <v-btn size="x-small" variant="flat" color="success" :prepend-icon="getFaPrefix('fa-download')"
