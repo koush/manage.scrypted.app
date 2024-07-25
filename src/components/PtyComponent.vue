@@ -7,7 +7,7 @@
       <ToolbarTooltipButton v-if="copyButton" icon="fa-copy" tooltip="Copy Log" variant="text" @click="copyLog" />
       <ToolbarTooltipButton v-if="copyButton" icon="fa-broom-wide" tooltip="Clear Log" color="error" variant="text"
         @click="clear" />
-        <template v-if="expandButton !== false">
+      <template v-if="expandButton !== false">
         <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
           @click="expand" />
         <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
@@ -73,20 +73,8 @@ function clear() {
 const terminal = ref<HTMLElement>();
 
 const dark = isDark();
-const term = new Terminal({
-  theme: dark.value
-    ? undefined
-    : {
-      selectionBackground: '#0000ff55',
-      foreground: "black",
-      background: "white",
-      cursor: "black",
-    },
-  convertEol: true,
-  fontSize: 12,
-});
-watch(() => dark.value, () => {
-  term.options.theme = dark.value
+function getTheme() {
+  return dark.value
     ? undefined
     : {
       selectionBackground: '#0000ff55',
@@ -94,7 +82,18 @@ watch(() => dark.value, () => {
       background: "white",
       cursor: "black",
     };
+}
+
+const term = new Terminal({
+  theme: getTheme(),
+  convertEol: true,
+  fontSize: 12,
 });
+
+watch(() => dark.value, () => {
+  term.options.theme = getTheme();
+});
+
 const fitAddon = new FitAddon();
 term.loadAddon(fitAddon);
 
