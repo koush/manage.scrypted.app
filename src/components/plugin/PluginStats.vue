@@ -78,12 +78,6 @@ const topClients = computed(() => {
     .filter(p => !!p.info?.clientsCount).sort((a, b) => b.info?.clientsCount - a.info?.clientsCount)
     .slice(0, 5);
 });
-
-const chartMax = computed(() => {
-  const r = Math.max(topRpc.value.length, topPending.value.length, topClients.value.length);
-  return r;
-});
-
 </script>
 <style scoped>
 .float-right {
