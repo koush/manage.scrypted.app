@@ -16,8 +16,8 @@
       <SettingsInterface v-model="settings" :extra-groups="extraGroups"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
-          <v-expansion-panel :value="extensions">
-            <v-expansion-panel-title style="min-height: unset; height: 24px; font-size: .75rem;"
+          <v-expansion-panel :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')" :expand-icon="getFaPrefix('fa-caret-down')">
+            <v-expansion-panel-title style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
               :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
             <v-expansion-panel-text>
               <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>

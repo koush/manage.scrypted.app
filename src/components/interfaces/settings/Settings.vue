@@ -4,9 +4,9 @@
       :mandatory="totalExpansionPanels <= 1">
 
       <template v-for="group in settingsGroups">
-        <v-expansion-panel :value="group">
+        <v-expansion-panel :value="group" :collapse-icon="getFaPrefix('fa-caret-up')" :expand-icon="getFaPrefix('fa-caret-down')">
           <v-expansion-panel-title v-if="totalExpansionPanels > 1"
-            style="min-height: unset; height: 24px; font-size: .75rem;"
+            style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
             :color="selectedSettingGroup && group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
               getTitle(group.title) }}</v-expansion-panel-title>
           <v-tabs

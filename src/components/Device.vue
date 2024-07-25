@@ -24,8 +24,7 @@
                 <ScryptedPlugin :id="id" @update:plugin="showConsole = true"></ScryptedPlugin>
               </div>
             </template>
-            <template v-slot:append
-              v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp">
+            <template v-slot:append v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp">
               <div style="display: flex; align-items: center;">
                 <v-btn :to="`/device/${device.providerId}`" variant="text" size="x-small" density="compact">{{
                   connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
@@ -92,7 +91,7 @@
             <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
             </ClipPathEditor>
             <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
-              :microphone="!!talkback">
+              :muted="muted" :microphone="!!talkback">
             </RTCSignalingChannel>
             <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
               style="width: 100%; height: 100; object-fit: contain;"></video>
@@ -135,6 +134,9 @@
                 <template v-else>
                   <ToolbarTooltipButton color="error" :icon="getFaPrefix('fa-stop')" variant="text" size="small"
                     @click="playing = undefined" :tooltip="`Stop (Stream: ${destination})`">
+                  </ToolbarTooltipButton>
+                  <ToolbarTooltipButton color="error" :icon="getFaPrefix(!muted ? 'fa-volume' : 'fa-volume-slash')"
+                    variant="text" size="small" @click="muted = !muted" tooltip="Toggle Audio">
                   </ToolbarTooltipButton>
                   <ToolbarTooltipButton v-if="hasIntercom" color="error"
                     :icon="getFaPrefix(!talkback ? 'fa-microphone' : 'fa-microphone-slash')" variant="text" size="small"
@@ -211,6 +213,7 @@ const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
 const showRepl = ref(false);
 const showEvents = ref(false);
+const muted = ref(true);
 
 const routeId = getIdFromRoute();
 
