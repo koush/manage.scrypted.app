@@ -11,7 +11,7 @@
     <v-card-subtitle>
       These things were created by {{ device.name }}.
     </v-card-subtitle>
-    <v-table density="compact">
+    <v-table density="compact" hover>
       <thead>
         <tr>
           <th style="width: 32px;"></th>
@@ -23,15 +23,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="device in childDevices" :key="device.id" @click="goDevice(router, device)" style="cursor: pointer;">
+        <tr v-for="device in childDevices" :key="device.id">
           <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-          <td>{{ device.name }}</td>
+          <td @click="goDevice(router, device)" style="cursor: pointer;">{{ device.name }}</td>
           <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
       </tbody>
     </v-table>
-    <DeviceDiscoveryInterface v-if="hasDeviceDiscovery && discovered" :id="id" :discovered-devices="discovered"></DeviceDiscoveryInterface>
+    <DeviceDiscoveryInterface v-if="hasDeviceDiscovery && discovered" :id="id" :discovered-devices="discovered">
+    </DeviceDiscoveryInterface>
     <v-card-actions v-if="hasDeviceCreator || hasDeviceDiscovery">
       <v-dialog max-width="500" v-if="hasDeviceCreator">
         <template v-slot:activator="{ props: activatorProps }">
@@ -43,7 +44,8 @@
           </DeviceCreatorInterface>
         </template>
       </v-dialog>
-      <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small" @click="discoverDevices">Discover</v-btn>
+      <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small"
+        @click="discoverDevices">Discover</v-btn>
     </v-card-actions>
   </v-card>
 </template>

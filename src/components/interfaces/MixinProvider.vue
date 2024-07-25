@@ -11,7 +11,7 @@
     <v-card-subtitle>
       {{ device.name }} can be enabled on these devices.
     </v-card-subtitle>
-    <v-table density="compact">
+    <v-table density="compact" hover>
       <thead>
         <tr>
           <th class="text-left">

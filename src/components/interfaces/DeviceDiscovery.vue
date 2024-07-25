@@ -8,7 +8,7 @@
     </DeviceCreatorInterface>
   </v-dialog>
 
-  <v-table density="compact">
+  <v-table density="compact" hover>
     <thead>
       <tr>
         <th style="width: 32px;"></th>

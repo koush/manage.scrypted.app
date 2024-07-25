@@ -53,7 +53,7 @@
             </v-chip-group>
             <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText"
               style="transform: scale(.75, .75)" title="Search" label="Search" density="compact"></v-text-field>
-            <v-table density="compact">
+            <v-table density="compact" hover>
               <thead>
                 <tr>
                   <th style="width: 32px;"></th>
@@ -69,10 +69,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="device in devicePage" :key="device.id" @click="goDevice(router, device)"
-                  style="cursor: pointer;">
+                <tr v-for="device in devicePage" :key="device.id">
                   <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                  <td style="text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
+                  <td @click="goDevice(router, device)"
+                    style="cursor: pointer; text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
                   <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
