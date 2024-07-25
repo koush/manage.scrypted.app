@@ -16,8 +16,10 @@
       <SettingsInterface v-model="settings" :extra-groups="extraGroups"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
-          <v-expansion-panel :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')" :expand-icon="getFaPrefix('fa-caret-down')">
-            <v-expansion-panel-title style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
+          <v-expansion-panel :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')"
+            :expand-icon="getFaPrefix('fa-caret-down')">
+            <v-expansion-panel-title
+              style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
               :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
             <v-expansion-panel-text>
               <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>
@@ -59,8 +61,12 @@ const isScryptedPlugin = computed(() => {
 const isEditable = computed(() => {
   if (isScryptedPlugin.value)
     return false;
-  if (device.value?.providedType === ScryptedDeviceType.Builtin)
-    return false;
+  switch (device.value?.providedType) {
+    case ScryptedDeviceType.Builtin:
+    case ScryptedDeviceType.API:
+    case ScryptedDeviceType.Person:
+      return false;
+  }
   return true;
 });
 
