@@ -10,7 +10,7 @@
       <template v-if="expandButton !== false">
         <ToolbarTooltipButton v-if="!expanded" icon="fa-chevrons-down" tooltip="Expand" variant="text"
           @click="expand" />
-        <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Expand Log" variant="text" @click="contract" />
+        <ToolbarTooltipButton v-else icon="fa-chevrons-up" tooltip="Shrink" variant="text" @click="contract" />
       </template>
       <ToolbarTooltipButton v-if="close" icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
     </template>
