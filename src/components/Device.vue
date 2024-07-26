@@ -86,7 +86,7 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
-          <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing"
+          <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
             @img:click="playing = destination" ref="camera">
             <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
             </ClipPathEditor>
