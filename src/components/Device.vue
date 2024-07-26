@@ -147,6 +147,9 @@
 
             </template>
           </Camera>
+          <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
+            :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
+          </PtyComponent>
 
           <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>
           <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
@@ -155,9 +158,6 @@
         </template>
         <template v-slot:extra>
 
-          <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
-            :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
-          </PtyComponent>
           <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true"
             @clear="clearConsole(id)" :expand-button="true" :copyButton="true" title="Log"
             :hello="(device.nativeId || 'undefined')" nativeId="consoleservice" :control="false"
