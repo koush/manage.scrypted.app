@@ -72,8 +72,6 @@ const isEditable = computed(() => {
 
 const extraGroups = computed(() => {
   const groups = ['Extensions'];
-  if (isEditable.value)
-    groups.unshift('Edit');
   return groups;
 });
 
