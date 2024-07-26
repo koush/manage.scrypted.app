@@ -208,6 +208,7 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
+import { sleep } from '@scrypted/server/src/sleep';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);
@@ -391,8 +392,13 @@ const eventsCard = ref<ComponentPublicInstance>();
 const replCard = ref<ComponentPublicInstance>();
 
 async function scrollToComponent(component: () => ComponentPublicInstance) {
-  await nextTick();
-  component()?.$el.scrollIntoView();
+  await sleep(500);
+  const el: HTMLElement = component()?.$el;
+  el.scrollIntoView({
+    block: 'start',
+    inline: 'nearest',
+    behavior: 'smooth',
+  });
 }
 </script>
 <style scoped>
