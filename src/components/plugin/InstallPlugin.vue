@@ -74,7 +74,6 @@ import { goDevice } from '@/id-device';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
-console.warn(route.query)
 const search = ref<string>(route.query.search as string || '');
 
 interface Plugin {
