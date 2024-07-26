@@ -129,6 +129,7 @@ const itemGroups = computed(() => {
       items: [
         { title: 'Users', icon: getFaPrefix('fa-users'), to: '/users' },
         { title: 'Automations', icon: getFaPrefix('fa-bolt'), to: '/automations' },
+        { title: 'Scripts', icon: getFaPrefix('fa-code'), to: '/scripts' },
         { title: 'Terminal', icon: getFaPrefix('fa-rectangle-terminal'), to: '/component/shell' },
         ...(scryptedAlerts.value.length
           ? [

@@ -38,6 +38,13 @@ const routes: RouteRecordRaw[] = [
     component: ScryptedSettings,
   },
   {
+    path: '/scripts',
+    component: ScryptedCoreDeviceShortcut,
+    props: {
+      nativeId: 'scriptcore',
+    },
+  },
+  {
     path: '/users',
     component: ScryptedCoreDeviceShortcut,
     props: {
