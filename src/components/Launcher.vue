@@ -101,7 +101,7 @@
         <div style="width: 100%; display: flex; justify-content: center;" class="mb-2">
           <v-btn size="small" style="justify-self: center;" href="https://demo.scrypted.app/#/demo" target="_blank">View Demo
           </v-btn>
-          <v-btn size="small" style="justify-self: center;">Install
+          <v-btn size="small" style="justify-self: center;" to="/component/plugin/install?search=@scrypted/nvr">Install
           </v-btn>
         </div>
       </v-card>
