@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="isAdmin || settings.length" \>
+  <v-card v-if="isAdmin || settings.length">
     <template v-slot:prepend>
       <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
     </template>
