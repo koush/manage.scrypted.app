@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="isAdmin || settings.length" \>
     <template v-slot:prepend>
       <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
     </template>
@@ -16,7 +16,7 @@
       <SettingsInterface v-model="settings" :extra-groups="extraGroups"
         @click-button-setting="setting => emits('click-button-setting', setting)">
         <template v-slot:settings-expansion-panels="slotProps">
-          <v-expansion-panel :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')"
+          <v-expansion-panel v-if="isAdmin" :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')"
             :expand-icon="getFaPrefix('fa-caret-down')">
             <v-expansion-panel-title
               style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
@@ -42,6 +42,7 @@ import { SettingsGroup } from './interfaces/settings-common';
 import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
+import { isAdmin } from '@/common/client';
 
 const props = defineProps<{
   id: string;
@@ -71,6 +72,8 @@ const isEditable = computed(() => {
 });
 
 const extraGroups = computed(() => {
+  if (!isAdmin.value)
+      return [];
   const groups = ['Extensions'];
   return groups;
 });
@@ -93,7 +96,7 @@ const settings = asyncComputed({
       settings = await device.value.getSettings();
     }
 
-    if (isEditable.value) {
+    if (isEditable.value && isAdmin.value) {
       settings.push(
         {
           group: 'Edit',

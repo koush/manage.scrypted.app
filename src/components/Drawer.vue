@@ -42,7 +42,7 @@
   </v-dialog>
 </template>
 <script setup lang="ts">
-import { connectedClient } from '@/common/client';
+import { connectedClient, isAdmin } from '@/common/client';
 import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceRoute } from '@/id-device';
@@ -118,7 +118,7 @@ const itemGroups = computed(() => {
       title: undefined,
       items: [
         { title: 'Devices', icon: getFaPrefix('fa-house-signal'), to: '/device', active: () => routeName.value === 'Device' || routeName.value === 'DeviceList' },
-        ...(pluginUpdateCount.value
+        ...(!isAdmin.value ? [] : pluginUpdateCount.value
           ? [{ title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin', badge: pluginUpdateCount.value.toString() }]
           : [{ title: 'Plugins', icon: getFaPrefix('fa-puzzle'), to: '/component/plugin' }]
         )
@@ -127,10 +127,12 @@ const itemGroups = computed(() => {
     {
       title: 'Utilities',
       items: [
-        { title: 'Users', icon: getFaPrefix('fa-users'), to: '/users' },
-        { title: 'Automations', icon: getFaPrefix('fa-bolt'), to: '/automations' },
-        { title: 'Scripts', icon: getFaPrefix('fa-code'), to: '/scripts' },
-        { title: 'Terminal', icon: getFaPrefix('fa-rectangle-terminal'), to: '/component/shell' },
+        ...(isAdmin.value ? [
+          { title: 'Users', icon: getFaPrefix('fa-users'), to: '/users' },
+          { title: 'Automations', icon: getFaPrefix('fa-bolt'), to: '/automations' },
+          { title: 'Scripts', icon: getFaPrefix('fa-code'), to: '/scripts' },
+          { title: 'Terminal', icon: getFaPrefix('fa-rectangle-terminal'), to: '/component/shell' },
+        ] : []),
         ...(scryptedAlerts.value.length
           ? [
             {
@@ -143,7 +145,9 @@ const itemGroups = computed(() => {
             }
           ]
           : []),
-        { title: 'Settings', icon: getFaPrefix('fa-gear'), to: '/settings' },
+        ...(isAdmin.value ? [
+          { title: 'Settings', icon: getFaPrefix('fa-gear'), to: '/settings' },
+        ] : [])
       ]
     },
     {

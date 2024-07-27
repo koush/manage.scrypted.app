@@ -7,8 +7,8 @@
         <template v-slot:title>
           <v-card-title style="text-align: center;" class="scrypted-title">Scrypted</v-card-title>
         </template>
-        <template v-slot:subtitle v-if="connectedClient?.version">
-          <v-card-subtitle style="text-align: center;" class="scrypted-subtitle">{{ connectedClient?.version
+        <template v-slot:subtitle v-if="connectedClient?.serverVersion">
+          <v-card-subtitle style="text-align: center;" class="scrypted-subtitle">{{ connectedClient?.serverVersion
             }}</v-card-subtitle>
           <v-card-subtitle style="text-align: center;" class="scrypted-subtitle2">{{
             connectedClient?.loginResult.hostname
@@ -48,7 +48,7 @@
         <template v-slot:title>
           <v-card-title style="text-align: center;" class="scrypted-title">Supercharge Scrypted</v-card-title>
         </template>
-        <template v-slot:subtitle v-if="connectedClient?.version">
+        <template v-slot:subtitle v-if="connectedClient?.serverVersion">
           <v-card-subtitle style="text-align: center;" class="scrypted-subtitle">Get Scrypted NVR</v-card-subtitle>
         </template>
 

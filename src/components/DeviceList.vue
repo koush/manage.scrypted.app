@@ -21,8 +21,9 @@
                   </DeviceCreatorInterface>
                 </template>
               </v-dialog>
-              <v-btn v-if="deviceGroups.length > 1" size="x-small" class="ml-4" color="info"
-                to="/component/plugin/install" variant="outlined">Install Plugin</v-btn>
+              <v-btn v-if="isAdmin" size="x-small" class="ml-4" color="info" to="/component/plugin/install"
+                variant="outlined">Install
+                Plugin</v-btn>
             </div>
           </template>
 
@@ -76,8 +77,8 @@
                   <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
-                  <td v-if="mdAndUp"><v-btn color="info" size="small" variant="text" @click.stop
-                      :to="getDevicePluginRoute(device)">{{ getDevicePluginName(device) }}</v-btn></td>
+                  <td v-if="mdAndUp"><v-btn v-if="getDevicePluginName(device)" color="info" size="small" variant="text"
+                      @click.stop :to="getDevicePluginRoute(device)">{{ getDevicePluginName(device) }}</v-btn></td>
                 </tr>
               </tbody>
             </v-table>
@@ -89,7 +90,7 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import { connectPluginClient, connectedClient } from '@/common/client';
+import { connectPluginClient, connectedClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceRoute, goDevice } from '@/id-device';
@@ -116,7 +117,7 @@ function getDevicePluginRoute(device: ScryptedDevice) {
 function getDevicePluginName(device: ScryptedDevice) {
   const devicePlugin = connectedClient.value?.systemManager.getDeviceById(device.pluginId);
   if (!devicePlugin)
-    return 'Unknown Plugin';
+    return '';
   return devicePlugin.name;
 }
 

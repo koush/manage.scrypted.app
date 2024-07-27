@@ -27,38 +27,39 @@
             <template v-slot:append v-if="!isScryptedPlugin && device.providerId && device.nativeId && mdAndUp">
               <div style="display: flex; align-items: center;">
                 <v-btn :to="`/device/${device.providerId}`" variant="text" size="x-small" density="compact">{{
-                  connectedClient?.systemManager.getDeviceById(device.providerId).name }}</v-btn>
+                  connectedClient?.systemManager.getDeviceById(device.providerId)?.name }}</v-btn>
               </div>
             </template>
 
             <v-card-actions>
               <OauthClient v-if="hasOauthClient" :id="id"></OauthClient>
-              <template v-if="isScryptedPlugin">
-                <v-btn size="x-small" color="info"
-                  @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
-                <ToolbarTooltipButton size="x-small" icon="fa-rectangle-history" tooltip="Log"
-                  @click="showConsole = true; scrollToComponent(() => consoleCard)">
+              <template v-if="isAdmin">
+                <template v-if="isScryptedPlugin">
+                  <v-btn size="x-small" color="info"
+                    @click="showConsole = true; restartPlugin(device.info.manufacturer)">Restart Plugin</v-btn>
+                  <ToolbarTooltipButton size="x-small" icon="fa-rectangle-history" tooltip="Log"
+                    @click="showConsole = true; scrollToComponent(() => consoleCard)">
+                  </ToolbarTooltipButton>
+                </template>
+                <v-btn v-else class="ml-1" size="x-small" color="info"
+                  @click="showConsole = true; scrollToComponent(() => consoleCard)">Log</v-btn>
+                <ToolbarTooltipButton size="x-small" icon="fa-clock-rotate-left" tooltip="Events"
+                  @click="showEvents = true; scrollToComponent(() => eventsCard);">
+                </ToolbarTooltipButton>
+                <ToolbarTooltipButton size="x-small" icon="fa-rectangle-terminal" tooltip="REPL"
+                  @click="showRepl = true; scrollToComponent(() => replCard);">
                 </ToolbarTooltipButton>
               </template>
-              <v-btn v-else class="ml-1" size="x-small" color="info"
-                @click="showConsole = true; scrollToComponent(() => consoleCard)">Log</v-btn>
-              <ToolbarTooltipButton size="x-small" icon="fa-clock-rotate-left" tooltip="Events"
-                @click="showEvents = true; scrollToComponent(() => eventsCard);">
-              </ToolbarTooltipButton>
-              <ToolbarTooltipButton size="x-small" icon="fa-rectangle-terminal" tooltip="REPL"
-                @click="showRepl = true; scrollToComponent(() => replCard);">
-              </ToolbarTooltipButton>
               <ToolbarTooltipButton v-if="device.info?.managementUrl" size="x-small" icon="fa-wrench"
                 tooltip="Manufacturer Settings" :href="device.info.managementUrl" target="_blank">
               </ToolbarTooltipButton>
               <v-spacer></v-spacer>
-              <DeleteDeviceDialog :id="id">
+              <DeleteDeviceDialog v-if="isAdmin" :id="id">
                 <template v-slot:activator="{ activatorProps }">
                   <ToolbarTooltipButton v-bind="activatorProps" size="x-small" icon="fa-trash" tooltip="Delete"
                     color="error">
                   </ToolbarTooltipButton>
                 </template>
-
               </DeleteDeviceDialog>
             </v-card-actions>
           </v-card>
@@ -176,7 +177,7 @@
 </template>
 <script setup lang="ts">
 import { ClipPathModel } from '@/clip-path-model';
-import { connectedClient, fixupAppDomainImageUrl } from '@/common/client';
+import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
@@ -305,7 +306,7 @@ watch(() => device.value, () => {
 });
 
 function resetPtys() {
-  showConsole.value = hasFixedPhysicalLocation(device.value?.type!) && !isTouchDevice.value;
+  showConsole.value = isAdmin.value && hasFixedPhysicalLocation(device.value?.type!) && !isTouchDevice.value;
   showRepl.value = false;
 }
 resetPtys();

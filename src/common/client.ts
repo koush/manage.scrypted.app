@@ -22,6 +22,7 @@ export function isConnected() {
 }
 
 export const isConnectedReactive = computed(() => !!connectedClient.value);
+export const isAdmin = computed(() => connectedClient.value?.admin !== false);
 
 let probe: Promise<void> | undefined;
 async function probeConnection() {
@@ -224,6 +225,7 @@ export async function connectClient(options: ScryptedClientOptions): Promise<Scr
 
   try {
     const self = connectedClient.value = await clientPromise;
+    console.log(connectedClient.value);
     isLoggedIn.value = true;
 
     self.onClose = () => {
