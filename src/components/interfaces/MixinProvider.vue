@@ -48,7 +48,7 @@ import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getDeviceRoute } from '@/id-device';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { MixinProvider } from '@scrypted/types';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import { chipColor } from './settings-common';
 
@@ -79,6 +79,9 @@ const extensibleDevices = asyncComputed({
 });
 
 
+let initialMixinList: typeof mixinList.value;
+watch(() => props.id, () => initialMixinList = undefined);
+
 const mixinList = computed(() => {
   const merged = new Map<string, typeof extendedDevices.value[0]>();
   for (const e of extendedDevices.value) {
@@ -91,6 +94,24 @@ const mixinList = computed(() => {
     device: d,
     value: !!extendedDevices.value.find(c => c.id === d.id),
   }));
+
+  if (!initialMixinList) {
+    initialMixinList = ret;
+    return ret;
+  }
+
+  ret.sort((a, b) => {
+    const ai = initialMixinList.findIndex(e => e.device.id === a.device.id);
+    const bi = initialMixinList.findIndex(e => e.device.id === b.device.id);
+    if (ai === -1 && bi === -1)
+      return a.device.name.localeCompare(b.device.name);
+    if (ai === -1)
+      return 1;
+    if (bi === -1)
+      return -1;
+    return ai - bi;
+  })
+
   return ret;
 });
 

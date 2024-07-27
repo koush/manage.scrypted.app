@@ -38,6 +38,7 @@ import { computed } from 'vue';
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
+import { watch } from 'vue';
 
 const router = useRouter();
 
@@ -77,6 +78,9 @@ const availableExtensions = asyncComputed({
   },
 });
 
+let initialExtensions: typeof extensions.value;
+watch(() => props.id, () => initialExtensions = undefined);
+
 const extensions = computed(() => {
   const merged = new Map<string, typeof enabledExtensions.value[0]>();
   for (const e of enabledExtensions.value) {
@@ -89,6 +93,24 @@ const extensions = computed(() => {
     device: d,
     value: !!enabledExtensions.value.find(c => c.id === d.id),
   }));
+
+  if (!initialExtensions) {
+    initialExtensions = ret;
+    return ret;
+  }
+
+  ret.sort((a, b) => {
+    const ai = initialExtensions.findIndex(e => e.device.id === a.device.id);
+    const bi = initialExtensions.findIndex(e => e.device.id === b.device.id);
+    if (ai === -1 && bi === -1)
+      return a.device.name.localeCompare(b.device.name);
+    if (ai === -1)
+      return 1;
+    if (bi === -1)
+      return -1;
+    return ai - bi;
+  });
+
   return ret;
 });
 
