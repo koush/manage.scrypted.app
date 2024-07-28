@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="8" lg="6">
+      <ResponsiveColumn cols="12" md="8" lg="6">
         <v-card text="Search for Plugins created by Scrypted and other developers.">
           <template v-slot:prepend>
             <v-icon size="x-small">{{ getFaPrefix('fa-puzzle-piece') }}</v-icon>
@@ -59,7 +59,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-      </v-col>
+      </ResponsiveColumn>
     </v-row>
   </v-container>
 </template>
@@ -72,6 +72,7 @@ import { installPlugin } from '../../internal-apis';
 import { connectedClient } from '@/common/client';
 import { goDevice } from '@/id-device';
 import { useRoute, useRouter } from 'vue-router';
+import ResponsiveColumn from '../ResponsiveColumn.vue';
 
 const route = useRoute();
 const search = ref<string>(route.query.search as string || '');

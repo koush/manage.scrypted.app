@@ -3,13 +3,13 @@
     <v-alert v-if="error" closable color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
     <v-row>
-      <v-col v-if="!isAdmin" cols="12" md="6" lg="4">
+      <ResponsiveColumn v-if="!isAdmin" cols="12" md="6" lg="4">
         <v-card class="mb-4">
           <v-card-text>Plugins are the primary way to extend Scrypted by adding new devices and capabilities.</v-card-text>
           <v-card-text>User "{{  connectedClient.username }}" must be an administrator to install plugins.</v-card-text>
           </v-card>
-      </v-col>
-      <v-col v-else cols="12" md="6" lg="4">
+      </ResponsiveColumn>
+      <ResponsiveColumn v-else cols="12" md="6" lg="4">
         <v-card class="mb-4">
           <v-card-text>Plugins are the primary way to extend Scrypted by adding new devices and capabilities.</v-card-text>
           <v-card-text>These plugins are currently installed in Scrypted.</v-card-text>
@@ -57,11 +57,11 @@
         </v-card>
 
         <PluginStats v-if="!mdAndUp" :plugins="plugins"></PluginStats>
-      </v-col>
+      </ResponsiveColumn>
 
-      <v-col v-if="mdAndUp && isAdmin" cols="12" md="6" lg="4">
+      <ResponsiveColumn v-if="mdAndUp && isAdmin" cols="12" md="6" lg="4">
         <PluginStats :plugins="plugins"></PluginStats>
-      </v-col>
+      </ResponsiveColumn>
 
     </v-row>
   </v-container>
@@ -80,6 +80,7 @@ import { useDisplay } from 'vuetify';
 import { getPluginInfo, installPlugin } from '../../internal-apis';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
+import ResponsiveColumn from '../ResponsiveColumn.vue';
 
 const error = ref<string>();
 

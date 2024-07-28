@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="6">
+      <ResponsiveColumn cols="12" md="6">
         <v-card v-if="settings?.length" class="mb-4">
           <template v-slot:prepend>
             <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
@@ -21,7 +21,7 @@
         </v-card>
 
         <ServerManagement></ServerManagement>
-      </v-col>
+      </ResponsiveColumn>
     </v-row>
   </v-container>
 </template>
@@ -37,6 +37,7 @@ import { computed, ref, watch } from 'vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import ServerManagement from './ServerManagement.vue';
+import ResponsiveColumn from './ResponsiveColumn.vue';
 
 function getScryptedSettingsIds() {
   if (!connectedClient.value)

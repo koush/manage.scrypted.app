@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12">
+      <ResponsiveColumn cols="12">
         <v-card>
           <template v-slot:prepend>
             <v-icon size="small" :icon="getFaPrefix('fa-microchip')"></v-icon>
@@ -85,7 +85,7 @@
             <v-pagination :length="devicePages.length" v-model="page" rounded density="compact"></v-pagination>
           </template>
         </v-card>
-      </v-col>
+      </ResponsiveColumn>
     </v-row>
   </v-container>
 </template>
@@ -99,6 +99,7 @@ import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './interfaces/DeviceCreator.vue';
+import ResponsiveColumn from './ResponsiveColumn.vue';
 
 const router = useRouter();
 const other = 'Other' as ScryptedDeviceType;

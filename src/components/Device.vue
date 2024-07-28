@@ -2,7 +2,7 @@
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device">
-      <v-col cols="12" md="4" xl="3" :class="isTouchPhone ? 'pa-0' : undefined">
+      <ResponsiveColumn cols="12" md="4" xl="3" >
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
@@ -72,7 +72,7 @@
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
         <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
-      </v-col>
+      </ResponsiveColumn>
       <DeviceLayout>
         <template v-slot:default>
           <template v-if="!isTouchDevice">
@@ -179,9 +179,10 @@
 import { ClipPathModel } from '@/clip-path-model';
 import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { isTouchDevice, isTouchPhone } from '@/common/size';
+import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
+import { sleep } from '@scrypted/server/src/sleep';
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -191,6 +192,7 @@ import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import PtyComponent from './PtyComponent.vue';
+import ResponsiveColumn from './ResponsiveColumn.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
@@ -209,7 +211,6 @@ import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
 import { TrackedSetting } from './interfaces/settings/setting-modelvalue';
 import StateToggles from './interfaces/statetoggle/StateToggles.vue';
-import { sleep } from '@scrypted/server/src/sleep';
 
 const { mdAndUp } = useDisplay();
 const showConsole = ref<boolean | undefined>(false);

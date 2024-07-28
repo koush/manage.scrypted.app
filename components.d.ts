@@ -47,6 +47,7 @@ declare module 'vue' {
     PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']
     ReadonlyRangeSetting: typeof import('./src/components/interfaces/settings/ReadonlyRangeSetting.vue')['default']
+    ResponsiveColumn: typeof import('./src/components/ResponsiveColumn.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     RTCSignalingChannel: typeof import('./src/components/interfaces/RTCSignalingChannel.vue')['default']
