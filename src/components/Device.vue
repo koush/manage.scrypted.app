@@ -2,7 +2,7 @@
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device">
-      <v-col cols="12" md="4" xl="3">
+      <v-col cols="12" md="4" xl="3" :class="isTouchPhone ? 'pa-0' : undefined">
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
@@ -179,7 +179,7 @@
 import { ClipPathModel } from '@/clip-path-model';
 import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { isTouchDevice } from '@/common/size';
+import { isTouchDevice, isTouchPhone } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
