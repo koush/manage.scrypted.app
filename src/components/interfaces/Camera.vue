@@ -20,10 +20,11 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
-import { getDeviceFromId } from '@/id-device';
-import { Camera } from '@scrypted/types';
+import { getDeviceFromId, registerListener } from '@/id-device';
+import { Camera, ScryptedInterface } from '@scrypted/types';
 import { ref, useSlots } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import debounce from 'lodash/debounce';
 
 const props = defineProps<{
   id: string;
@@ -64,4 +65,16 @@ const imgSrc = asyncComputed({
     counter: () => counter.value,
   }
 });
+
+const refreshOnSettings = debounce(() => counter.value++, 500, {
+  leading: false,
+  trailing: true,
+});
+
+registerListener(device, {
+  event: ScryptedInterface.Settings,
+}, () => {
+  refreshOnSettings();
+});
+
 </script>
