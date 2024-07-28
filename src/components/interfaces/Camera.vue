@@ -20,8 +20,8 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
-import { getDeviceFromId } from '@/id-device';
-import { Camera } from '@scrypted/types';
+import { getDeviceFromId, registerListener } from '@/id-device';
+import { Camera, ScryptedInterface } from '@scrypted/types';
 import { ref, useSlots } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 
@@ -64,4 +64,11 @@ const imgSrc = asyncComputed({
     counter: () => counter.value,
   }
 });
+
+registerListener(device, {
+  event: ScryptedInterface.Settings,
+}, () => {
+  counter.value++;
+});
+
 </script>
