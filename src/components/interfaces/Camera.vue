@@ -66,8 +66,8 @@ const imgSrc = asyncComputed({
   }
 });
 
-const refreshOnSettings = debounce(() => counter.value++, 1000, {
-  leading: true,
+const refreshOnSettings = debounce(() => counter.value++, 500, {
+  leading: false,
   trailing: true,
 });
 
