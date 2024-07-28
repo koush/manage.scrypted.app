@@ -24,6 +24,7 @@ import { getDeviceFromId, registerListener } from '@/id-device';
 import { Camera, ScryptedInterface } from '@scrypted/types';
 import { ref, useSlots } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import debounce from 'lodash/debounce';
 
 const props = defineProps<{
   id: string;
@@ -65,10 +66,15 @@ const imgSrc = asyncComputed({
   }
 });
 
+const refreshOnSettings = debounce(() => counter.value++, 1000, {
+  leading: true,
+  trailing: true,
+});
+
 registerListener(device, {
   event: ScryptedInterface.Settings,
 }, () => {
-  counter.value++;
+  refreshOnSettings();
 });
 
 </script>
