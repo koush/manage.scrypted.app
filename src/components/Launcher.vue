@@ -132,7 +132,7 @@ const launcherItems = asyncComputedRaw({
       .filter(d => d.interfaces.includes(ScryptedInterface.LauncherApplication))
       .map(d => {
         let href = isScryptedCloudHostname() ? d.applicationInfo?.cloudHref || d.applicationInfo?.href : d.applicationInfo?.href;
-        if (!href && d.interfaces.includes(ScryptedInterface.HttpRequestHandler)) {
+        if (!href) {
           const appId = d.interfaces.includes(ScryptedInterface.ScryptedPlugin) ? d.pluginId : d.id;
           href = combineBaseUrl(getBaseUrl(), `endpoint/${appId}/public/`);
         }
