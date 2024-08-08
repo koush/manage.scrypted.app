@@ -57,12 +57,7 @@ const scryptedSettingsDevices = computed(() => {
 });
 
 const refreshSettings = ref(0);
-
-registerListeners(() => getScryptedSettingsIds(), {
-  event: ScryptedInterface.Settings,
-}, () => {
-  refreshSettings.value++;
-});
+const refreshPending = ref(false);
 
 const settings = asyncComputed({
   async get() {
@@ -92,7 +87,7 @@ const settings = asyncComputed({
     const stacked = await Promise.all(all);
     const flat = stacked.flat();
 
-    const sorted =flat
+    const sorted = flat
       .sort((s1, s2) => {
         // alphabetical unless the group title is General
         if (s1.group === s2.group)
@@ -116,6 +111,24 @@ const settings = asyncComputed({
 
 const dirtyCount = computed(() => {
   return settings.value.filter(isDirty).length;
+});
+
+registerListeners(() => getScryptedSettingsIds(), {
+  event: ScryptedInterface.Settings,
+}, () => {
+  if (!dirtyCount.value) {
+    refreshSettings.value++;
+  }
+  else {
+    refreshPending.value = true;
+  }
+});
+
+watch(() => dirtyCount.value, async () => {
+  if (dirtyCount.value || !refreshPending.value)
+    return;
+  refreshPending.value = false;
+  refreshSettings.value++;
 });
 
 watch(() => dirtyCount.value, async () => {
