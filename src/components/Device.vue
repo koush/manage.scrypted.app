@@ -66,10 +66,9 @@
         </template>
         <template v-else>
         </template>
-        <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
-        </VideoClipsInterface>
         <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
+        <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip"></VideoClipsInterface>
         <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
       </ResponsiveColumn>
