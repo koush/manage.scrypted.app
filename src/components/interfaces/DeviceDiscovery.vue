@@ -4,7 +4,7 @@
   </v-card-subtitle>
   <v-dialog max-width="500" v-model="dialog">
     <DeviceCreatorInterface :id="id" :discovered-device="discoveredDevice" :title="discoveredDevice?.name"
-      @created="dialog = false">
+      @created="dialog = false" @click:cancel="dialog = false">
     </DeviceCreatorInterface>
   </v-dialog>
 
