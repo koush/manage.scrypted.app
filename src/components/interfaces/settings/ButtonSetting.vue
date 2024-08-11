@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-divider class="mt-2 mb-2"></v-divider>
     <v-btn :readonly="modelValue.readonly" density="compact" variant="tonal" block @click="emits('click-button-setting')">{{ modelValue.title }}</v-btn>
     <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
       modelValue.description }}</v-list-item-subtitle>
