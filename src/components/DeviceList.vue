@@ -72,8 +72,7 @@
               <tbody>
                 <tr v-for="device in devicePage" :key="device.id">
                   <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                  <td @click="goDevice(router, device)"
-                    style="cursor: pointer; text-transform: uppercase; font-weight: 500">{{ device.name }}</td>
+                  <td><v-btn size="small" variant="text" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn></td>
                   <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
@@ -93,7 +92,7 @@
 import { connectPluginClient, connectedClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { getDeviceRoute, goDevice } from '@/id-device';
+import { getDeviceRoute } from '@/id-device';
 import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
