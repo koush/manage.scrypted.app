@@ -5,7 +5,7 @@
       modelValue.title }}</v-list-item-subtitle>
     <v-progress-linear :color="color" :model-value="n" :max="modelValue.range[1]" height="20" rounded>
       <template v-slot:default>
-        <div :style="dark ? undefined : 'color: white;'">
+        <div>
           {{ modelValue.value }}/{{ modelValue.range[1] }} {{ modelValue.placeholder }}
         </div>
       </template>

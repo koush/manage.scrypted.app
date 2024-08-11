@@ -95,12 +95,10 @@ import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icon
 import { getDeviceRoute } from '@/id-device';
 import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './interfaces/DeviceCreator.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
 
-const router = useRouter();
 const other = 'Other' as ScryptedDeviceType;
 
 const { lgAndUp, mdAndUp } = useDisplay();
