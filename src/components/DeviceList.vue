@@ -72,7 +72,7 @@
               <tbody>
                 <tr v-for="device in devicePage" :key="device.id">
                   <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                  <td><v-btn size="small" variant="text" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn></td>
+                  <td><v-btn style="width: 100%; justify-content: start;" size="small" variant="text" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn></td>
                   <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
