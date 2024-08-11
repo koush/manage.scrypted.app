@@ -25,7 +25,9 @@
       <tbody>
         <tr v-for="device in childDevices" :key="device.id">
           <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-          <td @click="goDevice(router, device)" style="cursor: pointer;">{{ device.name }}</td>
+          <td>
+            <v-btn variant="text" size="small" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn>
+          </td>
           <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
@@ -52,15 +54,13 @@
 <script setup lang="ts">
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, goDevice, registerListener } from '@/id-device';
+import { getDeviceFromId, getDeviceRoute, registerListener } from '@/id-device';
 import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './DeviceCreator.vue';
 import DeviceDiscoveryInterface from './DeviceDiscovery.vue';
 
-const router = useRouter();
 const { mdAndUp } = useDisplay()
 
 const props = defineProps<{
