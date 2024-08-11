@@ -13,8 +13,8 @@
 
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn text="Cancel" @click="emits('click:cancel')"></v-btn>
-      <v-btn v-if="useId" text="Add" @click="tryCreateDevice" color="success"></v-btn>
+      <v-btn :disabled="creating" text="Cancel" @click="emits('click:cancel')"></v-btn>
+      <v-btn v-if="useId" :disabled="creating" text="Add" @click="tryCreateDevice" color="success"></v-btn>
     </v-card-actions>
   </v-card>
 
@@ -102,8 +102,11 @@ const settings = asyncComputed({
 
 const router = useRouter();
 const createError = ref<string>();
+const creating = ref(false);
 
 async function tryCreateDevice() {
+  creating.value = true;
+  createError.value = undefined;
   try {
     if (props.discoveredDevice)
       await adoptDevice(router, useId.value, props.discoveredDevice.nativeId, settings.value);
@@ -114,8 +117,10 @@ async function tryCreateDevice() {
     createError.value = (e as Error).message;
     return;
   }
+  finally {
+    creating.value = false;
+  }
 
-  createError.value = undefined;
   emits('created');
 }
 </script>
