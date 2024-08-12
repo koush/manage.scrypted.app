@@ -5,9 +5,9 @@
   <StringSetting v-else-if="isStringType(modelValue.type)" :model-value="modelValue"></StringSetting>
   <BooleanSetting v-else-if="modelValue.type === 'boolean'" :model-value="modelValue"></BooleanSetting>
   <ButtonSetting v-else-if="modelValue.type === 'button'" :model-value="modelValue"
-    @click="emits('click-button-setting')"></ButtonSetting>
+    @click-button-setting="emits('click-button-setting')"></ButtonSetting>
   <ClipPathSetting v-else-if="modelValue.type === 'clippath'" :model-value="modelValue"
-    @click="emits('click-button-setting')"></ClipPathSetting>
+    @click-button-setting="emits('click-button-setting')"></ClipPathSetting>
   <DeviceSetting v-else-if="modelValue.type === 'device'" :model-value="modelValue"></DeviceSetting>
   <DeviceInterfaceSetting v-else-if="modelValue.type === 'interface'" :model-value="modelValue">
   </DeviceInterfaceSetting>
