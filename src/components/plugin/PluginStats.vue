@@ -11,7 +11,7 @@
       <v-list-subheader>RPC Objects</v-list-subheader>
       <v-list-item v-for="top in topRpc">
         <v-progress-linear :color="color" :model-value="top?.info?.rpcObjects"
-          :max="max(topRpc.map(t => t.info.rpcObjects))" height="20" rounded>
+          :max="Math.max(...topRpc.map(t => t.info.rpcObjects))" height="20" rounded>
           <template v-slot:default>
             {{ top?.name }}: {{ top?.info?.rpcObjects }}
           </template>
@@ -22,7 +22,7 @@
       <v-list-subheader>Pending Results</v-list-subheader>
       <v-list-item v-for="top in topPending">
         <v-progress-linear :color="color" :model-value="top?.info?.pendingResults"
-          :max="max(topRpc.map(t => t.info.pendingResults))" height="20" rounded>
+          :max="Math.max(...topRpc.map(t => t.info.pendingResults))" height="20" rounded>
           <template v-slot:default>
             {{ top?.name }}: {{ top?.info?.pendingResults }}
           </template>
@@ -34,7 +34,7 @@
       <v-list-subheader>Connections</v-list-subheader>
       <v-list-item v-for="top in topClients">
         <v-progress-linear :color="color" :model-value="top?.info?.clientsCount"
-          :max="max(topRpc.map(t => t.info.clientsCount))" height="20" rounded>
+          :max="Math.max(...topRpc.map(t => t.info.clientsCount))" height="20" rounded>
           <template v-slot:default>
             {{ top?.name }}: {{ top?.info?.clientsCount }}
           </template>
@@ -46,7 +46,6 @@
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
 import { getFaPrefix } from '@/device-icons';
-import max from 'lodash/max';
 import { computed } from 'vue';
 import { chipColor } from '../interfaces/settings-common';
 import { PluginModel } from './plugin-common';
