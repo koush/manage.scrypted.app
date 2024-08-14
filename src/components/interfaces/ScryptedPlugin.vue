@@ -22,6 +22,9 @@
             v-if="item?.version === installedNpmVersion.version || item?.version === latestNpmVersion.version"></v-divider>
         </template>
       </Pagination>
+      <v-btn variant="text" color="info" block prepend-icon="fab fa-npm"
+        :href="`https://www.npmjs.com/package/${device.info.manufacturer}`" target="_blank">View
+        On NPM</v-btn>
     </v-list>
   </v-menu>
 </template>
