@@ -44,12 +44,12 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { getFaPrefix } from '@/device-icons';
-import { computed } from 'vue';
-import { PluginModel } from './plugin-common';
-import { max } from 'lodash';
 import { isDark } from '@/common/colors';
+import { getFaPrefix } from '@/device-icons';
+import max from 'lodash/max';
+import { computed } from 'vue';
 import { chipColor } from '../interfaces/settings-common';
+import { PluginModel } from './plugin-common';
 
 const dark = isDark();
 
