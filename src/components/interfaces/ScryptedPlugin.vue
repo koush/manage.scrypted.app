@@ -1,11 +1,13 @@
 <template>
   <v-menu location="bottom right" :close-on-content-click="false" v-model="menu">
     <template v-slot:activator="{ props }">
-      <v-btn v-if="!npmUpdate?.updateAvailable" v-bind="props" density="compact" color="info"
-        :append-icon="getFaPrefix('fa-caret-down')" style="text-transform: unset;">v{{
+      <v-btn v-if="npmUpdate?.updateAvailable" v-bind="props" density="compact" color="warning"
+        :append-icon="getFaPrefix('fa-caret-down')" style="text-transform: unset;">Update Available</v-btn>
+      <v-btn v-else-if="pluginInfo && !pluginInfo.pid"  v-bind="props"  density="compact" color="red"
+        :append-icon="getFaPrefix('fa-caret-down')" style="text-transform: unset;">Crashed</v-btn>
+      <v-btn v-else v-bind="props" density="compact" color="info" :append-icon="getFaPrefix('fa-caret-down')"
+        style="text-transform: unset;">v{{
           device.info.version }}</v-btn>
-      <v-btn v-else v-bind="props" density="compact" color="warning" :append-icon="getFaPrefix('fa-caret-down')"
-        style="text-transform: unset;">Update Available</v-btn>
     </template>
     <v-list density="compact" width="300">
       <Pagination :items="npmUpdate?.versions" :pageSize="7">
@@ -36,7 +38,7 @@ import { checkNpmUpdate, NpmVersion } from '@/npm';
 import { ScryptedPlugin } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Pagination from '../Pagination.vue';
-import { installPlugin } from '../../internal-apis';
+import { getPluginInfo, installPlugin } from '../../internal-apis';
 
 const menu = ref(false);
 
@@ -62,6 +64,12 @@ const npmUpdate = asyncComputed({
   },
   watch: {
     info: () => device.value?.info,
+  }
+});
+
+const pluginInfo = asyncComputed({
+  async get() {
+    return await getPluginInfo(device.value.info.manufacturer);
   }
 });
 
