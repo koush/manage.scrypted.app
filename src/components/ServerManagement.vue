@@ -87,7 +87,7 @@ const updateAvailable = asyncComputed({
     const scryptedEnv = await info.getScryptedEnv();
 
     // HA updates are handled by HA.
-    if (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'])
+    if (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'] === 'ha')
       return false;
 
     return serviceControl.getUpdateAvailable();
