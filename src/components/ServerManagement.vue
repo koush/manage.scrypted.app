@@ -57,6 +57,7 @@ import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScrypted
 import { getFaPrefix } from '@/device-icons';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
 import { ref } from 'vue';
+import { checkNpmUpdate } from '@/npm';
 
 const restartDialog = ref(false);
 
@@ -86,11 +87,25 @@ const updateAvailable = asyncComputed({
     const info = await systemManager.getComponent("info");
     const scryptedEnv = await info.getScryptedEnv();
 
-    // HA updates are handled by HA.
-    if (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'] === 'ha')
-      return false;
+    let updateAvailable: string;
 
-    return serviceControl.getUpdateAvailable();
+    // never notify on these platforms. let HA/Watchtower handle it.
+    switch (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT']) {
+      case 'docker':
+      case 'ha':
+        return false;
+    }
+
+    try {
+      updateAvailable = await serviceControl.getUpdateAvailable();
+    }
+    catch (e) {
+      const pi = await checkNpmUpdate('@scrypted/server', connectedClient.value.serverVersion);
+      if (pi.updateAvailable)
+        updateAvailable = pi.updateAvailable;
+    }
+
+    return updateAvailable;
   }
 });
 
