@@ -1,6 +1,6 @@
 import semver from 'semver';
 import throttle from 'lodash/throttle';
-import { connectedClient } from './common/client';
+import { connectedClient, connectPluginClient } from './common/client';
 import { computed, reactive, ref } from 'vue';
 import { getAllDevices } from './common/devices';
 import { ScryptedInterface } from '@scrypted/types';
@@ -128,4 +128,37 @@ export function getPluginMonitors() {
 
 export function hasNewerVersion(version: string, latest: string) {
   return latest && version && semver.lt(version, latest);
+}
+
+export function getServerUpdateMonitor() {
+
+  const updateAvailable = asyncComputed({
+    async get() {
+      const { systemManager } = connectedClient.value || await connectPluginClient();
+      const serviceControl = await systemManager.getComponent("service-control");
+      const info = await systemManager.getComponent("info");
+      const scryptedEnv = await info.getScryptedEnv();
+
+      let updateAvailable: string;
+
+      // never notify on these platforms. let HA/Watchtower handle it.
+      switch (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT']) {
+        case 'docker':
+        case 'ha':
+          return false;
+      }
+
+      try {
+        updateAvailable = await serviceControl.getUpdateAvailable();
+      }
+      catch (e) {
+        const pi = await checkNpmUpdate('@scrypted/server', connectedClient.value.serverVersion);
+        if (pi.updateAvailable)
+          updateAvailable = pi.updateAvailable;
+      }
+
+      return updateAvailable;
+    }
+  });
+  return updateAvailable;
 }

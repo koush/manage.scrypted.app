@@ -52,12 +52,11 @@
 
 </template>
 <script setup lang="ts">
-import { asyncComputed } from '@/common/async-computed';
 import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScryptedCloudHostname } from '@/common/client';
 import { getFaPrefix } from '@/device-icons';
+import { getServerUpdateMonitor } from '@/npm';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
 import { ref } from 'vue';
-import { checkNpmUpdate } from '@/npm';
 
 const restartDialog = ref(false);
 
@@ -80,34 +79,7 @@ async function restart() {
   await serviceControl.restart();
 }
 
-const updateAvailable = asyncComputed({
-  async get() {
-    const { systemManager } = connectedClient.value || await connectPluginClient();
-    const serviceControl = await systemManager.getComponent("service-control");
-    const info = await systemManager.getComponent("info");
-    const scryptedEnv = await info.getScryptedEnv();
-
-    let updateAvailable: string;
-
-    // never notify on these platforms. let HA/Watchtower handle it.
-    switch (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT']) {
-      case 'docker':
-      case 'ha':
-        return false;
-    }
-
-    try {
-      updateAvailable = await serviceControl.getUpdateAvailable();
-    }
-    catch (e) {
-      const pi = await checkNpmUpdate('@scrypted/server', connectedClient.value.serverVersion);
-      if (pi.updateAvailable)
-        updateAvailable = pi.updateAvailable;
-    }
-
-    return updateAvailable;
-  }
-});
+const updateAvailable = getServerUpdateMonitor();
 
 async function doUpdateAndRestart() {
   restartStatus.value = "Restarting...";

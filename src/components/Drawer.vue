@@ -9,7 +9,7 @@
           @click="item.click" :active="item.active?.()" :title="item.title">
           <template v-slot:prepend>
             <template v-if="item.badge">
-              <v-badge color="error" :content="item.badge">
+              <v-badge color="error" :content="!item.badgeIcon && item.badge" :icon="item.badgeIcon && item.badge">
                 <v-icon>{{ item.icon }}</v-icon>
               </v-badge>
             </template>
@@ -49,7 +49,7 @@ import { getDeviceRoute } from '@/id-device';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { removeAlert, scryptedAlerts } from '../internal-apis';
-import { getPluginMonitors } from '@/npm';
+import { getPluginMonitors, getServerUpdateMonitor } from '@/npm';
 
 defineProps<{
   modelValue: boolean;
@@ -105,12 +105,14 @@ interface ItemGroup {
     to?: string;
     target?: string;
     badge?: string;
+    badgeIcon?: boolean;
     click?: () => void;
     active?: () => boolean;
   }[];
 }
 
 const { pluginUpdateCount } = getPluginMonitors();
+const updateAvailable = getServerUpdateMonitor();
 
 const itemGroups = computed(() => {
   const itemGroups: ItemGroup[] = [
@@ -146,7 +148,13 @@ const itemGroups = computed(() => {
           ]
           : []),
         ...(isAdmin.value ? [
-          { title: 'Settings', icon: getFaPrefix('fa-gear'), to: '/settings' },
+          {
+            title: 'Settings',
+            icon: getFaPrefix('fa-gear'),
+            to: '/settings',
+            badge: updateAvailable.value ? getFaPrefix('fa-download') : undefined,
+            badgeIcon: true,
+          },
         ] : [])
       ]
     },

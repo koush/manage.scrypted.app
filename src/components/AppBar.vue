@@ -1,8 +1,8 @@
 <template>
   <v-app-bar app clipped-left color="deep-purple accent-4">
     <v-app-bar-nav-icon variant="text" @click="emits('update:modelValue', !modelValue)" class="mt-1">
-      <v-badge v-if="!modelValue && (scryptedAlerts.length || pluginUpdateCount)"
-        :content="(scryptedAlerts.length + pluginUpdateCount).toString()" color="error">
+      <v-badge v-if="!modelValue && drawerBadgeCount"
+        :content="drawerBadgeCount.toString()" color="error">
         <v-icon>{{ getFaPrefix('fa-bars') }}</v-icon>
       </v-badge>
       <v-icon v-else>{{ getFaPrefix('fa-bars') }}</v-icon>
@@ -46,7 +46,7 @@ import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
 import { goDevice } from '@/id-device';
-import { getPluginMonitors } from '@/npm';
+import { getPluginMonitors, getServerUpdateMonitor } from '@/npm';
 import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
@@ -71,6 +71,13 @@ const search = ref<string>();
 
 const value = ref<SearchResult>();
 const router = useRouter();
+
+const updateAvailable = getServerUpdateMonitor();
+const updateAvailableCount = computed(() => updateAvailable.value ? 1 : 0);
+
+const drawerBadgeCount = computed(() => {
+  return scryptedAlerts.value.length || pluginUpdateCount.value || updateAvailableCount.value;
+});
 
 watch(() => value.value, async () => {
   if (value.value)
