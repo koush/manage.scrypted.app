@@ -67,7 +67,7 @@
         <template v-else>
         </template>
         <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
-        <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"></DeviceSettings>
+        <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting" @show-console="showConsole = true"></DeviceSettings>
         <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip"></VideoClipsInterface>
         <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
@@ -314,6 +314,8 @@ resetPtys();
 const clipPath = ref<ClipPathModel>();
 let clipPathSetting: TrackedSetting;
 async function clickButtonSetting(setting: Setting) {
+  if (setting.console)
+    showConsole.value = true;
   if (setting.type === 'clippath') {
     if (typeof setting.value === 'string') {
       try {

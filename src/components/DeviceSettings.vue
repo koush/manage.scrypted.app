@@ -50,6 +50,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   (event: 'click-button-setting', setting: Setting): void;
+  (event: 'show-console'): void;
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);
@@ -73,7 +74,7 @@ const isEditable = computed(() => {
 
 const extraGroups = computed(() => {
   if (!isAdmin.value)
-      return [];
+    return [];
   const groups = ['Extensions'];
   return groups;
 });
@@ -134,6 +135,8 @@ const dirtyCount = computed(() => {
 watch(() => dirtyCount.value, () => {
   const toSave = settings.value.filter(isDirty).filter(s => s.immediate)
   for (const setting of toSave) {
+    if (setting.console)
+      emits('show-console');
     device.value.putSetting(setting.key, setting.value);
   }
 });
@@ -141,6 +144,8 @@ watch(() => dirtyCount.value, () => {
 function save() {
   const toSave = settings.value.filter(isDirty);
   for (const setting of toSave) {
+    if (setting.console)
+      emits('show-console');
     if (setting.key.startsWith('ui:')) {
       const key = setting.key.substring(3);
       setting.originalValue = setting.value;
