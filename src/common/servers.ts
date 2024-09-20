@@ -1,6 +1,6 @@
-import { computed, ref } from "vue";
-import { SCRYPTED_SERVER, isScryptedCloudHostname, isSelfHosted } from "./client";
 import type { ScryptedClientLoginResult } from "@scrypted/client/src/index";
+import { computed, ref } from "vue";
+import { SCRYPTED_SERVER, isAppDomain, isSelfHosted } from "./client";
 
 export interface ServerRegistration {
     name: string;
@@ -18,7 +18,7 @@ export const currentServer = computed(() => {
 });
 
 export async function refreshServerRegistrations() {
-    if (!isScryptedCloudHostname() || isSelfHosted())
+    if (!isAppDomain() || isSelfHosted())
         return;
     try {
         _serverId.value = undefined;
@@ -54,14 +54,14 @@ export async function changeServer(serverId: string) {
 }
 
 export const showServerDropown = computed(() => {
-    if (!isScryptedCloudHostname() || isSelfHosted())
+    if (!isAppDomain() || isSelfHosted())
         return false;
     const regs = serverRegistrations.value || {};
     return Object.keys(regs).length > 1 || (Object.keys(regs).length && !regs[serverId.value!]);
 });
 
 export async function saveLoginResult(loginResult: ScryptedClientLoginResult) {
-    if (!isScryptedCloudHostname() || isSelfHosted())
+    if (!isAppDomain() || isSelfHosted())
         return;
     await refreshServerRegistrations();
     const previousLoginResults = getPreviousLoginResults();
@@ -79,7 +79,7 @@ export function getPreviousLoginResults(): Record<string, ScryptedClientLoginRes
 }
 
 export function getPreviousLoginResult(): ScryptedClientLoginResult | undefined {
-    if (!isScryptedCloudHostname() || isSelfHosted())
+    if (!isAppDomain() || isSelfHosted())
         return;
     const results = getPreviousLoginResults() || {};
     let id = serverId.value!;
