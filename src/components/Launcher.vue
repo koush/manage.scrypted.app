@@ -39,6 +39,11 @@
           </ToolbarTooltipButton>
           <v-spacer>
           </v-spacer>
+
+          <ToolbarTooltipButton v-if="isScryptedCloudHostname()" href="https://home.scrypted.app"
+            tooltip="Scrypted Cloud" icon="fa-home">
+          </ToolbarTooltipButton>
+
           <ToolbarTooltipButton @click="logoutClient" tooltip="Sign Out" icon="fa-arrow-right-from-bracket">
           </ToolbarTooltipButton>
         </v-card-actions>
@@ -62,7 +67,8 @@
             </v-list-item-subtitle>
           </v-list-item>
 
-          <v-list-item lines="two" href="https://docs.scrypted.app/scrypted-nvr/features.html#rich-notifications" target="_blank">
+          <v-list-item lines="two" href="https://docs.scrypted.app/scrypted-nvr/features.html#rich-notifications"
+            target="_blank">
             <template v-slot:prepend>
               <v-icon small>{{ getFaPrefix('fa-video-camera') }}</v-icon>
             </template>
@@ -71,7 +77,8 @@
             </v-list-item-subtitle>
           </v-list-item>
 
-          <v-list-item lines="two" href="https://docs.scrypted.app/scrypted-nvr/features.html#adaptive-bitrate" target="_blank">
+          <v-list-item lines="two" href="https://docs.scrypted.app/scrypted-nvr/features.html#adaptive-bitrate"
+            target="_blank">
             <template v-slot:prepend>
               <v-icon small>{{ getFaPrefix('fa-bolt-lightning') }}</v-icon>
             </template>
@@ -99,7 +106,8 @@
           </v-list-item>
         </v-list>
         <div style="width: 100%; display: flex; justify-content: center;" class="mb-2">
-          <v-btn size="small" style="justify-self: center;" href="https://demo.scrypted.app/#/demo" target="_blank">View Demo
+          <v-btn size="small" style="justify-self: center;" href="https://demo.scrypted.app/#/demo" target="_blank">View
+            Demo
           </v-btn>
           <v-btn size="small" style="justify-self: center;" to="/component/plugin/install?search=@scrypted/nvr">Install
           </v-btn>
