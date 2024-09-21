@@ -15,7 +15,8 @@ export const isLoggedIn = ref(true);
 export const hasLogin = ref<boolean|undefined>();
 export const cloudLoginRedirect = ref<string>();
 
-export const SCRYPTED_SERVER = window.location.hostname === 'beta.scrypted.app' ? 'home-dev.scrypted.app' : 'home.scrypted.app';
+// export const SCRYPTED_SERVER = window.location.hostname === 'beta.scrypted.app' ? 'home-dev.scrypted.app' : 'home.scrypted.app';
+export const SCRYPTED_SERVER = 'home.scrypted.app';
 
 export function isConnected() {
   return !!connectedClient.value;

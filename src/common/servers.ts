@@ -36,21 +36,27 @@ export async function refreshServerRegistrations() {
             _serverId.value = `${json.serverUserId}#${json.serverId}`;
         else
             _serverId.value = json.serverId;
-        // localStorage.setItem('previousServerId', _serverId.value!);
+        setPreviousServerId(_serverId.value!);
     }
     catch (e) {
     }
 }
 
-export async function changeServer(serverId: string) {
+export async function changeServer(serverId: string, reload = true) {
     const url = new URL(`https://${SCRYPTED_SERVER}/_punch/server_change`);
     url.searchParams.set('server_id', serverId);
     await fetch(url.toString(), {
         credentials: 'include',
     });
+    await refreshServerRegistrations();
+    if (reload) {
+        window.location.hash = '';
+        window.location.reload();
+    }
+}
+
+export function setPreviousServerId(serverId: string) {
     localStorage.setItem('previousServerId', serverId);
-    window.location.hash = '';
-    window.location.reload();
 }
 
 export const showServerDropown = computed(() => {
@@ -65,7 +71,9 @@ export async function saveLoginResult(loginResult: ScryptedClientLoginResult) {
         return;
     await refreshServerRegistrations();
     const previousLoginResults = getPreviousLoginResults();
-    previousLoginResults[serverId.value!] = loginResult;
+    if (!loginResult.serverId)
+        return;
+    previousLoginResults[loginResult.serverId] = loginResult;
     localStorage.setItem('previousLoginResults', JSON.stringify(previousLoginResults));
 }
 
