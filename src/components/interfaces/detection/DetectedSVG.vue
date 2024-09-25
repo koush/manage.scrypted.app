@@ -62,7 +62,7 @@ const svgContents = computed<SvgContents>(() => {
   for (const d of props.detected?.detections || []) {
     const boundingBox = d.boundingBox;
     let stroke = 'red';
-    if (d.className !== 'motion') {
+    if (d.className !== 'motion' && d.className) {
       let content = `${d.className} ${(d.score * 100).toFixed(0)}%`;
       stroke = 'blue';
       ret.texts.push({
