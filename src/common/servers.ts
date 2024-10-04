@@ -67,7 +67,7 @@ export const showServerDropown = computed(() => {
 });
 
 export async function saveLoginResult(loginResult: ScryptedClientLoginResult) {
-    if (!isAppDomain() || isSelfHosted() || appDomainBypassCloudLogin)
+    if (!isAppDomain() || isSelfHosted() || !appDomainBypassCloudLogin)
         return;
     await refreshServerRegistrations();
     const previousLoginResults = getPreviousLoginResults();
@@ -87,7 +87,7 @@ export function getPreviousLoginResults(): Record<string, ScryptedClientLoginRes
 }
 
 export function getPreviousLoginResult(): ScryptedClientLoginResult | undefined {
-    if (!isAppDomain() || isSelfHosted() || appDomainBypassCloudLogin)
+    if (!isAppDomain() || isSelfHosted() || !appDomainBypassCloudLogin)
         return;
     const results = getPreviousLoginResults() || {};
     let id = serverId.value!;
