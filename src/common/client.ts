@@ -12,7 +12,7 @@ export const connectedClient = shallowRef<ScryptedClientStatic>();
 export let clientPromise: Promise<ScryptedClientStatic> | undefined;
 // assume logged in unless login response explicitly fails.
 export const isLoggedIn = ref(true);
-export const hasLogin = ref<boolean|undefined>();
+export const hasLogin = ref<boolean | undefined>();
 export const cloudLoginRedirect = ref<string>();
 
 // export const SCRYPTED_SERVER = window.location.hostname === 'beta.scrypted.app' ? 'home-dev.scrypted.app' : 'home.scrypted.app';
@@ -103,8 +103,10 @@ export function isAppDomain(url: URL | Location = window.location) {
   return url.hostname === appDomain || url.hostname === 'beta.scrypted.app';
 }
 
-export function setAppDomain(domain: string) {
+export let appDomainBypassCloudLogin = true;
+export function setAppDomain(domain: string, bypassCloudLogin = true) {
   appDomain = domain;
+  appDomainBypassCloudLogin = bypassCloudLogin;
 }
 
 export function isHomeScryptedApp(url: URL | Location = window.location) {
