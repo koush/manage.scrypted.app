@@ -38,6 +38,7 @@ import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue'
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import ServerManagement from './ServerManagement.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
+import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 
 function getScryptedSettingsIds() {
   if (!connectedClient.value)
@@ -65,7 +66,7 @@ const settings = asyncComputed({
       const name = d.systemDevice?.settings || d.name;
       let settings: Setting[];
       try {
-        settings = await d.getSettings();
+        settings = await timeoutPromise(5000, d.getSettings());
       }
       catch (e) {
         settings = [
