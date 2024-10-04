@@ -18,14 +18,18 @@ export const currentServer = computed(() => {
 });
 
 export async function refreshServerRegistrations() {
-    if (!isAppDomain() || isSelfHosted())
+    if (!isAppDomain() || isSelfHosted()) {
+        console.log('not refreshing server registrations');
         return;
+    }
+    console.log('refreshing server registrations');
     try {
         _serverId.value = undefined;
         const response = await fetch(`https://${SCRYPTED_SERVER}/_punch/userinfo`, {
             credentials: 'include',
         });
         const json = await response.json();
+        console.log('server registrations', json);
         // todo: need a better way to handle this that doesnt use knowledge of internals.
         // maybe that ought to be in the @scrypted/client.
         serverRegistrations.value = json.registrations;
@@ -39,6 +43,7 @@ export async function refreshServerRegistrations() {
         setPreviousServerId(_serverId.value!);
     }
     catch (e) {
+        console.warn('Server registration refresh failed.', e);
     }
 }
 
