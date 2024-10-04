@@ -88,7 +88,6 @@ async function doUpdateAndRestart() {
   if (updateAvailable.value?.SCRYPTED_INSTALL_ENVIRONMENT === 'lxc-docker') {
     const core = systemManager.getDeviceById<Settings>('@scrypted/core');
     await core.putSetting('pullImage', undefined);
-    return;
   }
   const serviceControl = await systemManager.getComponent("service-control");
   await serviceControl.update();
