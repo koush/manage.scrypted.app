@@ -77,7 +77,7 @@ export async function saveLoginResult(loginResult: ScryptedClientLoginResult) {
     localStorage.setItem('previousLoginResults', JSON.stringify(previousLoginResults));
 }
 
-function getPreviousLoginResults(): Record<string, ScryptedClientLoginResult> {
+export function getPreviousLoginResults(): Record<string, ScryptedClientLoginResult> {
     try {
         return JSON.parse(localStorage.getItem('previousLoginResults')!) || {};
     }

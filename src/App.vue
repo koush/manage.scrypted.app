@@ -49,7 +49,7 @@ getThemeManager().updateTheme();
 setClientAppVersion(packageJson.version);
 console.log('management ui version', clientAppVersion);
 setClientPluginId('@scrypted/core');
-setAppDomain('manage.scrypted.app');
+setAppDomain('manage.scrypted.app', false);
 setClientConnectionPreferences({
   webrtc: false,
 });
