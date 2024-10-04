@@ -161,7 +161,7 @@ export function getServerUpdateMonitor() {
       }
 
       return {
-        updateAvailable: true,
+        updateAvailable,
         SCRYPTED_INSTALL_ENVIRONMENT: scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'],
       };
     }
