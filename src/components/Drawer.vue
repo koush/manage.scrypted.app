@@ -152,7 +152,7 @@ const itemGroups = computed(() => {
             title: 'Settings',
             icon: getFaPrefix('fa-gear'),
             to: '/settings',
-            badge: updateAvailable.value ? getFaPrefix('fa-download') : undefined,
+            badge: updateAvailable.value?.updateAvailable ? getFaPrefix('fa-download') : undefined,
             badgeIcon: true,
           },
         ] : [])

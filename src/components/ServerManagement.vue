@@ -30,7 +30,7 @@
       </v-card-subtitle>
     </template>
     <template v-slot:append>
-      <v-card-subtitle v-if="!updateAvailable">
+      <v-card-subtitle v-if="!updateAvailable?.updateAvailable">
         v{{ connectedClient?.serverVersion }}
       </v-card-subtitle>
       <v-btn v-else size="x-small" :prepend-icon="getFaPrefix('fa-download')" color="info"
@@ -56,6 +56,7 @@ import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScrypted
 import { getFaPrefix } from '@/device-icons';
 import { getServerUpdateMonitor } from '@/npm';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
+import { Settings } from '@scrypted/types';
 import { ref } from 'vue';
 
 const restartDialog = ref(false);
@@ -84,6 +85,11 @@ const updateAvailable = getServerUpdateMonitor();
 async function doUpdateAndRestart() {
   restartStatus.value = "Restarting...";
   const { systemManager } = connectedClient.value;
+  if (updateAvailable.value?.SCRYPTED_INSTALL_ENVIRONMENT === 'lxc-docker') {
+    const core = systemManager.getDeviceById<Settings>('@scrypted/core');
+    await core.putSetting('pullImage', undefined);
+    return;
+  }
   const serviceControl = await systemManager.getComponent("service-control");
   await serviceControl.update();
 }

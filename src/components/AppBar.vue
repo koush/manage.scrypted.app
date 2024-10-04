@@ -73,7 +73,7 @@ const value = ref<SearchResult>();
 const router = useRouter();
 
 const updateAvailable = getServerUpdateMonitor();
-const updateAvailableCount = computed(() => updateAvailable.value ? 1 : 0);
+const updateAvailableCount = computed(() => updateAvailable.value?.updateAvailable ? 1 : 0);
 
 const drawerBadgeCount = computed(() => {
   return scryptedAlerts.value.length || pluginUpdateCount.value || updateAvailableCount.value;

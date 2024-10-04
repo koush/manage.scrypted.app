@@ -145,7 +145,10 @@ export function getServerUpdateMonitor() {
       switch (scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT']) {
         case 'docker':
         case 'ha':
-          return false;
+          return {
+            updateAvailable,
+            SCRYPTED_INSTALL_ENVIRONMENT: scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'],
+          };
       }
 
       try {
@@ -157,7 +160,10 @@ export function getServerUpdateMonitor() {
           updateAvailable = pi.updateAvailable;
       }
 
-      return updateAvailable;
+      return {
+        updateAvailable: true,
+        SCRYPTED_INSTALL_ENVIRONMENT: scryptedEnv['SCRYPTED_INSTALL_ENVIRONMENT'],
+      };
     }
   });
   return updateAvailable;
