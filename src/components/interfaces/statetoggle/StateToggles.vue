@@ -44,10 +44,6 @@ const props = defineProps<{
   id: string;
 }>();
 
-const emits = defineEmits<{
-  (event: 'run'): void;
-}>();
-
 const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor>(() => props.id);
 
 const hasMotionSensor = computed(() => {
