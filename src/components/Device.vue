@@ -148,7 +148,7 @@
             </template>
           </Camera>
           <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
-            :control="true" :pluginId="device.pluginId" :nativeId="(device.nativeId || 'undefined')" class="mb-4">
+            :control="true" :pluginId="device.pluginId" :nativeId="device.nativeId" class="mb-4">
           </PtyComponent>
 
           <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>

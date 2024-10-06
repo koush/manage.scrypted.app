@@ -28,7 +28,7 @@ import { getFaPrefix } from "@/device-icons";
 import { createAsyncQueue, createAsyncQueueFromGenerator } from "@scrypted/common/src/async-queue";
 import { Deferred } from "@scrypted/common/src/deferred";
 import { sleep } from "@scrypted/common/src/sleep";
-import { DeviceProvider, StreamService } from '@scrypted/types';
+import { DeviceProvider, ScryptedNativeId, StreamService } from '@scrypted/types';
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import debounce from 'lodash/debounce';
@@ -38,7 +38,7 @@ import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 const props = defineProps<{
   title: string;
   pluginId?: string;
-  nativeId: string;
+  nativeId?: ScryptedNativeId;
   hello?: string;
   control?: boolean;
   reconnect?: boolean;
@@ -196,7 +196,7 @@ async function connectPty() {
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
     const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || "@scrypted/core");
-    const streamSvc = await plugin.getDevice(props.nativeId) as StreamService<Buffer | string, Buffer>;
+    const streamSvc = (props.nativeId ? await plugin.getDevice(props.nativeId) : plugin) as StreamService<Buffer | string, Buffer>;
     const streamSvcDirect = await connectRPCObject(streamSvc);
     const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue as AsyncGenerator<Buffer | string>, props.options);
 
