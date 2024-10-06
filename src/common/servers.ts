@@ -11,7 +11,15 @@ const _serverId = ref<string>();
 
 export const serverId = computed(() => {
     return _serverId.value || localStorage.getItem('previousServerId');
-})
+});
+
+export function getBareServerId(serverId: string|null|undefined) {
+    return serverId?.split('#').pop();
+}
+
+export const bareServerId = computed(() => {
+    return getBareServerId(serverId.value);
+});
 
 export const currentServer = computed(() => {
     return serverRegistrations.value?.[serverId.value!]?.name;
@@ -47,7 +55,14 @@ export async function refreshServerRegistrations() {
     }
 }
 
-export async function changeServer(serverId: string, reload = true) {
+export async function changeServer(serverId: string, reload = true, validate = false) {
+    if (validate) {
+        await refreshServerRegistrations();
+        const found = Object.keys(serverRegistrations.value!).find(id => getBareServerId(id) === serverId);
+        if (!found)
+            return;
+        serverId = found;
+    }
     const url = new URL(`https://${SCRYPTED_SERVER}/_punch/server_change`);
     url.searchParams.set('server_id', serverId);
     await fetch(url.toString(), {
@@ -78,6 +93,7 @@ export async function saveLoginResult(loginResult: ScryptedClientLoginResult) {
     const previousLoginResults = getPreviousLoginResults();
     if (!loginResult.serverId)
         return;
+    // login results are saved with the server id that does not contain a user id.
     previousLoginResults[loginResult.serverId] = loginResult;
     localStorage.setItem('previousLoginResults', JSON.stringify(previousLoginResults));
 }
@@ -95,7 +111,8 @@ export function getPreviousLoginResult(): ScryptedClientLoginResult | undefined 
     if (!isAppDomain() || isSelfHosted() || !appDomainBypassCloudLogin)
         return;
     const results = getPreviousLoginResults() || {};
-    let id = serverId.value!;
+    // login results are saved with the server id that does not contain a user id.
+    let id = bareServerId.value!;
     if (!id)
         id = Object.keys(results)[0];
     return results[id];
