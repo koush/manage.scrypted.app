@@ -42,14 +42,22 @@
       </v-list-item>
     </v-list>
   </v-card>
+
   <v-card v-if="clusterWorkers?.length">
     <template v-slot:prepend>
       <v-icon size="x-small">{{ getFaPrefix('fa-circle-nodes') }}</v-icon>
     </template>
+    <template v-slot:append>
+      <v-btn variant="text" @click="refreshClusters++">
+        <v-icon size="x-small">{{ getFaPrefix('fa-refresh') }}</v-icon>
+      </v-btn>
+    </template>
     <template v-slot:title>
       <v-card-subtitle class="mt-1">Cluster Processes</v-card-subtitle>
     </template>
-    <v-list-item v-for="worker in clusterWorkers">
+    <v-list>
+      <v-list-subheader>Workers</v-list-subheader>
+      <v-list-item v-for="worker in clusterWorkers">
         <v-progress-linear :color="color" :model-value="worker.forks.length"
           :max="Math.max(...clusterWorkers.map(t => t.forks.length))" height="20" rounded>
           <template v-slot:default>
@@ -57,12 +65,23 @@
           </template>
         </v-progress-linear>
       </v-list-item>
+
+      <v-list-subheader>Devices</v-list-subheader>
+      <v-list-item v-for="worker in deviceWorkers">
+        <v-progress-linear :color="color" :model-value="worker.count"
+          :max="Math.max(...deviceWorkers.map(t => t.count))" height="20" rounded>
+          <template v-slot:default>
+            {{ worker.name }}: {{ worker.count }}
+          </template>
+        </v-progress-linear>
+      </v-list-item>
+    </v-list>
   </v-card>
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
 import { getFaPrefix } from '@/device-icons';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { chipColor } from '../interfaces/settings-common';
 import { PluginModel } from './plugin-common';
 import type { ForkOptions } from '@scrypted/types';
@@ -71,13 +90,13 @@ import { connectedClient, connectPluginClient } from '@/common/client';
 
 // todo grab these interfaces from @scrypted/server after it goes stable.
 interface ClusterForkOptions {
-    runtime?: ForkOptions['runtime'];
-    labels?: ForkOptions['labels'];
+  runtime?: ForkOptions['runtime'];
+  labels?: ForkOptions['labels'];
 }
 
 interface ClusterWorker {
   labels: string[];
-  forks: ClusterForkOptions[];
+  forks: ForkOptions[];
 }
 
 const dark = isDark();
@@ -108,6 +127,7 @@ const topClients = computed(() => {
     .slice(0, 5);
 });
 
+const refreshClusters = ref(0);
 const clusterWorkers = asyncComputed({
   async get() {
     const { systemManager } = connectedClient.value || await connectPluginClient();
@@ -120,10 +140,48 @@ const clusterWorkers = asyncComputed({
       ...info,
     }));
   },
+  default(previousValue) {
+    return previousValue;
+  },
   watch: {
     connectedClient: () => connectedClient.value,
+    refreshclusters: () => refreshClusters.value,
   }
 });
+
+const deviceWorkers = computed(() => {
+  const { systemManager } = connectedClient.value;
+  if (!systemManager)
+    return [];
+
+  const ret = new Map<string, {
+    id: string,
+    name: string,
+    count: number,
+  }>();
+
+  function addDevice(id: string, fork: ClusterForkOptions) {
+    let d = ret.get(id);
+    if (!d) {
+      d = {
+        id,
+        name: systemManager.getDeviceById(id)?.name || 'Unknown Device',
+        count: 0,
+      };
+      ret.set(id, d);
+    }
+    d.count++;
+  }
+
+  for (const worker of clusterWorkers.value) {
+    for (const fork of worker.forks) {
+      addDevice(fork.id, fork);
+    }
+  }
+
+  return [...ret.values()];
+})
+
 </script>
 <style scoped>
 .float-right {
