@@ -79,25 +79,13 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { asyncComputed } from '@/common/async-computed';
+import { connectedClient, connectPluginClient } from '@/common/client';
 import { isDark } from '@/common/colors';
 import { getFaPrefix } from '@/device-icons';
 import { computed, ref } from 'vue';
 import { chipColor } from '../interfaces/settings-common';
 import { PluginModel } from './plugin-common';
-import type { ForkOptions } from '@scrypted/types';
-import { asyncComputed } from '@/common/async-computed';
-import { connectedClient, connectPluginClient } from '@/common/client';
-
-// todo grab these interfaces from @scrypted/server after it goes stable.
-interface ClusterForkOptions {
-  runtime?: ForkOptions['runtime'];
-  labels?: ForkOptions['labels'];
-}
-
-interface ClusterWorker {
-  labels: string[];
-  forks: ForkOptions[];
-}
 
 const dark = isDark();
 
@@ -130,11 +118,8 @@ const topClients = computed(() => {
 const refreshClusters = ref(0);
 const clusterWorkers = asyncComputed({
   async get() {
-    const { systemManager } = connectedClient.value || await connectPluginClient();
-    const clusterFork = await systemManager.getComponent('cluster-fork');
-    const ret = await clusterFork.getClusterWorkers() as {
-      [key: string]: ClusterWorker;
-    };
+    const { clusterManager } = connectedClient.value || await connectPluginClient();
+    const ret = await clusterManager.getClusterWorkers();
     return Object.entries(ret).map(([name, info]) => ({
       name,
       ...info,
@@ -160,7 +145,7 @@ const deviceWorkers = computed(() => {
     count: number,
   }>();
 
-  function addDevice(id: string, fork: ClusterForkOptions) {
+  function addDevice(id: string) {
     let d = ret.get(id);
     if (!d) {
       d = {
@@ -175,7 +160,7 @@ const deviceWorkers = computed(() => {
 
   for (const worker of clusterWorkers.value) {
     for (const fork of worker.forks) {
-      addDevice(fork.id, fork);
+      addDevice(fork.id);
     }
   }
 
