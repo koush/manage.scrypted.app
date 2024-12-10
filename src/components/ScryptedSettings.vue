@@ -146,9 +146,9 @@ async function save() {
   const { systemManager } = connectedClient.value || await connectPluginClient();
   const toSave = settings.value.filter(isDirty);
   for (const setting of toSave) {
-    const [id, key] = setting.key.split(':', 2);
+    const [id, ...key] = setting.key.split(':');
     const device = systemManager.getDeviceById<Settings>(id);
-    device.putSetting(key, setting.value);
+    device.putSetting(key.join(':'), setting.value);
   }
 }
 </script>
