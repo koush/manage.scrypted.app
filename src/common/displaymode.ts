@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import { isAppleMobile } from './browser';
 
 export type DisplayMode = undefined | 'fullscreen' | 'pip';
 
@@ -48,7 +47,6 @@ function checkFullscreen() {
 }
 
 export const isFullScreen = ref(checkFullscreen());
-export const needsFakeFullscreen = isAppleMobile;
 
 
 const fullscreenListener = async () => {
