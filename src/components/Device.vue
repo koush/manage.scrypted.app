@@ -86,16 +86,16 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
-          <Camera v-if="hasCamera" :id="id" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
+          <Camera v-if="clipPath?.deviceFilter || hasCamera" :id="cameraIdOrClipPathId || clipPath?.deviceFilter" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
             @img:click="playing = destination" ref="camera">
             <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
             </ClipPathEditor>
-            <RTCSignalingChannel v-if="hasRTC && playing" :id="id" class="over-camera" :destination="playing"
+            <RTCSignalingChannel v-if="hasRTC && playing" :id="cameraIdOrClipPathId" class="over-camera" :destination="playing"
               :muted="muted" :microphone="!!talkback">
             </RTCSignalingChannel>
             <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
               style="width: 100%; height: 100; object-fit: contain;"></video>
-            <ObjectDetector v-if="playing && hasObjectDetector" :id="id" class="over-camera"></ObjectDetector>
+            <ObjectDetector v-if="playing && hasObjectDetector" :id="cameraIdOrClipPathId" class="over-camera"></ObjectDetector>
 
             <template v-slot:prepend>
               <template v-if="clipPath">
@@ -312,6 +312,7 @@ function resetPtys() {
 resetPtys();
 
 const clipPath = ref<ClipPathModel>();
+const cameraIdOrClipPathId = computed(() => clipPath.value?.deviceFilter || id.value);
 let clipPathSetting: TrackedSetting;
 async function clickButtonSetting(setting: Setting) {
   if (setting.console)
@@ -329,7 +330,7 @@ async function clickButtonSetting(setting: Setting) {
     clipPathSetting = setting;
     if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
-    clipPath.value = { points: (setting.value as any) || [] };
+    clipPath.value = { points: (setting.value as any) || [], deviceFilter: setting.deviceFilter };
     scrollToComponent(() => cameraCard.value);
     return;
   }
