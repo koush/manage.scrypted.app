@@ -175,7 +175,7 @@
 
 </template>
 <script setup lang="ts">
-import { ClipPathModel } from '@/clip-path-model';
+import { ClipPathModel } from '@/common/clip-path-model';
 import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
