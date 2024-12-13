@@ -86,7 +86,7 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
-          <Camera v-if="clipPath?.deviceFilter || hasCamera" :id="cameraIdOrClipPathId || clipPath?.deviceFilter" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
+          <Camera v-if="clipPathDeviceId || hasCamera" :id="cameraIdOrClipPathId" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
             @img:click="playing = destination" ref="camera">
             <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
             </ClipPathEditor>
@@ -312,7 +312,8 @@ function resetPtys() {
 resetPtys();
 
 const clipPath = ref<ClipPathModel>();
-const cameraIdOrClipPathId = computed(() => clipPath.value?.deviceFilter || id.value);
+const clipPathDeviceId = ref<string>();
+const cameraIdOrClipPathId = computed(() => clipPathDeviceId.value || id.value);
 let clipPathSetting: TrackedSetting;
 async function clickButtonSetting(setting: Setting) {
   if (setting.console)
@@ -330,7 +331,8 @@ async function clickButtonSetting(setting: Setting) {
     clipPathSetting = setting;
     if (setting && !Array.isArray(setting.value))
       setting.value = undefined;
-    clipPath.value = { points: (setting.value as any) || [], deviceFilter: setting.deviceFilter };
+    clipPath.value = { points: (setting.value as any) || [] };
+    clipPathDeviceId.value = setting.deviceFilter;
     scrollToComponent(() => cameraCard.value);
     return;
   }
@@ -341,6 +343,7 @@ async function clickButtonSetting(setting: Setting) {
 }
 async function cancelClipPath() {
   clipPath.value = undefined;
+  clipPathDeviceId.value = undefined;
   await nextTick();
   clipPathSetting.value = clipPathSetting.originalValue;
 }
