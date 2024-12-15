@@ -175,8 +175,8 @@
 
 </template>
 <script setup lang="ts">
-import { ClipPathModel } from '@/common/clip-path-model';
 import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/client';
+import { ClipPathModel } from '@/common/clip-path-model';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
@@ -185,8 +185,8 @@ import { sleep } from '@scrypted/server/src/sleep';
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
+import ClipPathEditor from '../common/components/ClipPathEditor.vue';
 import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../internal-apis';
-import ClipPathEditor from './ClipPathEditor.vue';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
