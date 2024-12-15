@@ -50,7 +50,7 @@ const device = getDeviceFromId<ScryptedDevice>(() => props.id);
 
 async function toggleMixin(extension: typeof extensions.value[0], state: boolean) {
   extension.value = state;
-  const mixins = device.value.mixins.filter(m => m !== extension.device.id);
+  const mixins = device.value.mixins?.filter(m => m !== extension.device.id) || [];
   if (state)
     mixins.push(extension.device.id);
   await device.value.setMixins(mixins);
