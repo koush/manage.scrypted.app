@@ -18,7 +18,7 @@ import { ClipPathModel } from '../clip-path-model';
 const modelValue = defineModel<ClipPathModel>();
 
 const zoneColor = computed(() => {
-  return modelValue.value?.color || 'green';
+  return modelValue.value?.color || 'red';
 });
 
 function onClick(e: MouseEvent) {
