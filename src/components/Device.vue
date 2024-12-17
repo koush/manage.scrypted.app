@@ -2,7 +2,7 @@
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device">
-      <ResponsiveColumn cols="12" md="4" xl="3" >
+      <ResponsiveColumn cols="12" md="4" xl="3">
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
@@ -67,8 +67,11 @@
         <template v-else>
         </template>
         <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
-        <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting" @show-console="showConsole = true"></DeviceSettings>
-        <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip"></VideoClipsInterface>
+        <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"
+          @show-console="showConsole = true">
+        </DeviceSettings>
+        <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
+        </VideoClipsInterface>
         <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
       </ResponsiveColumn>
@@ -86,16 +89,20 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
-          <Camera v-if="clipPathDeviceId || hasCamera" :id="cameraIdOrClipPathId" clickable class="mb-4 never-blur" :hide-refresh="!!playing || !!videoClip"
-            @img:click="playing = destination" ref="camera">
-            <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;">
+          <Camera v-if="clipPathDeviceId || hasCamera" :id="cameraIdOrClipPathId" clickable class="mb-4 never-blur"
+            :hide-refresh="!!playing || !!videoClip" @img:click="playing = destination" ref="camera"
+            :img-style="clipPath ? 'transform: scale(.9);' : undefined">
+            <ClipPathEditor v-if="clipPath" v-model="clipPath" class="over-camera" style="z-index: 3; cursor: pointer;"
+              :scale=".9">
             </ClipPathEditor>
-            <RTCSignalingChannel v-if="hasRTC && playing" :id="cameraIdOrClipPathId" class="over-camera" :destination="playing"
-              :muted="muted" :microphone="!!talkback">
+            <RTCSignalingChannel v-if="hasRTC && playing" :id="cameraIdOrClipPathId" class="over-camera"
+              :destination="playing" :muted="muted" :microphone="!!talkback">
             </RTCSignalingChannel>
             <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
-              style="width: 100%; height: 100; object-fit: contain;"></video>
-            <ObjectDetector v-if="playing && hasObjectDetector" :id="cameraIdOrClipPathId" class="over-camera"></ObjectDetector>
+              style="width: 100%; height: 100; object-fit: contain;"
+              :style="clipPath ? 'transform: scale(.9);' : undefined"></video>
+            <ObjectDetector v-if="playing && hasObjectDetector" :id="cameraIdOrClipPathId" class="over-camera"
+              :style="clipPath ? 'transform: scale(.9);' : undefined"></ObjectDetector>
 
             <template v-slot:prepend>
               <template v-if="clipPath">
@@ -401,7 +408,7 @@ const replCard = ref<ComponentPublicInstance>();
 async function scrollToComponent(component: () => ComponentPublicInstance) {
   await sleep(500);
   const el: HTMLElement = component()?.$el;
-  el.scrollIntoView({
+  el?.scrollIntoView({
     block: 'start',
     inline: 'nearest',
     behavior: 'smooth',

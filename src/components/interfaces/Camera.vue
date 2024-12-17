@@ -12,7 +12,7 @@
     </template>
     <div style="display: flex; position: relative;">
       <slot></slot>
-      <img :src="imgSrc" style="object-fit: contain; width: 100%;" :style="clickable ? 'cursor: pointer' : undefined" @click="emits('img:click')">
+      <img :src="imgSrc" class="image" :class="clickable ? 'image-clickable' : undefined" :style="imgStyle" @click="emits('img:click')">
     </div>
   </v-card>
 </template>
@@ -22,7 +22,7 @@ import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId, registerListener } from '@/id-device';
 import { Camera, ScryptedInterface } from '@scrypted/types';
-import { ref, useSlots } from 'vue';
+import { ref, StyleValue, useSlots } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 import debounce from 'lodash/debounce';
 
@@ -30,6 +30,7 @@ const props = defineProps<{
   id: string;
   hideRefresh?: boolean;
   clickable?: boolean;
+  imgStyle?: StyleValue;
 }>();
 const emits = defineEmits<{
   (event: 'img:click'): void;
@@ -78,3 +79,13 @@ registerListener(device, {
 });
 
 </script>
+<style scoped>
+.image {
+  object-fit: contain; 
+  width: 100%;
+}
+
+.image-clickable {
+  cursor: pointer;
+}
+</style>
