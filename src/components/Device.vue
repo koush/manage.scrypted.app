@@ -318,6 +318,27 @@ function resetPtys() {
 }
 resetPtys();
 
+function fixLegacyClipPath(clipPath: ClipPath): ClipPath {
+    if (!clipPath)
+        return;
+
+    // if any value is over abs 2, then divide by 100.
+    // this is a workaround for the old scrypted bug where the path was not normalized.
+    // this is a temporary workaround until the path is normalized in the UI.
+    let needNormalize = false;
+    for (const p of clipPath) {
+        for (const c of p) {
+            if (Math.abs(c) >= 2)
+                needNormalize = true;
+        }
+    }
+
+    if (!needNormalize)
+        return clipPath;
+
+    return clipPath.map(p => p.map(c => c / 100)) as ClipPath;
+}
+
 const clipPath = ref<ClipPathModel>();
 const clipPathDeviceId = ref<string>();
 const cameraIdOrClipPathId = computed(() => clipPathDeviceId.value || id.value);
@@ -328,8 +349,7 @@ async function clickButtonSetting(setting: Setting) {
   if (setting.type === 'clippath') {
     if (typeof setting.value === 'string') {
       try {
-        setting.value = JSON.parse(setting.value);
-        setting.value = (setting.value as ClipPath).map((p: number[]) => [p[0] / 100, p[1] / 100]) as ClipPath;
+        setting.value = fixLegacyClipPath(JSON.parse(setting.value));
       }
       catch (e) {
         setting.value = undefined;
