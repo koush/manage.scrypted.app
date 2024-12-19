@@ -12,6 +12,9 @@
     <StateToggle v-if="hasMotionSensor" :states="motionActions" :state="device.motionDetected">
     </StateToggle>
 
+    <StateToggle v-if="hasOccupancySensor" :states="occupancyActions" :state="device.occupied">
+    </StateToggle>
+
     <StateToggle v-if="hasEntrySensor" :states="entrySensorActions" :state="device.entryOpen">
     </StateToggle>
 
@@ -35,7 +38,7 @@
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
+import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -44,7 +47,7 @@ const props = defineProps<{
   id: string;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor & OccupancySensor>(() => props.id);
 
 const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
@@ -67,6 +70,35 @@ const motionActions = computed(() => {
     {
       name: 'No Motion',
       icon: 'fa-empty-set',
+      value: undefined,
+      // default: true,
+      click: () => { },
+      disabled: true,
+    },
+  ]
+});
+
+const hasOccupancySensor = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.OccupancySensor);
+});
+
+const occupancyActions = computed(() => {
+  if (device.value.occupied) {
+    return [
+      {
+        name: 'Occupied',
+        icon: 'fa-user',
+        value: true,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  return [
+    {
+      name: 'Vacant',
+      icon: 'fa-user-slash',
       value: undefined,
       // default: true,
       click: () => { },
@@ -319,5 +351,6 @@ const ptzActions = computed(() => {
 const show = computed(() =>
   hasOnOff.value || hasLock.value || hasStartStop.value
   || hasPtz.value || hasMotionSensor.value || hasBinarySensor.value
+  || hasOccupancySensor.value
 );
 </script>
