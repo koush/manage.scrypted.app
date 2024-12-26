@@ -62,7 +62,14 @@ async function play() {
     control = (await device.value.startRTCSignalingSession(session))!;
   }
   else {
-    const mo = await device.value.getVideoStream({ destination: props.destination });
+    const mo = await device.value.getVideoStream({
+      destination: props.destination,
+      // these properties are necessary to ensure adaptive bitrate transcodes when necessary.
+      destinationId: 'management',
+      video: {
+        codec: 'h264',
+      }
+    });
     const { mediaManager } = connectedClient.value || await connectPluginClient();
     const channel = await mediaManager.convertMediaObject<RTCSignalingChannel>(mo, ScryptedMimeTypes.RTCSignalingChannel);
     control = (await channel.startRTCSignalingSession(session))!;
