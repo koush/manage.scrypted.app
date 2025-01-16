@@ -85,11 +85,12 @@ const updateAvailable = getServerUpdateMonitor();
 async function doUpdateAndRestart() {
   restartStatus.value = "Restarting...";
   const { systemManager } = connectedClient.value;
+  const serviceControl = await systemManager.getComponent("service-control");
   if (updateAvailable.value?.SCRYPTED_INSTALL_ENVIRONMENT === 'lxc-docker') {
     const core = systemManager.getDeviceById<Settings>('@scrypted/core');
     await core.putSetting('pullImage', undefined);
+    await serviceControl.restart();
   }
-  const serviceControl = await systemManager.getComponent("service-control");
   await serviceControl.update();
 }
 
