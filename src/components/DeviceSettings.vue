@@ -43,6 +43,7 @@ import Extensions from './interfaces/settings/Extensions.vue';
 import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import { isAdmin } from '@/common/client';
+import { getAllDevices } from '@/common/devices';
 
 const props = defineProps<{
   id: string;
@@ -98,6 +99,8 @@ const settings = asyncComputed({
     }
 
     if (isEditable.value && isAdmin.value) {
+      const allRooms = new Set(getAllDevices().map(d => d.room).filter(r => r));
+
       settings.push(
         {
           group: 'Edit',
@@ -111,6 +114,14 @@ const settings = asyncComputed({
           key: 'ui:type',
           value: device.value.type,
           choices: Object.keys(ScryptedDeviceType),
+          combobox: true,
+        },
+        {
+          group: 'Edit',
+          title: 'Room',
+          key: 'ui:room',
+          value: device.value.room,
+          choices: [...allRooms],
           combobox: true,
         },
       );
@@ -154,6 +165,9 @@ function save() {
       }
       else if (key === 'type') {
         device.value.setType(setting.value?.toString() as ScryptedDeviceType);
+      }
+      else if (key === 'room') {
+        device.value.setRoom(setting.value?.toString() || undefined);
       }
     }
     else {
