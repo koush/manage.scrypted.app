@@ -34,11 +34,13 @@
     </StateToggle>
 
     <StateToggle v-if="hasPtz" :states="ptzActions" :state="null" name="Pan/Tilt/Zoom"></StateToggle>
+
+    <StateToggle v-if="hasPressButtons" :states="pressButtons" :state="null" name="Buttons"></StateToggle>
   </v-card>
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, ScryptedDeviceType, ScryptedInterface, StartStop } from '@scrypted/types';
+import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, PressButtons, ScryptedDeviceType, ScryptedInterface, StartStop, Buttons } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -47,7 +49,7 @@ const props = defineProps<{
   id: string;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor & OccupancySensor>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor & OccupancySensor & Buttons & PressButtons>(() => props.id);
 
 const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
@@ -145,7 +147,7 @@ const entrySensorActions = computed(() => {
       {
         name: 'Jammed',
         icon: 'fa-traffic-cone',
-        value: undefined,
+        value: undefined as any,
         click: () => { },
         disabled: true,
         color: 'error',
@@ -158,7 +160,7 @@ const entrySensorActions = computed(() => {
       {
         name: 'Opened',
         icon: 'fa-door-open',
-        value: undefined,
+        value: undefined as any,
         click: () => { },
         disabled: true,
       }
@@ -185,7 +187,7 @@ const batteryActions = computed(() => {
     {
       name: `${device.value.batteryLevel || 0}%`,
       icon: 'fa-battery-full',
-      value: undefined,
+      value: undefined as any,
       click: () => { },
       disabled: true,
     }
@@ -287,6 +289,11 @@ const hasPtz = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.PanTiltZoom);
 });
 
+
+const hasPressButtons = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.PressButtons);
+});
+
 const ptzActions = computed(() => {
   // this is actually stateless, but we want the buttons to never be active.
   const ret = [
@@ -348,9 +355,22 @@ const ptzActions = computed(() => {
   return ret;
 });
 
+const pressButtons = computed(() => {
+  return (device.value.buttons || []).map(buttonId => {
+    console.log(buttonId);
+    return {
+      name: buttonId,
+      icon: 'fa-power-off',
+      value: buttonId,
+      click: () => device.value.pressButton(buttonId),
+    }
+  });
+});
+
 const show = computed(() =>
   hasOnOff.value || hasLock.value || hasStartStop.value
   || hasPtz.value || hasMotionSensor.value || hasBinarySensor.value
   || hasOccupancySensor.value
+  || hasPressButtons.value
 );
 </script>
