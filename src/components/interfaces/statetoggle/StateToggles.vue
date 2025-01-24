@@ -44,6 +44,7 @@ import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, Occu
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
+import { connectedClient } from '../../../common/client';
 
 const props = defineProps<{
   id: string;
@@ -356,8 +357,10 @@ const ptzActions = computed(() => {
 });
 
 const pressButtons = computed(() => {
+  console.log(connectedClient.value.systemManager.getSystemState()[device.value.id]);
+  console.log('buttons', device.value.buttons);
+
   return (device.value.buttons || []).map(buttonId => {
-    console.log(buttonId);
     return {
       name: buttonId,
       icon: 'fa-power-off',

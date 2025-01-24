@@ -16,6 +16,7 @@ import { getAllDevices } from '@/common/devices';
 import { computed } from 'vue';
 import { chipColor, getChipVariant } from '../settings-common';
 import { TrackedSetting } from './setting-modelvalue';
+import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 
 const chipVariant = getChipVariant();
 
@@ -74,11 +75,24 @@ const choices = computed(() => {
 
     ret = allDevices.filter(device => {
       try {
-        return eval(
-          `(function() { var interfaces = ${JSON.stringify(
-            device.interfaces
-          )}; var type='${device.type}'; var id = '${device.id}'; return ${expression} })`
+        const ret = eval(
+          `(function() {
+            const interfaces = ${JSON.stringify(device.interfaces)};
+            const type = '${device.type}';
+            const id = '${device.id}';
+            return ${expression};
+          })
+          `
         )();
+        if (typeof ret !== 'function')
+          return ret;
+        return ret({
+          ScryptedDeviceType,
+          ScryptedInterface,
+          interfaces: device.interfaces,
+          type: device.type,
+          id: device.id,
+        });
       } catch (e) {
         return true;
       }
