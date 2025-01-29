@@ -12,6 +12,9 @@
     <StateToggle v-if="hasMotionSensor" :states="motionActions" :state="device.motionDetected">
     </StateToggle>
 
+    <StateToggle v-if="hasAudioSensor" :states="audioActions" :state="device.audioDetected">
+    </StateToggle>
+
     <StateToggle v-if="hasOccupancySensor" :states="occupancyActions" :state="device.occupied">
     </StateToggle>
 
@@ -40,7 +43,7 @@
 </template>
 <script setup lang="ts">
 import { getDeviceFromId } from '@/id-device';
-import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, PressButtons, ScryptedDeviceType, ScryptedInterface, StartStop, Buttons } from '@scrypted/types';
+import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, PressButtons, ScryptedDeviceType, ScryptedInterface, StartStop, Buttons, AudioSensor } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
 import { getFaPrefix } from '@/device-icons';
@@ -50,7 +53,36 @@ const props = defineProps<{
   id: string;
 }>();
 
-const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor & OccupancySensor & Buttons & PressButtons>(() => props.id);
+const device = getDeviceFromId<OnOff & Lock & StartStop & Pause & PanTiltZoom & MotionSensor & BinarySensor & Battery & EntrySensor & OccupancySensor & Buttons & PressButtons & AudioSensor>(() => props.id);
+
+const hasAudioSensor = computed(() => {
+  return device.value.interfaces.includes(ScryptedInterface.AudioSensor);
+});
+
+const audioActions = computed(() => {
+  if (device.value.audioDetected) {
+    return [
+      {
+        name: 'Noise Detected',
+        icon: 'fa-volume-high',
+        value: true,
+        click: () => { },
+        disabled: true,
+      }
+    ];
+  }
+
+  return [
+    {
+      name: 'No Noise Detected',
+      icon: 'fa-volume-low',
+      value: undefined,
+      // default: true,
+      click: () => { },
+      disabled: true,
+    },
+  ]
+});
 
 const hasMotionSensor = computed(() => {
   return device.value.interfaces.includes(ScryptedInterface.MotionSensor);
@@ -372,7 +404,7 @@ const pressButtons = computed(() => {
 
 const show = computed(() =>
   hasOnOff.value || hasLock.value || hasStartStop.value
-  || hasPtz.value || hasMotionSensor.value || hasBinarySensor.value
+  || hasPtz.value || hasMotionSensor.value || hasBinarySensor.value || hasAudioSensor.value
   || hasOccupancySensor.value
   || hasPressButtons.value
 );
