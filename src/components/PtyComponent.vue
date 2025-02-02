@@ -119,12 +119,16 @@ unmounted.promise.then(() => {
 
 let localQueue: ReturnType<typeof createAsyncQueueFromGenerator>;
 
-watch(() => props.hello, () => {
+function refreshOnUpdate() {
   localQueue?.end();
   localQueue = undefined;
   if (!props.reconnect)
     connectPty();
-});
+}
+
+watch(() => props.hello, refreshOnUpdate);
+watch(() => props.pluginId, refreshOnUpdate);
+watch(() => props.nativeId, refreshOnUpdate);
 
 async function connectPty() {
   buffer = [];
