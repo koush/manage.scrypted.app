@@ -379,6 +379,11 @@ export function getSelfHostedCredentials() {
 }
 
 export async function logoutClient() {
+  // iOS stores the device encryption key in local storage since theres no synchronous way to retrieve it.
+  // clear it out in case something is wonky.
+  localStorage.removeItem('deviceEncryptionKey');
+  localStorage.removeItem('deviceEncryptionIv');
+
   localStorage.removeItem('selfHostedUsername');
   localStorage.removeItem('selfHostedPassword');
   localStorage.removeItem('selfHostedDomain');
