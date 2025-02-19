@@ -48,6 +48,7 @@ export function hasFixedPhysicalLocation(type: ScryptedDeviceType): boolean {
     return false;
   switch (type) {
     case ScryptedDeviceType.Builtin:
+    case ScryptedDeviceType.Internal:
     case ScryptedDeviceType.Program:
     case ScryptedDeviceType.Automation:
     case ScryptedDeviceType.API:

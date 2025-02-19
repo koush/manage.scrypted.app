@@ -1,8 +1,9 @@
 <template>
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
-    <v-row v-if="device">
-      <ResponsiveColumn cols="12" md="4" xl="3">
+    <v-row v-if="device" justify="center">
+      <ResponsiveColumn cols="12" :md="hasMiddleSlots || hasExtraSlots ? 4 : 6"
+        :xl="hasMiddleSlots && hasExtraSlots ? 3 : 4">
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
@@ -50,6 +51,11 @@
                   @click="showRepl = true; scrollToComponent(() => replCard);">
                 </ToolbarTooltipButton>
               </template>
+              <v-badge v-if="hasReadme && !showReadme" dot color="error" offset-x="8">
+                <ToolbarTooltipButton size="x-small" icon="fa-book" tooltip="Readme" @click="showReadme = true">
+                </ToolbarTooltipButton>
+              </v-badge>
+
               <ToolbarTooltipButton v-if="device.info?.managementUrl" size="x-small" icon="fa-wrench"
                 tooltip="Manufacturer Settings" :href="device.info.managementUrl" target="_blank">
               </ToolbarTooltipButton>
@@ -66,24 +72,30 @@
         </template>
         <template v-else>
         </template>
+
         <Notifier v-if="hasNotifier" :id="id" class="mb-4"></Notifier>
         <DeviceSettings :id="id" class="mb-4" @click-button-setting="clickButtonSetting"
           @show-console="showConsole = true">
         </DeviceSettings>
+
+        <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>
+        <MixinProvider v-if="hasMixinProvider" class="mb-4" :id="id"></MixinProvider>
+        <DeviceProvider v-if="!hasDeviceCreator && providerHasVisibleDevices" class="mb-4" :id="id"></DeviceProvider>
+
         <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
         </VideoClipsInterface>
-        <Readme v-if="hasReadme" :id="id" class="mb-4"></Readme>
         <StateToggles :id="id" class="mb-4"></StateToggles>
       </ResponsiveColumn>
-      <DeviceLayout>
+      <DeviceLayout v-if="hasMiddleSlots || hasExtraSlots" ref="deviceLayout" :hide-default="!hasMiddleSlots"
+        :hide-extra="!hasExtraSlots">
         <template v-slot:default>
           <template v-if="!isTouchDevice">
             <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable
               density="compact" :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
           </template>
 
-          <Suspense>
-            <Scriptable v-if="hasScriptable" :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
+          <Suspense v-if="hasScriptable">
+            <Scriptable :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
           </Suspense>
           <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
           <Suspense>
@@ -158,12 +170,9 @@
             :control="true" :pluginId="device.pluginId" :nativeId="device.nativeId" class="mb-4">
           </PtyComponent>
 
-          <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>
-          <MixinProvider v-if="canExtendDevices" class="mb-4" :id="id"></MixinProvider>
-          <DeviceProvider v-if="!hasDeviceCreator && hasDevices" class="mb-4" :id="id"></DeviceProvider>
-
         </template>
         <template v-slot:extra>
+          <Readme v-if="hasReadme && showReadme" :id="id" class="mb-4" @close="showReadme = false"></Readme>
 
           <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true"
             @clear="clearConsole(id)" :expand-button="true" :copyButton="true" title="Log"
@@ -237,11 +246,11 @@ const hasDeviceCreator = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator);
 });
 
-const hasDevices = computed(() => {
-  return getAllDevices().find(d => d.providerId === id.value && d.id !== id.value);
+const providerHasVisibleDevices = computed(() => {
+  return getAllDevices().find(d => d.providerId === id.value && d.id !== id.value && d.type !== ScryptedDeviceType.Internal);
 });
 
-const canExtendDevices = computed(() => {
+const hasMixinProvider = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.MixinProvider);
 });
 
@@ -272,6 +281,8 @@ const isScryptedPlugin = computed(() => {
 const hasOauthClient = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.OauthClient);
 });
+
+const showReadme = ref(false);
 
 const hasReadme = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Readme);
@@ -319,24 +330,24 @@ function resetPtys() {
 resetPtys();
 
 function fixLegacyClipPath(clipPath: ClipPath): ClipPath {
-    if (!clipPath)
-        return;
+  if (!clipPath)
+    return;
 
-    // if any value is over abs 2, then divide by 100.
-    // this is a workaround for the old scrypted bug where the path was not normalized.
-    // this is a temporary workaround until the path is normalized in the UI.
-    let needNormalize = false;
-    for (const p of clipPath) {
-        for (const c of p) {
-            if (Math.abs(c) >= 2)
-                needNormalize = true;
-        }
+  // if any value is over abs 2, then divide by 100.
+  // this is a workaround for the old scrypted bug where the path was not normalized.
+  // this is a temporary workaround until the path is normalized in the UI.
+  let needNormalize = false;
+  for (const p of clipPath) {
+    for (const c of p) {
+      if (Math.abs(c) >= 2)
+        needNormalize = true;
     }
+  }
 
-    if (!needNormalize)
-        return clipPath;
+  if (!needNormalize)
+    return clipPath;
 
-    return clipPath.map(p => p.map(c => c / 100)) as ClipPath;
+  return clipPath.map(p => p.map(c => c / 100)) as ClipPath;
 }
 
 const clipPath = ref<ClipPathModel>();
@@ -431,6 +442,26 @@ async function scrollToComponent(component: () => ComponentPublicInstance) {
     behavior: 'smooth',
   });
 }
+
+const hasMiddleSlots = computed(() => {
+  return hasScriptable.value
+    || hasObjectDetection.value
+    || hasPositionSensor.value
+    || hasCamera.value
+    || clipPathDeviceId.value
+    || hasTTYService.value
+    // || hasDeviceCreator.value
+    // || hasMixinProvider.value
+    // || hasDevices.value
+    ;
+});
+const hasExtraSlots = computed(() => {
+  return showConsole.value
+    || showRepl.value
+    || (hasReadme.value && showReadme.value)
+    ;
+});
+
 </script>
 <style scoped>
 .blur {

@@ -3,6 +3,9 @@
     <template v-slot:prepend>
       <v-icon size="xx-small">{{ getFaPrefix('fa-database') }}</v-icon>
     </template>
+    <template v-slot:append>
+      <ToolbarTooltipButton  icon="fa-close" tooltip="Close" variant="text" @click="emits('close')" />
+    </template>
     <template v-slot:title>
       <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
         Readme
@@ -25,6 +28,10 @@ hljs.registerLanguage('typescript', typescript);
 
 const props = defineProps<{
   id: string;
+}>();
+
+const emits = defineEmits<{
+  (event: 'close'): void;
 }>();
 
 const device = getDeviceFromId<Readme>(() => props.id);

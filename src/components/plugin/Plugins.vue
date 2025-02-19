@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-alert v-if="error" closable color="error" :icon="getFaPrefix('fa-circle-exclamation')" class="mt-2 mb-4">{{ error
       }}</v-alert>
-    <v-row>
+    <v-row justify="center">
       <ResponsiveColumn v-if="!isAdmin" cols="12" md="6" lg="4">
         <v-card class="mb-4">
           <v-card-text>Plugins are the primary way to extend Scrypted by adding new devices and capabilities.</v-card-text>

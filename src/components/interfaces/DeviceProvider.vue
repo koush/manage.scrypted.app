@@ -5,11 +5,11 @@
     </template>
     <template v-slot:title>
       <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
-        Providing Things
+        {{ title }}s
       </v-card-subtitle>
     </template>
     <v-card-subtitle>
-      These things were created by {{ device.name }}.
+      These {{ description }}s were created by {{ device.name }}.
     </v-card-subtitle>
     <v-table density="compact" hover>
       <thead>
@@ -55,7 +55,7 @@
 import { getAllDevices } from '@/common/devices';
 import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getDeviceRoute, registerListener } from '@/id-device';
-import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
+import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedDeviceType, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import DeviceCreatorInterface from './DeviceCreator.vue';
@@ -73,9 +73,13 @@ const title = computed(() => {
   return device.value?.systemDevice?.deviceCreator || "Device";
 });
 
+const description = computed(() => {
+  return device.value?.systemDevice?.deviceCreator || "device";
+});
+
 const childDevices = computed(() => {
   return getAllDevices()
-    .filter(d => d.providerId === props.id && d.id !== props.id);
+    .filter(d => d.providerId === props.id && d.id !== props.id && d.type !== ScryptedDeviceType.Internal);
 });
 
 const showModel = computed(() => {
