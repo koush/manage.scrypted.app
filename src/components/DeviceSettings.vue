@@ -65,6 +65,7 @@ const isEditable = computed(() => {
   if (isScryptedPlugin.value)
     return false;
   switch (device.value?.providedType) {
+    case ScryptedDeviceType.Internal:
     case ScryptedDeviceType.Builtin:
     case ScryptedDeviceType.API:
     case ScryptedDeviceType.Person:
