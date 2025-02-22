@@ -28,7 +28,7 @@
       <template v-if="modelValue.multiple" v-slot:chip="{ props }">
         <v-chip v-bind="props" :color="chipColor" :variant="chipVariant" :append-icon="getFaPrefix('fa-book')"></v-chip>
       </template>
-      <template v-slot:item="{ props, index }">
+      <template v-if="modelValue.icons" v-slot:item="{ props, index }">
         <v-list-item v-bind="props" density="compact" active-color="info">
           <template v-slot:prepend>
             <v-icon size="x-small">{{ maybeGetFaPrefix(modelValue.icons?.[index]) }}</v-icon>
