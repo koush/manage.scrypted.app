@@ -5,15 +5,15 @@
       <v-divider></v-divider>
       <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
         modelValue.title }}</v-list-item-subtitle>
-      <v-chip-group v-model="modelValue.value" column :variant="chipVariant" :multiple="modelValue.multiple">
-        <v-chip v-for="(choice, index) of modelValue.choices" :disabled="disabled"
+      <v-btn-toggle v-model="modelValue.value" column :multiple="modelValue.multiple" density="compact" variant="tonal">
+        <v-btn v-for="(choice, index) of modelValue.choices" :disabled="disabled"
           :class="!modelValue.multiple || forceGroup ? 'chip-group-round ma-0' : undefined"
           :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="small" :value="choice"
-          :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-circle-check') : getFaPrefix('fa-circle')"
+          :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-square-check') : getFaPrefix('fa-square')"
           :append-icon="maybeGetFaPrefix(modelValue.icons?.[index])">
           {{
-            choice }}</v-chip>
-      </v-chip-group>
+            choice }}</v-btn>
+      </v-btn-toggle>
       <div class="mb-2 mr-3">
         <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
           modelValue.description }}</v-list-item-subtitle>
