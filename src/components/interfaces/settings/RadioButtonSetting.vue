@@ -1,5 +1,5 @@
 <template>
-  <v-radio-group v-model="modelValue.value" inline style="scale: .75;" color="info">
+  <v-radio-group v-model="modelValue.value" inline style="scale: .75;" color="info" :label="modelValue.title">
     <v-radio v-for="choice of modelValue.choices" :key="choice" :value="choice" :label="choice">
     </v-radio>
   </v-radio-group>
