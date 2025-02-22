@@ -122,14 +122,23 @@ watch(() => selectedSettingGroup.value, () => {
     || selectedSettingGroup.value?.subgroups[0];
 });
 
-const activeRadioButtons = computed(() => {
-  const ret: string[] = [];
+const enabledRadioButtons = computed(() => {
+  const ret = new Set<string>();
   for (const setting of modelValue.value) {
     if (setting.type === 'radiobutton') {
-      ret.push(setting.value as string);
+      // only the matching radio buttons are active
+      ret.add(setting.value as string);
+      ret.add(setting.title + ':' + setting.value);
+    }
+    if (setting.type === 'radiopanel') {
+      // all elements in the radio panel are active, but may be invisible
+      for (const choice of setting.choices) {
+        ret.add(choice);
+        ret.add(setting.title + ':' + choice);
+      }
     }
   }
-  return ret;
+  return [...ret];
 });
 
 const visibleRadioSettings = computed(() => {
@@ -140,9 +149,10 @@ const visibleRadioSettings = computed(() => {
       ret.add(setting.value as string);
     }
     if (setting.type === 'radiobutton') {
-      // all elements in the radio group are visible, but may be disabled
+      // all elements in the radio button are visible, but may be disabled
       for (const choice of setting.choices) {
           ret.add(choice);
+          ret.add(setting.title + ':' + choice);
       }
     }
   }
@@ -163,7 +173,7 @@ function isRadioSettingDisabled(setting: Setting) {
   if (!setting.radioGroups)
     return;
   for (const radioGroup of setting.radioGroups) {
-    if (activeRadioButtons.value.includes(radioGroup))
+    if (enabledRadioButtons.value.includes(radioGroup))
       return false;
   }
   return true;
