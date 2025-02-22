@@ -17,7 +17,7 @@
       <v-text-field v-model="body" class="mb-4 shrink" density="compact" hide-details persistent-placeholder
         label="Body" variant="outlined"></v-text-field>
 
-      <v-radio-group class="shrink" v-model="radios" inline>
+      <v-radio-group class="shrink" v-model="radios" inline color="info">
         <template v-slot:label>
           <div>MediaSource</div>
         </template>

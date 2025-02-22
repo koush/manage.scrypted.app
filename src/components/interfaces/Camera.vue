@@ -1,9 +1,9 @@
 <template>
   <v-card>
-    <template v-if="slots.prepend" v-slot:prepend>
+    <template v-if="$slots.prepend" v-slot:prepend>
       <slot name="prepend"></slot>
     </template>
-    <template v-if="slots.append" v-slot:append>
+    <template v-if="$slots.append" v-slot:append>
       <slot name="append"></slot>
     </template>
     <template v-slot:append v-if="!hideRefresh">
@@ -12,7 +12,8 @@
     </template>
     <div style="display: flex; position: relative;">
       <slot></slot>
-      <img :src="imgSrc" class="image" :class="clickable ? 'image-clickable' : undefined" :style="imgStyle" @click="emits('img:click')">
+      <img :src="imgSrc" class="image" :class="clickable ? 'image-clickable' : undefined" :style="imgStyle"
+        @click="emits('img:click')">
     </div>
   </v-card>
 </template>
@@ -22,7 +23,7 @@ import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/
 import { getFaPrefix } from '@/device-icons';
 import { getDeviceFromId, registerListener } from '@/id-device';
 import { Camera, ScryptedInterface } from '@scrypted/types';
-import { ref, StyleValue, useSlots } from 'vue';
+import { ref, StyleValue } from 'vue';
 import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 import debounce from 'lodash/debounce';
 
@@ -35,7 +36,6 @@ const props = defineProps<{
 const emits = defineEmits<{
   (event: 'img:click'): void;
 }>();
-const slots = useSlots();
 
 const device = getDeviceFromId<Camera>(() => props.id);
 
@@ -81,7 +81,7 @@ registerListener(device, {
 </script>
 <style scoped>
 .image {
-  object-fit: contain; 
+  object-fit: contain;
   width: 100%;
 }
 
