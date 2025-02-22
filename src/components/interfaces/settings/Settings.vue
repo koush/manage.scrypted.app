@@ -25,7 +25,7 @@
             <v-tabs-window v-model="selectedSettingSubgroup">
               <template v-for="setting in selectedSettingSubgroup?.settings">
                 <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
-                  v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)">
+                  v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)" :class="setting.radioGroups ? 'ml-4 mr-4' : undefined">
                   {{ setting.title }}
                 </SplatSetting>
               </template>

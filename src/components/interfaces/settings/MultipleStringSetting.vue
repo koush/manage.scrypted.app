@@ -1,9 +1,11 @@
 <template>
-  <v-text-field v-for="(value, index) in strings" class="shrink" :readonly="modelValue.readonly" density="compact" :disabled="disabled"
-    variant="outlined" :label="modelValue.title" persistent-placeholder :hint="modelValue.description" :placeholder="modelValue.placeholder"
-    :model-value="value" @update:model-value="v => strings[index] = v"
-    :type="modelValue.type === 'password' ? 'password' : undefined" :persistent-hint="!!modelValue.description"
-    :hide-details="!modelValue.description"></v-text-field>
+  <div>
+    <v-text-field v-for="(value, index) in strings" class="shrink" :readonly="modelValue.readonly" density="compact"
+      :disabled="disabled" variant="outlined" :label="modelValue.title" persistent-placeholder
+      :hint="modelValue.description" :placeholder="modelValue.placeholder" :model-value="value"
+      @update:model-value="v => strings[index] = v" :type="modelValue.type === 'password' ? 'password' : undefined"
+      :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description"></v-text-field>
+  </div>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
