@@ -24,7 +24,8 @@
           <v-expansion-panel-text>
             <v-tabs-window v-model="selectedSettingSubgroup">
               <template v-for="setting in selectedSettingSubgroup?.settings">
-                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)" v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)">
+                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
+                  v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)">
                   {{ setting.title }}
                 </SplatSetting>
               </template>
@@ -141,29 +142,68 @@ const enabledRadioButtons = computed(() => {
   return [...ret];
 });
 
-const visibleRadioSettings = computed(() => {
+const invisibleRadioSettings = computed(() => {
   const ret = new Set<string>();
   for (const setting of modelValue.value) {
     if (setting.type === 'radiopanel') {
-      // only the active panel is visible
-      ret.add(setting.value as string);
-    }
-    if (setting.type === 'radiobutton') {
-      // all elements in the radio button are visible, but may be disabled
       for (const choice of setting.choices) {
+        // only the active panel is visible
+        if (choice !== setting.value) {
           ret.add(choice);
           ret.add(setting.title + ':' + choice);
+        }
       }
     }
   }
+
+  // now that we have a list of radio panel items that are invisible,
+  // keep traversing the list adding children to the list.
+
+  let lastSize: number;
+  do {
+    lastSize = ret.size;
+    for (const setting of modelValue.value) {
+      if (setting.radioGroups && (setting.type === 'radiobutton' || setting.type === 'radiopanel')) {
+        for (const radioGroup of setting.radioGroups) {
+          if (ret.has(radioGroup)) {
+            // this radio group is invisible, so add all the children
+            for (const choice of setting.choices) {
+              ret.add(choice);
+              ret.add(setting.title + ':' + choice);
+            }
+          }
+        }
+      }
+    }
+  }
+  while (lastSize !== ret.size);
+
   return [...ret];
 });
+
+// const visibleRadioSettings = computed(() => {
+//   const ret = new Set<string>();
+//   for (const setting of modelValue.value) {
+//     if (setting.type === 'radiopanel') {
+//       // only the active panel is visible
+//       ret.add(setting.value as string);
+//     }
+//     if (setting.type === 'radiobutton') {
+//       // all elements in the radio button are visible, but may be disabled
+//       for (const choice of setting.choices) {
+//         ret.add(choice);
+//         ret.add(setting.title + ':' + choice);
+//       }
+//     }
+//   }
+//   return [...ret];
+// });
 
 function isRadioSettingVisible(setting: Setting) {
   if (!setting.radioGroups)
     return true;
   for (const radioGroup of setting.radioGroups) {
-    if (visibleRadioSettings.value.includes(radioGroup))
+    if (!invisibleRadioSettings.value.includes(radioGroup))
       return true;
   }
   return false;

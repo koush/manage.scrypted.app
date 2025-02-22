@@ -1,6 +1,6 @@
 <template>
-  <v-text-field v-for="(value, index) in strings" class="shrink" :readonly="modelValue.readonly" density="compact"
-    variant="outlined" :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
+  <v-text-field v-for="(value, index) in strings" class="shrink" :readonly="modelValue.readonly" density="compact" :disabled="disabled"
+    variant="outlined" :label="modelValue.title" persistent-placeholder :hint="modelValue.description" :placeholder="modelValue.placeholder"
     :model-value="value" @update:model-value="v => strings[index] = v"
     :type="modelValue.type === 'password' ? 'password' : undefined" :persistent-hint="!!modelValue.description"
     :hide-details="!modelValue.description"></v-text-field>
@@ -35,6 +35,10 @@ watch(() => strings.value, () => {
 }, {
   deep: true,
 });
+
+defineProps<{
+  disabled?: boolean;
+}>();
 
 </script>
 <style scoped>
