@@ -1,5 +1,6 @@
 <template>
-  <ReadonlyRangeSetting v-if="modelValue.type === 'number' && modelValue.readonly && modelValue.range" :model-value="modelValue"></ReadonlyRangeSetting>
+  <RadioButtonSetting v-if="modelValue.type === 'radiobutton'" :model-value="modelValue"></RadioButtonSetting>
+  <ReadonlyRangeSetting v-else-if="modelValue.type === 'number' && modelValue.readonly && modelValue.range" :model-value="modelValue"></ReadonlyRangeSetting>
   <ChoiceStringSetting v-else-if="modelValue.choices" :model-value="modelValue"></ChoiceStringSetting>
   <MultipleStringSetting v-else-if="isStringType(modelValue.type) && modelValue.multiple" :model-value="modelValue"></MultipleStringSetting>
   <StringSetting v-else-if="isStringType(modelValue.type)" :model-value="modelValue"></StringSetting>
@@ -34,6 +35,8 @@ import HtmlSetting from './HtmlSetting.vue';
 import DeviceInterfaceSetting from './DeviceInterfaceSetting.vue';
 import ReadonlyRangeSetting from './ReadonlyRangeSetting.vue';
 import MultipleStringSetting from './MultipleStringSetting.vue';
+import RadioButton from './RadioButton.vue';
+import RadioButtonSetting from './RadioButtonSetting.vue';
 
 const modelValue = defineModel<Setting>();
 watchModelValue(modelValue);

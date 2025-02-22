@@ -4,7 +4,8 @@
       :mandatory="totalExpansionPanels <= 1">
 
       <template v-for="group in settingsGroups">
-        <v-expansion-panel :value="group" :collapse-icon="getFaPrefix('fa-caret-up')" :expand-icon="getFaPrefix('fa-caret-down')">
+        <v-expansion-panel :value="group" :collapse-icon="getFaPrefix('fa-caret-up')"
+          :expand-icon="getFaPrefix('fa-caret-down')">
           <v-expansion-panel-title v-if="totalExpansionPanels > 1"
             style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
             :color="selectedSettingGroup && group?.title === selectedSettingGroup?.title ? 'deep-purple' : undefined">{{
@@ -23,7 +24,8 @@
           <v-expansion-panel-text>
             <v-tabs-window v-model="selectedSettingSubgroup">
               <template v-for="setting in selectedSettingSubgroup?.settings">
-                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)">
+                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)" v-if="isRadioSettingVisible(setting)">
+                  {{ setting.title }}
                 </SplatSetting>
               </template>
             </v-tabs-window>
@@ -119,4 +121,36 @@ watch(() => selectedSettingGroup.value, () => {
   selectedSettingSubgroup.value = selectedSettingGroup.value?.subgroups.find(v => v.title === selectedSettingSubgroup.value?.title)
     || selectedSettingGroup.value?.subgroups[0];
 });
+
+const activeRadioButtons = computed(() => {
+  const ret: string[] = [];
+  for (const setting of modelValue.value) {
+    if (setting.type === 'radiobutton') {
+      ret.push(setting.value as string);
+    }
+  }
+  return ret;
+});
+
+const activeRadioPanels = computed(() => {
+  const ret = new Set<string>();
+  for (const setting of modelValue.value) {
+    if (setting.type === 'radiopanel') {
+      ret.add(setting.value as string);
+    }
+  }
+  return [...ret];
+});
+
+function isRadioSettingVisible(setting: Setting) {
+  if (!setting.radioGroups)
+    return true;
+  for (const radioGroup of setting.radioGroups) {
+    if (activeRadioButtons.value.includes(radioGroup))
+      return true;
+    if (activeRadioPanels.value.includes(radioGroup))
+      return true;
+  }
+  return false;
+}
 </script>
