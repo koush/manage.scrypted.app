@@ -24,7 +24,7 @@
           <v-expansion-panel-text>
             <v-tabs-window v-model="selectedSettingSubgroup">
               <template v-for="setting in selectedSettingSubgroup?.settings">
-                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)" v-if="isRadioSettingVisible(setting)">
+                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)" v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)">
                   {{ setting.title }}
                 </SplatSetting>
               </template>
@@ -132,11 +132,18 @@ const activeRadioButtons = computed(() => {
   return ret;
 });
 
-const activeRadioPanels = computed(() => {
+const visibleRadioSettings = computed(() => {
   const ret = new Set<string>();
   for (const setting of modelValue.value) {
     if (setting.type === 'radiopanel') {
+      // only the active panel is visible
       ret.add(setting.value as string);
+    }
+    if (setting.type === 'radiobutton') {
+      // all elements in the radio group are visible, but may be disabled
+      for (const choice of setting.choices) {
+          ret.add(choice);
+      }
     }
   }
   return [...ret];
@@ -146,11 +153,19 @@ function isRadioSettingVisible(setting: Setting) {
   if (!setting.radioGroups)
     return true;
   for (const radioGroup of setting.radioGroups) {
-    if (activeRadioButtons.value.includes(radioGroup))
-      return true;
-    if (activeRadioPanels.value.includes(radioGroup))
+    if (visibleRadioSettings.value.includes(radioGroup))
       return true;
   }
   return false;
+}
+
+function isRadioSettingDisabled(setting: Setting) {
+  if (!setting.radioGroups)
+    return;
+  for (const radioGroup of setting.radioGroups) {
+    if (activeRadioButtons.value.includes(radioGroup))
+      return false;
+  }
+  return true;
 }
 </script>

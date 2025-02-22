@@ -1,10 +1,8 @@
 <template>
-  <v-btn-toggle v-model="modelValue.value" mandatory class="mb-4 rounded-md" divided
-    style="align-self: center; border-width: 1px; height: 32px;" color="info">
-    <v-btn v-for="choice of modelValue.choices" :key="choice" :value="choice" size="x-small" :height="32">
-      {{ choice }}
-    </v-btn>
-  </v-btn-toggle>
+  <v-radio-group v-model="modelValue.value" color="info" inline style="scale: .75;">
+    <v-radio v-for="choice of modelValue.choices" :key="choice" :value="choice" :label="choice">
+    </v-radio>
+  </v-radio-group>
 </template>
 
 
