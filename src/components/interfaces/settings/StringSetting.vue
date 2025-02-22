@@ -1,18 +1,24 @@
 <template>
-  <v-text-field v-if="modelValue.type !== 'textarea'" class="shrink" :readonly="modelValue.readonly" density="compact"
-    variant="outlined" :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
-    :placeholder="modelValue?.placeholder" v-model="modelValue.value"
-    :type="modelValue.type === 'password' ? 'password' : undefined" :persistent-hint="!!modelValue.description"
-    :hide-details="!modelValue.description"></v-text-field>
-  <v-textarea v-else class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
-    :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
-    :placeholder="modelValue?.placeholder" v-model="modelValue.value" :persistent-hint="!!modelValue.description"
-    :hide-details="!modelValue.description"></v-textarea>
+  <div>
+    <v-text-field v-if="modelValue.type !== 'textarea'" class="shrink" :readonly="modelValue.readonly" density="compact"
+      variant="outlined" :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
+      :placeholder="modelValue?.placeholder" v-model="modelValue.value"
+      :type="modelValue.type === 'password' ? 'password' : undefined" :persistent-hint="!!modelValue.description"
+      :hide-details="!modelValue.description" :disabled="disabled"></v-text-field>
+    <v-textarea v-else class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
+      :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
+      :placeholder="modelValue?.placeholder" v-model="modelValue.value" :persistent-hint="!!modelValue.description"
+      :hide-details="!modelValue.description" :disabled="disabled"></v-textarea>
+  </div>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
 
 const modelValue = defineModel<Setting>();
+
+defineProps<{
+  disabled?: boolean;
+}>();
 
 </script>
 <style scoped>
