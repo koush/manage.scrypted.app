@@ -1,18 +1,22 @@
 <template>
-  <div class="mb-4">
-    <v-divider class="mt-2 mb-2"></v-divider>
-    <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.title">{{
+  <div>
+    <v-list-item-subtitle v-if="modelValue.title && !hideTitle" class="shrink ml-3 mr-3" >{{
       modelValue.title }}</v-list-item-subtitle>
-    <V2DatePicker :is-dark="dark" :mode="mode"
+    <V2DatePicker :is-dark="dark" :mode="mode" class="pa-0 ma-0"
       :model-value="new Date(normalizeNumber(modelValue.value as number) || Date.now())"
       :hide-time-header="mode === 'time'" @update:model-value="updateModel"></V2DatePicker>
-  </div>
+      <v-divider class="mt-2"></v-divider>
+    </div>
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
 import { Setting } from '@scrypted/types';
 import { computed } from 'vue';
 import { normalizeNumber } from './setting-modelvalue';
+
+defineProps<{
+  hideTitle?: boolean;
+}>();
 
 const dark = isDark();
 const modelValue = defineModel<Setting>();

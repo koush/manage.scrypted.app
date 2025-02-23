@@ -2,31 +2,34 @@
   <div>
     <template
       v-if="(forceChips || modelValue.choices?.length <= 3) && !modelValue.combobox && !modelValue.immediate && !modelValue.readonly">
-      <v-divider></v-divider>
-      <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title">{{
+      <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title && !hideTitle">{{
         modelValue.title }}</v-list-item-subtitle>
-      <v-btn-toggle v-model="modelValue.value" column :multiple="modelValue.multiple" density="compact" variant="tonal">
+      <v-btn-toggle v-model="modelValue.value" column :multiple="modelValue.multiple" density="compact" variant="tonal"
+        style="height: 32px">
         <v-btn v-for="(choice, index) of modelValue.choices" :disabled="disabled"
           :class="!modelValue.multiple || forceGroup ? 'chip-group-round ma-0' : undefined"
-          :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="small" :value="choice"
+          :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="x-small"
+          :value="choice"
           :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-square-check') : getFaPrefix('fa-square')"
           :append-icon="maybeGetFaPrefix(modelValue.icons?.[index])">
           {{
             choice }}</v-btn>
       </v-btn-toggle>
       <div class="mb-2 mr-3">
-        <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="modelValue.description">{{
-          modelValue.description }}</v-list-item-subtitle>
+        <v-list-item-subtitle class="shrink ml-3 mr-3" v-if="description">{{
+          description }}</v-list-item-subtitle>
       </div>
-      <v-divider></v-divider>
+      <v-divider class="mt-2 mb-2"></v-divider>
     </template>
     <component v-else :is="component" class="shrink" :readonly="modelValue.readonly" density="compact"
-      variant="outlined" :label="modelValue.title" :hint="modelValue.description" v-model="modelValue.value"
-      :items="modelValue.choices" :multiple="modelValue.multiple" :chips="modelValue.multiple"
-      :closable-chips="modelValue.multiple && !modelValue.readonly" :persistent-hint="!!modelValue.description"
-      :hide-details="!modelValue.description" persistent-placeholder :disabled="disabled">
-      <template v-if="modelValue.multiple" v-slot:chip="{ props }">
-        <v-chip v-bind="props" :color="chipColor" :variant="chipVariant" :append-icon="getFaPrefix('fa-book')"></v-chip>
+      variant="outlined" :label="hideTitle ? undefined : modelValue.title" :hint="description"
+      v-model="modelValue.value" :items="modelValue.choices" :multiple="modelValue.multiple"
+      :chips="modelValue.multiple" :closable-chips="modelValue.multiple && !modelValue.readonly"
+      :persistent-hint="!!description" :hide-details="!description" persistent-placeholder
+      :disabled="disabled">
+      <template v-if="modelValue.multiple" v-slot:chip="{ props, index }">
+        <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"
+          :prepend-icon="maybeGetFaPrefix(modelValue.icons?.[index])"></v-chip>
       </template>
       <template v-if="modelValue.icons" v-slot:item="{ props, index }">
         <v-list-item v-bind="props" density="compact" active-color="info">
@@ -49,11 +52,18 @@ import { maybeGetFaPrefix } from '@/common/fa-prefix';
 const chipVariant = getChipVariant();
 
 const modelValue = defineModel<Setting>();
-defineProps<{
+const props = defineProps<{
   forceChips?: boolean;
   forceGroup?: boolean;
   disabled?: boolean;
+  hideTitle?: boolean;
 }>();
+
+const description = computed(() => {
+  if (props.hideTitle)
+    return undefined;
+  return modelValue.value.description;
+});
 
 const component = computed(() => {
   if (!modelValue.value?.combobox)

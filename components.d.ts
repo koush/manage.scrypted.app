@@ -60,6 +60,7 @@ declare module 'vue' {
     ScryptedPlugin: typeof import('./src/components/interfaces/ScryptedPlugin.vue')['default']
     ScryptedSettings: typeof import('./src/components/ScryptedSettings.vue')['default']
     ServerManagement: typeof import('./src/components/ServerManagement.vue')['default']
+    SettingRow: typeof import('./src/components/interfaces/settings/SettingRow.vue')['default']
     Settings: typeof import('./src/components/interfaces/settings/Settings.vue')['default']
     SplatSetting: typeof import('./src/components/interfaces/settings/SplatSetting.vue')['default']
     StateToggle: typeof import('./src/components/interfaces/statetoggle/StateToggle.vue')['default']

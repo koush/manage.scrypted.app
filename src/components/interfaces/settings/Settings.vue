@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="root">
     <v-expansion-panels flat density="compact" v-model="selectedSettingGroup" variant="accordion"
       :mandatory="totalExpansionPanels <= 1">
 
@@ -23,12 +23,17 @@
 
           <v-expansion-panel-text>
             <v-tabs-window v-model="selectedSettingSubgroup">
+              <div class="mb-2"></div>
               <template v-for="setting in selectedSettingSubgroup?.settings">
-                <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
-                  v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)" :class="setting.radioGroups ? 'ml-4 mr-4' : undefined">
-                  {{ setting.title }}
-                </SplatSetting>
+                <SettingRow :title="wide ? setting.title || '' : undefined" :description="setting.type !== 'boolean' ? setting.description : undefined">
+                  <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
+                    v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)"
+                    :class="setting.radioGroups ? 'ml-4 mr-4' : undefined" :hide-title="wide">
+                    {{ setting.title }}
+                  </SplatSetting>
+                </SettingRow>
               </template>
+              <div class="mb-4"></div>
             </v-tabs-window>
           </v-expansion-panel-text>
         </v-expansion-panel>
@@ -48,9 +53,21 @@ import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
 import { isDark } from '@/common/colors';
 import { getFaPrefix } from '@/device-icons';
+import SettingRow from './SettingRow.vue';
+import { observeResize } from '@/common/resize-observer';
+import { isTouchPhone } from '@/common/size';
 
 const slots = useSlots();
 const dark = isDark();
+
+const root = ref<HTMLElement>();
+const rootSize = observeResize(root);
+
+const wide = computed(() => {
+  if (isTouchPhone.value)
+    return false;
+  return rootSize.value.width > 480;
+})
 
 const totalExpansionPanels = computed(() => {
   let ret = settingsGroups.value?.length || 0;

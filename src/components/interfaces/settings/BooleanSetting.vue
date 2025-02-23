@@ -1,17 +1,33 @@
 <template>
   <v-switch v-if="modelValue?.immediate" :color="chipColor" inset class="shrink" :readonly="modelValue.readonly"
-    density="compact" :label="modelValue.title" persistent-placeholder :hint="modelValue.description"
-    v-model="modelValue.value" :persistent-hint="!!modelValue.description"
-    :hide-details="!modelValue.description"></v-switch>
+    density="compact" :label="title" persistent-placeholder :hint="description"
+    v-model="modelValue.value" :persistent-hint="!!description"
+    :hide-details="!description"></v-switch>
   <v-checkbox v-else :color="chipColor" class="shrink" :readonly="modelValue.readonly" density="compact"
-    :label="modelValue.title" persistent-placeholder :hint="modelValue.description" v-model="modelValue.value"
-    :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description"></v-checkbox>
+    :label="title" persistent-placeholder :hint="description" v-model="modelValue.value"
+    :persistent-hint="!!description" :hide-details="!description"></v-checkbox>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
 import { chipColor } from '../settings-common';
+import { computed } from 'vue';
 
 const modelValue = defineModel<Setting>();
+const props = defineProps<{
+  hideTitle?: boolean;
+}>();
+
+const title = computed(() => {
+  if (props.hideTitle)
+    return modelValue.value.description;
+  return modelValue.value.title;
+});
+
+const description = computed(() => {
+  if (props.hideTitle)
+    return undefined;
+  return modelValue.value.description;
+});
 
 </script>
 <style scoped>

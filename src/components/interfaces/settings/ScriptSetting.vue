@@ -1,11 +1,11 @@
 <template>
   <div class="mb-4">
-    <v-divider class="mt-2 mb-2"></v-divider>
     <v-list-item-subtitle class="shrink ml-3 mr-3 mb-3" v-if="modelValue.title">{{
       modelValue.title }}</v-list-item-subtitle>
     <div ref="container" style="height: 320px; width: 100%; border-width: 1px; border-style: solid;"
       :style="`border-color: ${lineHintColor}`"></div>
-  </div>
+      <v-divider class="mt-2 mb-2"></v-divider>
+    </div>
 </template>
 <script setup lang="ts">
 import { getLineHintColor, isDark } from '@/common/colors';
