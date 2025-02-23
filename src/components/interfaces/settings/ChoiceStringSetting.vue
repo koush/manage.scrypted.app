@@ -7,7 +7,6 @@
       <v-btn-toggle v-model="modelValue.value" column :multiple="modelValue.multiple" density="compact" variant="tonal"
         style="height: 32px">
         <v-btn v-for="(choice, index) of modelValue.choices" :disabled="disabled"
-          :class="!modelValue.multiple || forceGroup ? 'chip-group-round ma-0' : undefined"
           :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="x-small"
           :value="choice"
           :prepend-icon="(modelValue.value as any)?.includes(choice) ? getFaPrefix('fa-square-check') : getFaPrefix('fa-square')"
@@ -25,8 +24,7 @@
       variant="outlined" :label="hideTitle ? undefined : modelValue.title" :hint="description"
       v-model="modelValue.value" :items="modelValue.choices" :multiple="modelValue.multiple"
       :chips="modelValue.multiple" :closable-chips="modelValue.multiple && !modelValue.readonly"
-      :persistent-hint="!!description" :hide-details="!description" persistent-placeholder
-      :disabled="disabled">
+      :persistent-hint="!!description" :hide-details="!description" persistent-placeholder :disabled="disabled">
       <template v-if="modelValue.multiple" v-slot:chip="{ props, index }">
         <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"
           :prepend-icon="maybeGetFaPrefix(modelValue.icons?.[index])"></v-chip>
