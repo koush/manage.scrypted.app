@@ -52,7 +52,7 @@
                 </ToolbarTooltipButton>
               </template>
               <v-badge v-if="hasReadme && !showReadme" dot color="error" offset-x="8">
-                <ToolbarTooltipButton size="x-small" icon="fa-book" tooltip="Readme" @click="showReadme = true">
+                <ToolbarTooltipButton size="x-small" icon="fa-book" tooltip="Readme" @click="setReadme(true)">
                 </ToolbarTooltipButton>
               </v-badge>
 
@@ -172,7 +172,7 @@
 
         </template>
         <template v-slot:extra>
-          <Readme v-if="hasReadme && showReadme" :id="id" class="mb-4" @close="showReadme = false"></Readme>
+          <Readme v-if="hasReadme && showReadme" :id="id" class="mb-4" @close="setReadme(false)"></Readme>
 
           <PtyComponent v-if="showConsole" ref="consoleCard" :reconnect="true" :clearButton="true"
             @clear="clearConsole(id)" :expand-button="true" :copyButton="true" title="Log"
@@ -282,7 +282,11 @@ const hasOauthClient = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.OauthClient);
 });
 
-const showReadme = ref(false);
+const showReadme = ref(localStorage.getItem('showReadme') === 'true');
+function setReadme(value: boolean) {
+  showReadme.value = value;
+  localStorage.setItem('showReadme', value.toString());
+}
 
 const hasReadme = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.Readme);

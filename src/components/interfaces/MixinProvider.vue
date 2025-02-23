@@ -136,5 +136,6 @@ const showIp = computed(() => {
 .shrink {
   transform: scale(.5, .5);
   transform-origin: 0% 50%;
+  width: 200%;
 }
 </style>
