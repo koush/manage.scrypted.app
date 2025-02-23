@@ -1,11 +1,14 @@
 <template>
   <v-switch v-if="modelValue?.immediate" :color="chipColor" inset class="shrink" :readonly="modelValue.readonly"
-    density="compact" :label="title" persistent-placeholder :hint="description"
-    v-model="modelValue.value" :persistent-hint="!!description"
-    :hide-details="!description"></v-switch>
-  <v-checkbox v-else :color="chipColor" class="shrink" :readonly="modelValue.readonly" density="compact"
-    :label="title" persistent-placeholder :hint="description" v-model="modelValue.value"
-    :persistent-hint="!!description" :hide-details="!description"></v-checkbox>
+    density="compact" :label="title" persistent-placeholder :hint="description" v-model="modelValue.value"
+    :persistent-hint="!!description" :hide-details="!description"></v-switch>
+  <v-checkbox v-else :color="chipColor" class="shrink" :readonly="modelValue.readonly" density="compact" :label="title"
+    persistent-placeholder :hint="description" v-model="modelValue.value" :persistent-hint="!!description"
+    :hide-details="!description">
+    <template v-slot:label="{ label }">
+      <v-list-item-subtitle class="ml-2"> {{ label }}</v-list-item-subtitle>
+    </template>
+  </v-checkbox>
 </template>
 <script setup lang="ts">
 import { Setting } from '@scrypted/types';
