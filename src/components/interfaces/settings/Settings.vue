@@ -25,10 +25,11 @@
             <v-tabs-window v-model="selectedSettingSubgroup">
               <div class="mb-2"></div>
               <template v-for="setting in selectedSettingSubgroup?.settings">
-                <SettingRow :title="wide ? setting.title || '' : undefined" :description="setting.type !== 'boolean' ? setting.description : undefined">
+                <SettingRow v-if="isRadioSettingVisible(setting)"
+                  :title="wide ? setting.title || '' : undefined"
+                  :description="setting.type !== 'boolean' ? setting.description : undefined">
                   <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
-                    v-if="isRadioSettingVisible(setting)" :disabled="isRadioSettingDisabled(setting)"
-                    :class="setting.radioGroups ? 'ml-4 mr-4' : undefined" :hide-title="wide">
+                    :class="getClass(setting)" :hide-title="wide" :disabled="isRadioSettingDisabled(setting)">
                     {{ setting.title }}
                   </SplatSetting>
                 </SettingRow>
@@ -67,7 +68,20 @@ const wide = computed(() => {
   if (isTouchPhone.value)
     return false;
   return rootSize.value.width > 480;
-})
+});
+
+function getClass(setting: Setting) {
+  const ret: string[] = [];
+  if (setting.radioGroups) {
+    ret.push('ml-4');
+    ret.push('mr-4');
+  }
+  if (setting.type === 'radiopanel' && wide) {
+    ret.push('mt-4');
+  }
+
+  return ret.join(' ');
+}
 
 const totalExpansionPanels = computed(() => {
   let ret = settingsGroups.value?.length || 0;
