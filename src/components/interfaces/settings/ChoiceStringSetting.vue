@@ -5,7 +5,7 @@
       <v-list-item-subtitle class="shrink mt-1 ml-3" v-if="modelValue.title && !hideTitle">{{
         modelValue.title }}</v-list-item-subtitle>
       <v-btn-toggle v-model="modelValue.value" column :multiple="modelValue.multiple" density="compact" variant="tonal"
-        style="height: 32px">
+        style="height: 32px" mandatory>
         <v-btn v-for="(choice, index) of modelValue.choices" :disabled="disabled"
           :rounded="!modelValue.multiple || forceGroup ? 0 : undefined" :color="chipColor" size="x-small"
           :value="choice"
