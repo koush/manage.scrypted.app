@@ -461,6 +461,7 @@ const hasMiddleSlots = computed(() => {
 });
 const hasExtraSlots = computed(() => {
   return showConsole.value
+    || showEvents.value
     || showRepl.value
     || (hasReadme.value && showReadme.value)
     ;
