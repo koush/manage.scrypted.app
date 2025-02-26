@@ -28,6 +28,8 @@
           <td>
             <v-btn variant="text" size="small" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn>
           </td>
+          <td v-if="mdAndUp && showCol1">{{ device.info?.col1 }}</td>
+          <td v-if="mdAndUp && showCol2">{{ device.info?.col2 }}</td>
           <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
@@ -80,6 +82,14 @@ const description = computed(() => {
 const childDevices = computed(() => {
   return getAllDevices()
     .filter(d => d.providerId === props.id && d.id !== props.id && d.type !== ScryptedDeviceType.Internal);
+});
+
+const showCol1 = computed(() => {
+  return childDevices.value.some(d => d.info?.col1);
+});
+
+const showCol2 = computed(() => {
+  return childDevices.value.some(d => d.info?.col2);
 });
 
 const showModel = computed(() => {

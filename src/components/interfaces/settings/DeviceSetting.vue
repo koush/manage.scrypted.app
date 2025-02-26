@@ -1,8 +1,9 @@
 <template>
   <v-autocomplete class="shrink" :readonly="modelValue.readonly" density="compact" variant="outlined"
-    :label="modelValue.title" :hint="modelValue.description" v-model="value" :items="choices" return-object
-    :multiple="modelValue.multiple" :chips="modelValue.multiple" :closable-chips="modelValue.multiple"
-    :persistent-hint="!!modelValue.description" :hide-details="!modelValue.description" persistent-placeholder>
+    :label="modelValue.title && !hideTitle ? modelValue.title : undefined" :hint="description" v-model="value"
+    :items="choices" return-object :multiple="modelValue.multiple" :chips="modelValue.multiple"
+    :closable-chips="modelValue.multiple" :persistent-hint="!!description" :hide-details="!description"
+    persistent-placeholder>
     <template v-if="modelValue.multiple" v-slot:chip="{ props }">
       <v-chip v-bind="props" :color="chipColor" :variant="chipVariant"></v-chip>
     </template>
@@ -17,6 +18,18 @@ import { computed } from 'vue';
 import { chipColor, getChipVariant } from '../settings-common';
 import { TrackedSetting } from './setting-modelvalue';
 import { ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
+
+const props = defineProps<{
+  hideTitle?: boolean;
+}>();
+
+
+const description = computed(() => {
+  if (props.hideTitle)
+    return undefined;
+  return modelValue.value.description;
+});
+
 
 const chipVariant = getChipVariant();
 
