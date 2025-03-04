@@ -9,7 +9,7 @@
       </v-card-subtitle>
     </template>
     <v-card-subtitle>
-      These {{ description }}s were created by {{ device.name }}.
+      These {{ description }}s are managed by {{ device.name }}.
     </v-card-subtitle>
     <v-table density="compact" hover>
       <thead>
