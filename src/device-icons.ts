@@ -2,11 +2,11 @@ import { ScryptedDeviceType } from "@scrypted/types";
 import { getFaPrefix } from "./common/fa-prefix";
 export { getFaPrefix } from "./common/fa-prefix";
 
-export function typeToIcon(type?: ScryptedDeviceType) {
+export function typeToIcon(type?: ScryptedDeviceType | string) {
   return `${getFaPrefix(typeToIconInternal(type))}`;
 }
 
-function typeToIconInternal(type?: ScryptedDeviceType) {
+function typeToIconInternal(type?: ScryptedDeviceType | string) {
   switch (type) {
     case ScryptedDeviceType.Camera: return "fa-video";
     case ScryptedDeviceType.Doorbell: return "fa-bell";
@@ -46,7 +46,7 @@ function typeToIconInternal(type?: ScryptedDeviceType) {
   return "fa-toggle-on";
 }
 
-export function hasFixedPhysicalLocation(type: ScryptedDeviceType): boolean {
+export function hasFixedPhysicalLocation(type: ScryptedDeviceType | string): boolean {
   if (!type)
     return false;
   switch (type) {
