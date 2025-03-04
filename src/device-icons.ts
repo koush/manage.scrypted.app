@@ -38,6 +38,9 @@ function typeToIconInternal(type?: ScryptedDeviceType) {
     case ScryptedDeviceType.SecuritySystem: return "fa-shield-alt";
     case ScryptedDeviceType.Builtin: return "fa-server";
     case ScryptedDeviceType.Siren: return "fa-siren";
+    case ScryptedDeviceType.Internet: return "fa-globe";
+    case ScryptedDeviceType.Bridge: return "fa-chart-network";
+    case ScryptedDeviceType.Network: return "fa-network-wired";
   }
 
   return "fa-toggle-on";

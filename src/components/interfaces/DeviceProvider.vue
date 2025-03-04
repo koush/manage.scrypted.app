@@ -18,6 +18,8 @@
           <th class="text-left">
             Name
           </th>
+          <th class="text-left" v-if="mdAndUp && showCol1"></th>
+          <th class="text-left" v-if="mdAndUp && showCol2"></th>
           <th class="text-left" v-if="mdAndUp && showModel">Model</th>
           <th class="text-left" v-if="mdAndUp && showIp">IP</th>
         </tr>
