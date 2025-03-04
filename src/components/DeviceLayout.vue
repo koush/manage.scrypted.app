@@ -1,5 +1,5 @@
 <template>
-  <ResponsiveColumn cols="12" md="8" :xl="hideExtra ? 8 : 6" v-if="!hideDefault || (!xlAndUp && !hideExtra)">
+  <ResponsiveColumn cols="12" md="6" :xl="hideExtra ? 8 : 6" v-if="!hideDefault || (!xlAndUp && !hideExtra)">
     <slot name="default" v-if="!hideDefault"></slot>
     <slot name="extra" v-if="!xlAndUp && !hideExtra"></slot>
   </ResponsiveColumn>

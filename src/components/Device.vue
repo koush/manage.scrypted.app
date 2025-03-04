@@ -2,8 +2,7 @@
   <v-container fluid style="position: relative;">
     <div v-if="clipPath" class="blur" style="position: absolute; width: 100%; height: 100%;"></div>
     <v-row v-if="device" justify="center">
-      <ResponsiveColumn cols="12" :md="hasMiddleSlots || hasExtraSlots ? 4 : 6"
-        :xl="hasMiddleSlots && hasExtraSlots ? 3 : 4">
+      <ResponsiveColumn cols="12" :md="6" :xl="hasMiddleSlots && hasExtraSlots ? 3 : 4">
         <template v-if="isTouchDevice">
           <v-alert v-for="alert in deviceAlerts" :key="alert._id" class="mb-2" color="error" closable density="compact"
             :text="alert.message" @click:close="removeAlert(alert)"></v-alert>
