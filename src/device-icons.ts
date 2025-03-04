@@ -7,6 +7,7 @@ export function typeToIcon(type?: ScryptedDeviceType | string) {
 }
 
 function typeToIconInternal(type?: ScryptedDeviceType | string) {
+  console.log(ScryptedDeviceType.Internet)
   switch (type) {
     case ScryptedDeviceType.Camera: return "fa-video";
     case ScryptedDeviceType.Doorbell: return "fa-bell";

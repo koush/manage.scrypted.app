@@ -18,8 +18,7 @@
           <th class="text-left">
             Name
           </th>
-          <th class="text-left" v-if="mdAndUp && showCol1"></th>
-          <th class="text-left" v-if="mdAndUp && showCol2"></th>
+          <th class="text-left" v-if="mdAndUp && showDescription">Description</th>
           <th class="text-left" v-if="mdAndUp && showModel">Model</th>
           <th class="text-left" v-if="mdAndUp && showIp">IP</th>
         </tr>
@@ -30,8 +29,7 @@
           <td>
             <v-btn variant="text" size="small" :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn>
           </td>
-          <td v-if="mdAndUp && showCol1">{{ device.info?.col1 }}</td>
-          <td v-if="mdAndUp && showCol2">{{ device.info?.col2 }}</td>
+          <td v-if="mdAndUp && showDescription">{{ device.info?.description }}</td>
           <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
           <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
         </tr>
@@ -86,12 +84,8 @@ const childDevices = computed(() => {
     .filter(d => d.providerId === props.id && d.id !== props.id && d.type !== ScryptedDeviceType.Internal);
 });
 
-const showCol1 = computed(() => {
-  return childDevices.value.some(d => d.info?.col1);
-});
-
-const showCol2 = computed(() => {
-  return childDevices.value.some(d => d.info?.col2);
+const showDescription = computed(() => {
+  return childDevices.value.some(d => d.info?.description);
 });
 
 const showModel = computed(() => {

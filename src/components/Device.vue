@@ -194,9 +194,9 @@ import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/clien
 import { ClipPathModel } from '@/common/clip-path-model';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
+import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/id-device';
-import { sleep } from '@scrypted/server/src/sleep';
+import { sleep } from "@scrypted/common/src/sleep";
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -327,7 +327,23 @@ watch(() => device.value, () => {
 });
 
 function resetPtys() {
-  showConsole.value = isAdmin.value && hasFixedPhysicalLocation(device.value?.type!) && !isTouchDevice.value;
+  // make it easy to debug specific devices.
+  if (isAdmin.value && !isTouchDevice) {
+    switch (device.value?.type) {
+      case ScryptedDeviceType.Camera:
+      case ScryptedDeviceType.Doorbell:
+      case ScryptedDeviceType.DeviceProvider:
+      case ScryptedDeviceType.API:
+        showConsole.value = true;
+        break;
+      default:
+        showConsole.value = false;
+        break;
+    }
+  }
+  else {
+    showConsole.value = false;
+  }
   showRepl.value = false;
 }
 resetPtys();

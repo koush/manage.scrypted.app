@@ -61,6 +61,7 @@
                   <th class="text-left">
                     Name
                   </th>
+                  <th class="text-left" v-if="mdAndUp && showDescription">Model</th>
                   <th class="text-left" v-if="mdAndUp && showModel">Model</th>
                   <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
                   <th class="text-left" v-if="mdAndUp && showIp">IP</th>
@@ -74,6 +75,7 @@
                   <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
                   <td><v-btn style="width: 100%; justify-content: start;" size="small" variant="text"
                       :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn></td>
+                  <td v-if="mdAndUp && showDescription">{{ device.info?.description }}</td>
                   <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
                   <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
                   <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
@@ -251,6 +253,10 @@ const showManufacturer = computed(() => {
 
 const showModel = computed(() => {
   return devicePage.value?.some(d => d.info?.model);
+});
+
+const showDescription = computed(() => {
+  return (!showModel.value || !showManufacturer.value || !showIp.value) && devicePage.value?.some(d => d.info?.description);
 });
 
 const addDeviceDialog = ref(false);
