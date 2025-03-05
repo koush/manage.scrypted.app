@@ -1,6 +1,6 @@
 <template>
   <v-card-subtitle class="mt-8">
-    These things were discovered by {{ device.name }} and can be added to Scrypted.
+    {{ description }}s
   </v-card-subtitle>
   <v-dialog max-width="500" v-model="dialog">
     <DeviceCreatorInterface :id="id" :discovered-device="discoveredDevice" :title="discoveredDevice?.name"
@@ -57,6 +57,10 @@ const showModel = computed(() => {
 
 const showIp = computed(() => {
   return props.discoveredDevices.some(d => d.info?.ip);
+});
+
+const description = computed(() => {
+  return device.value?.systemDevice?.deviceDiscovery || "device";
 });
 
 async function adoptDevice(d: DiscoveredDevice) {

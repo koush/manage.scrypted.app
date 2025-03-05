@@ -49,7 +49,7 @@
         </template>
       </v-dialog>
       <v-btn v-if="hasDeviceDiscovery" variant="outlined" color="info" class="ml-4" size="small"
-        @click="discoverDevices">Discover</v-btn>
+        @click="discoverDevices">Refresh</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -106,17 +106,19 @@ const hasDeviceDiscovery = computed(() => {
 
 const discovered = ref<DiscoveredDevice[]>();
 async function discoverDevices() {
+  discovered.value = [];
   discovered.value = await device.value.discoverDevices(true);
 }
 
 watch(() => props.id, () => {
-  discovered.value = undefined;
+  discoverDevices();
 });
 
 registerListener(device, {
   event: ScryptedInterface.DeviceDiscovery,
 }, async () => {
-  discovered.value = await device.value.discoverDevices();
+  discoverDevices();
 });
 
+discoverDevices();
 </script>
