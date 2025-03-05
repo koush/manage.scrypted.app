@@ -61,7 +61,7 @@
                   <th class="text-left">
                     Name
                   </th>
-                  <th class="text-left" v-if="mdAndUp && showDescription">Model</th>
+                  <th class="text-left" v-if="mdAndUp && showDescription">Description</th>
                   <th class="text-left" v-if="mdAndUp && showModel">Model</th>
                   <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
                   <th class="text-left" v-if="mdAndUp && showIp">IP</th>
