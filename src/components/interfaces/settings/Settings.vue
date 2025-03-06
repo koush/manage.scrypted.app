@@ -153,6 +153,21 @@ watch(() => selectedSettingGroup.value, () => {
     || selectedSettingGroup.value?.subgroups[0];
 });
 
+const allRadioButtons = computed(() => {
+  const ret = new Set<string>();
+  for (const setting of modelValue.value) {
+    if (setting.type !== 'radiobutton')
+      continue;
+    if (!isRadioSettingVisible(setting))
+      continue;
+    for (const choice of setting.choices) {
+      ret.add(choice);
+      ret.add(setting.title + ':' + choice);
+    }
+  }
+  return [...ret];
+})
+
 const enabledRadioButtons = computed(() => {
   const ret = new Set<string>();
   for (const setting of modelValue.value) {
@@ -160,13 +175,6 @@ const enabledRadioButtons = computed(() => {
       // only the matching radio buttons are active
       ret.add(setting.value as string);
       ret.add(setting.title + ':' + setting.value);
-    }
-    if (setting.type === 'radiopanel') {
-      // all elements in the radio panel are active, but may be invisible
-      for (const choice of setting.choices) {
-        ret.add(choice);
-        ret.add(setting.title + ':' + choice);
-      }
     }
   }
   return [...ret];
@@ -211,24 +219,6 @@ const invisibleRadioSettings = computed(() => {
   return [...ret];
 });
 
-// const visibleRadioSettings = computed(() => {
-//   const ret = new Set<string>();
-//   for (const setting of modelValue.value) {
-//     if (setting.type === 'radiopanel') {
-//       // only the active panel is visible
-//       ret.add(setting.value as string);
-//     }
-//     if (setting.type === 'radiobutton') {
-//       // all elements in the radio button are visible, but may be disabled
-//       for (const choice of setting.choices) {
-//         ret.add(choice);
-//         ret.add(setting.title + ':' + choice);
-//       }
-//     }
-//   }
-//   return [...ret];
-// });
-
 function isRadioSettingVisible(setting: Setting) {
   if (!setting.radioGroups)
     return true;
@@ -242,10 +232,13 @@ function isRadioSettingVisible(setting: Setting) {
 function isRadioSettingDisabled(setting: Setting) {
   if (!setting.radioGroups)
     return;
+  let isInRadioGroup = false;
   for (const radioGroup of setting.radioGroups) {
     if (enabledRadioButtons.value.includes(radioGroup))
       return false;
+    isInRadioGroup ||= allRadioButtons.value.includes(radioGroup);
   }
-  return true;
+
+  return isInRadioGroup;
 }
 </script>
