@@ -1,6 +1,6 @@
 import { computed, nextTick, ref, watch } from 'vue';
 import { isFullScreen } from './displaymode';
-import { isWindows } from './browser';
+import { isCrOS, isWindows } from './browser';
 
 // Extra small	xs	Small to large phone	< 600px
 // Small	sm	Small to medium tablet	600px > < 960px
@@ -15,8 +15,6 @@ import { isWindows } from './browser';
 // });
 
 const searchParams = new URLSearchParams(window.location.search);
-
-const isCrOS = navigator.userAgent.includes('CrOS');
 
 const detectedTouch = ('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0) ||

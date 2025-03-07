@@ -4,3 +4,4 @@ export const isAppleMobile = navigator.userAgent.includes('iPod') || navigator.u
 export const isInstalledApp = navigator.userAgent.includes('InstalledApp');
 export const supportsOOBLogin = navigator.userAgent.includes('OOBLogin');
 export const isWindows = navigator.userAgent.includes('Windows');
+export const isCrOS = navigator.userAgent.includes('CrOS');
