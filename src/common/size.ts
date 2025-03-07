@@ -16,11 +16,13 @@ import { isWindows } from './browser';
 
 const searchParams = new URLSearchParams(window.location.search);
 
+const isCrOS = navigator.userAgent.includes('CrOS');
+
 const detectedTouch = ('ontouchstart' in window) ||
     (navigator.maxTouchPoints > 0) ||
     ((navigator as any).msMaxTouchPoints > 0);
 
-export const isTouchDevice = ref((detectedTouch && !isWindows) || searchParams.get('display') === 'phone');
+export const isTouchDevice = ref((detectedTouch && !isWindows && !isCrOS) || searchParams.get('display') === 'phone');
 
 export const isTouchTablet = computed(() => {
     if (searchParams.get('display') === 'phone')
