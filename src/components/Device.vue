@@ -77,9 +77,7 @@
           @show-console="showConsole = true">
         </DeviceSettings>
 
-        <DeviceProvider v-if="hasDeviceCreator" class="mb-4" :id="id"></DeviceProvider>
         <MixinProvider v-if="hasMixinProvider" class="mb-4" :id="id"></MixinProvider>
-        <DeviceProvider v-if="!hasDeviceCreator && providerHasVisibleDevices" class="mb-4" :id="id"></DeviceProvider>
 
         <VideoClipsInterface v-if="showVideoClips" :id="id" class="mb-4" @click:clip="playVideoClip">
         </VideoClipsInterface>
@@ -96,6 +94,7 @@
           <Suspense v-if="hasScriptable">
             <Scriptable :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
           </Suspense>
+          <DeviceProvider v-if="hasDeviceCreator || providerHasVisibleDevices" class="mb-4" :id="id"></DeviceProvider>
           <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
@@ -469,6 +468,7 @@ const hasMiddleSlots = computed(() => {
     || hasCamera.value
     || clipPathDeviceId.value
     || hasTTYService.value
+    || (hasDeviceCreator.value || providerHasVisibleDevices.value)
     // || hasDeviceCreator.value
     // || hasMixinProvider.value
     // || hasDevices.value

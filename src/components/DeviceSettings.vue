@@ -4,31 +4,40 @@
       <v-icon size="xx-small">{{ getFaPrefix('fa-gear') }}</v-icon>
     </template>
     <template v-slot:title>
-      <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">
+      <v-card-subtitle v-if="inline" class="pt-1 pl-4" style="text-transform: uppercase;">
+        {{ inline }}
+      </v-card-subtitle>
+      <v-card-subtitle v-else class="pt-1 pl-4" style="text-transform: uppercase;">
         Settings
       </v-card-subtitle>
     </template>
-    <template v-slot:append>
+    <template v-slot:append v-if="!inline">
       <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
         color="success">Save</v-btn>
     </template>
     <div>
       <SettingsInterface v-model="settings" :extra-groups="extraGroups"
         @click-button-setting="setting => emits('click-button-setting', setting)">
-        <template v-slot:settings-expansion-panels="slotProps">
-          <v-expansion-panel v-if="isAdmin" :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')"
+        <template v-if="isAdmin && !inline" v-slot:settings-expansion-panels="slotProps">
+          <v-expansion-panel :value="extensions" :collapse-icon="getFaPrefix('fa-caret-up')"
             :expand-icon="getFaPrefix('fa-caret-down')">
             <v-expansion-panel-title
               style="min-height: unset; height: 24px; font-size: .8rem; font-weight: 450; text-transform: uppercase;"
               :color="'Extensions' === slotProps.selectedSettingGroup?.title ? 'deep-purple' : undefined">Extensions</v-expansion-panel-title>
             <v-expansion-panel-text>
-              <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'"></Extensions>
+              <Extensions :id="id" v-if="slotProps.selectedSettingGroup?.title === 'Extensions'">
+              </Extensions>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-divider></v-divider>
         </template>
       </SettingsInterface>
     </div>
+    <v-card-actions v-if="inline">
+      <v-btn variant="text" size="small" @click="emits('cancel')" color="error">Cancel</v-btn>
+      <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
+        color="success">Save</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -47,11 +56,14 @@ import { getAllDevices } from '@/common/devices';
 
 const props = defineProps<{
   id: string;
+  inline?: string;
 }>();
 
 const emits = defineEmits<{
   (event: 'click-button-setting', setting: Setting): void;
   (event: 'show-console'): void;
+  (event: 'save'): void;
+  (event: 'cancel'): void;
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);
@@ -75,7 +87,7 @@ const isEditable = computed(() => {
 });
 
 const extraGroups = computed(() => {
-  if (!isAdmin.value)
+  if (!isAdmin.value || props.inline)
     return [];
   const groups = ['Extensions'];
   return groups;
@@ -99,7 +111,7 @@ const settings = asyncComputed({
       settings = await device.value.getSettings();
     }
 
-    if (isEditable.value && isAdmin.value) {
+    if (!props.inline && isEditable.value && isAdmin.value) {
       const allRooms = new Set(getAllDevices().map(d => d.room).filter(r => r));
 
       settings.push(
@@ -175,6 +187,7 @@ function save() {
       device.value.putSetting(setting.key, setting.value);
     }
   }
+  emits('save');
 }
 
 </script>
