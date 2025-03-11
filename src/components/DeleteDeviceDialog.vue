@@ -35,12 +35,17 @@ const props = defineProps<{
   id: string;
 }>();
 
+const emits = defineEmits<{
+  (event: 'delete'): void;
+}>();
+
 const name = computed(() => {
   return connectedClient.value?.systemManager.getDeviceById(props.id).name;
 });
 
 const router = useRouter();
 async function deleteDevice() {
+  emits('delete');
   const device = connectedClient.value?.systemManager.getDeviceById(props.id);
   const providerId = device?.providerId === props.id ? undefined : device?.providerId;
   const id = props.id;

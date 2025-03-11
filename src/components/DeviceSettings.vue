@@ -34,7 +34,17 @@
       </SettingsInterface>
     </div>
     <v-card-actions v-if="inline">
-      <v-btn variant="text" size="small" @click="emits('cancel')" color="error">Cancel</v-btn>
+      <template v-if="isAdmin">
+        <DeleteDeviceDialog :id="id" @delete="emits('delete')">
+          <template v-slot:activator="{ activatorProps }">
+            <v-btn v-bind="activatorProps" variant="text" size="small"
+              color="error">Delete</v-btn>
+          </template>
+        </DeleteDeviceDialog>
+      </template>
+
+      <v-spacer></v-spacer>
+      <v-btn variant="text" size="small" @click="emits('cancel')">Cancel</v-btn>
       <v-btn :variant="dirtyCount ? 'flat' : 'text'" size="small" :disabled="!dirtyCount" @click="save"
         color="success">Save</v-btn>
     </v-card-actions>
@@ -53,6 +63,7 @@ import SettingsInterface from './interfaces/settings/Settings.vue';
 import { isDirty, trackSetting } from './interfaces/settings/setting-modelvalue';
 import { isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
+import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 
 const props = defineProps<{
   id: string;
@@ -64,6 +75,7 @@ const emits = defineEmits<{
   (event: 'show-console'): void;
   (event: 'save'): void;
   (event: 'cancel'): void;
+  (event: 'delete'): void;
 }>();
 
 const device = getDeviceFromId<Settings>(() => props.id);
@@ -189,5 +201,4 @@ function save() {
   }
   emits('save');
 }
-
 </script>

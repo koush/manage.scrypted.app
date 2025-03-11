@@ -3,7 +3,8 @@
     <v-dialog v-model="showInlineSettings" max-width="500">
       <template v-slot:default="{ isActive }">
         <DeviceSettings :id="inlineDevice" @click:cancel="isActive.value = false" @created="isActive.value = false"
-          :inline="inlineTitle" @save="isActive.value = false" @cancel="isActive.value = false">
+          :inline="inlineTitle" @save="isActive.value = false" @cancel="isActive.value = false"
+          @delete="isActive.value = false">
         </DeviceSettings>
       </template>
     </v-dialog>
