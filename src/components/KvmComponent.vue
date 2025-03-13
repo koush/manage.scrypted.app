@@ -23,8 +23,11 @@ const device = getDeviceFromId<StreamService<(KvmKeyEvent | KvmMouseEvent)[], vo
 
 const currentStream = asyncComputed({
   async get(state, ov: ReturnType<typeof createAsyncQueue<(KvmKeyEvent | KvmMouseEvent)[]>>) {
-    const ret = createAsyncQueue<(KvmKeyEvent | KvmMouseEvent)[]>();
     ov?.end();
+    const ret = createAsyncQueue<(KvmKeyEvent | KvmMouseEvent)[]>();
+    unmounted.promise.then(() => {
+      ret.end();
+    });
     if (!device.value)
       return ret;
     await device.value.connectStream(ret.queue);
@@ -110,12 +113,8 @@ function onKeyPress(e: KeyboardEvent) {
 }
 
 const unmounted = new Deferred<void>();
-onUnmounted(() => unmounted.resolve());
-
-async function connectPty() {
-
-}
-
-connectPty();
+onUnmounted(() => {
+  unmounted.resolve()
+});
 
 </script>
