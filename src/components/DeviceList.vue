@@ -43,48 +43,7 @@
             </div>
           </template>
           <template v-else>
-            <v-chip-group class="ma-4" :model-value="selectedDeviceGroups" multiple column>
-              <v-chip v-for="deviceGroup in deviceGroups" :key="deviceGroup"
-                :prepend-icon="deviceGroup === other ? typeToIcon(ScryptedDeviceType.Unknown) : typeToIcon(deviceGroup)"
-                size="small" :color="isDefaultFilter ? 'deep-purple-accent-4' : 'info'"
-                @click="e => clickChip(deviceGroup, e)" variant="flat" :rounded="0" class="pl-3 ma-0"> {{
-                  deviceGroup
-                }} ({{ devices.filter(d => (hasFixedPhysicalLocation(d.type!) ? d.type : other) ===
-                  deviceGroup).length }})</v-chip>
-            </v-chip-group>
-            <v-text-field v-if="filteredDevices.length > pageSize" v-model="filterText"
-              style="transform: scale(.75, .75)" title="Search" label="Search" density="compact"></v-text-field>
-            <v-table density="compact" hover>
-              <thead>
-                <tr>
-                  <th style="width: 32px;"></th>
-                  <th class="text-left">
-                    Name
-                  </th>
-                  <th class="text-left" v-if="mdAndUp && showDescription">Description</th>
-                  <th class="text-left" v-if="mdAndUp && showModel">Model</th>
-                  <th class="text-left" v-if="lgAndUp && showManufacturer">Manufacturer</th>
-                  <th class="text-left" v-if="mdAndUp && showIp">IP</th>
-                  <th class="text-left" v-if="mdAndUp">
-                    Plugin
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="device in devicePage" :key="device.id">
-                  <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-                  <td><v-btn style="width: 100%; justify-content: start;" size="small" variant="text"
-                      :to="getDeviceRoute(device.id)"> {{ device.name }}</v-btn></td>
-                  <td v-if="mdAndUp && showDescription">{{ device.info?.description }}</td>
-                  <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
-                  <td v-if="lgAndUp && showManufacturer">{{ device.info?.manufacturer }}</td>
-                  <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
-                  <td v-if="mdAndUp"><v-btn v-if="getDevicePluginName(device)" color="info" size="small" variant="text"
-                      @click.stop :to="getDevicePluginRoute(device)">{{ getDevicePluginName(device) }}</v-btn></td>
-                </tr>
-              </tbody>
-            </v-table>
-            <v-pagination :length="devicePages.length" v-model="page" rounded density="compact"></v-pagination>
+            <DevicePagination :devices="devices" :device-groups="deviceGroups" show-physical-only></DevicePagination>
           </template>
         </v-card>
       </ResponsiveColumn>
@@ -94,55 +53,13 @@
 <script setup lang="ts">
 import { connectPluginClient, connectedClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { getDeviceRoute } from '@/id-device';
-import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
-import { computed, ref, watch } from 'vue';
-import { useDisplay } from 'vuetify';
+import { getFaPrefix, hasFixedPhysicalLocation } from '@/device-icons';
+import { ScryptedInterface } from '@scrypted/types';
+import { computed, ref } from 'vue';
+import DevicePagination from './DevicePagination.vue';
 import DeviceCreatorInterface from './interfaces/DeviceCreator.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
-
-const other = 'Other' as ScryptedDeviceType;
-
-const { lgAndUp, mdAndUp } = useDisplay();
-
-const isDefaultFilter = ref(true);
-
-function getDevicePluginRoute(device: ScryptedDevice) {
-  const id = connectedClient.value?.systemManager.getDeviceById(device.pluginId)?.id
-  if (!id)
-    return;
-  return getDeviceRoute(id);
-}
-
-function getDevicePluginName(device: ScryptedDevice) {
-  const devicePlugin = connectedClient.value?.systemManager.getDeviceById(device.pluginId);
-  if (!devicePlugin)
-    return '';
-  return devicePlugin.name;
-}
-
-function clickChip(deviceGroup: ScryptedDeviceType | string, e: MouseEvent | KeyboardEvent) {
-  const i = deviceGroups.value.indexOf(deviceGroup);
-
-  if (isDefaultFilter.value) {
-    selectedDeviceGroups.value = [];
-    isDefaultFilter.value = false;
-    selectedDeviceGroups.value = [i];
-    return;
-  }
-
-  if (selectedDeviceGroups.value.includes(i))
-    selectedDeviceGroups.value = selectedDeviceGroups.value.filter(s => s !== i);
-  else
-    selectedDeviceGroups.value = [...selectedDeviceGroups.value, i];
-
-  if (!selectedDeviceGroups.value.length) {
-    isDefaultFilter.value = true;
-    resetSelectedDeviceGroups();
-  }
-}
-
+import { createDeviceGroups } from './device-pagination';
 
 const devices = computed(() => {
   if (!connectedClient.value) {
@@ -170,94 +87,7 @@ const devices = computed(() => {
   return ret;
 });
 
-const deviceGroups = computed(() => {
-  if (!connectedClient.value) {
-    connectPluginClient();
-    return [];
-  }
-
-  const groups = new Set<ScryptedDeviceType | string>();
-  for (const device of devices.value) {
-    if (hasFixedPhysicalLocation(device.type!))
-      groups.add(device.type!);
-  }
-
-  const ret = [...groups];
-  ret.sort((a, b) => {
-    if (hasFixedPhysicalLocation(a) && !hasFixedPhysicalLocation(b))
-      return -1;
-    if (!hasFixedPhysicalLocation(a) && hasFixedPhysicalLocation(b))
-      return 1;
-    return a.localeCompare(b);
-  });
-  ret.push(other);
-  return ret;
-});
-
-const selectedDeviceGroups = ref<number[]>([]);
-
-function resetSelectedDeviceGroups() {
-  selectedDeviceGroups.value = [];
-  for (let i = 0; i < deviceGroups.value.length; i++) {
-    const d = deviceGroups.value[i];
-    if (d !== other && hasFixedPhysicalLocation(d)) {
-      selectedDeviceGroups.value.push(i);
-    }
-  }
-}
-
-resetSelectedDeviceGroups();
-
-watch(() => deviceGroups.value, () => {
-  resetSelectedDeviceGroups();
-});
-
-const filterText = ref('');
-
-const filteredDevices = computed(() => {
-  return devices.value.filter(d => {
-    if (!selectedDeviceGroups.value.length)
-      return true;
-    const group = hasFixedPhysicalLocation(d.type!) ? d.type : other;
-    const index = deviceGroups.value.indexOf(group!);
-    return selectedDeviceGroups.value.includes(index);
-  });
-});
-
-const textFilteredDevices = computed(() => {
-  return filteredDevices.value.filter(d => d.name?.toLocaleLowerCase().includes(filterText.value.toLocaleLowerCase()));
-});
-
-const pageSize = 20;
-const page = ref(1);
-
-watch(() => selectedDeviceGroups.value, () => page.value = 1);
-
-const devicePages = computed(() => {
-  const pages: (typeof textFilteredDevices.value)[] = [];
-  for (let i = 0; i < textFilteredDevices.value.length; i += pageSize) {
-    pages.push(textFilteredDevices.value.slice(i, i + pageSize));
-  }
-  return pages;
-});
-
-const devicePage = computed(() => devicePages.value[page.value - 1]);
-
-const showIp = computed(() => {
-  return devicePage.value?.some(d => d.info?.ip);
-});
-
-const showManufacturer = computed(() => {
-  return devicePage.value?.some(d => d.info?.manufacturer);
-});
-
-const showModel = computed(() => {
-  return devicePage.value?.some(d => d.info?.model);
-});
-
-const showDescription = computed(() => {
-  return (!showModel.value || !showManufacturer.value || !showIp.value) && devicePage.value?.some(d => d.info?.description);
-});
+const deviceGroups = createDeviceGroups(() => devices.value);
 
 const addDeviceDialog = ref(false);
 

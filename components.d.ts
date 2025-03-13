@@ -24,6 +24,7 @@ declare module 'vue' {
     DeviceInterfaceSetting: typeof import('./src/components/interfaces/settings/DeviceInterfaceSetting.vue')['default']
     DeviceLayout: typeof import('./src/components/DeviceLayout.vue')['default']
     DeviceList: typeof import('./src/components/DeviceList.vue')['default']
+    DevicePagination: typeof import('./src/components/DevicePagination.vue')['default']
     DeviceProvider: typeof import('./src/components/interfaces/DeviceProvider.vue')['default']
     DeviceSetting: typeof import('./src/components/interfaces/settings/DeviceSetting.vue')['default']
     DeviceSettings: typeof import('./src/components/DeviceSettings.vue')['default']

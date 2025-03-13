@@ -8,39 +8,18 @@
     </DeviceCreatorInterface>
   </v-dialog>
 
-  <v-table density="compact" hover>
-    <thead>
-      <tr>
-        <th style="width: 32px;"></th>
-        <th class="text-left">
-          Name
-        </th>
-        <th class="text-left" v-if="mdAndUp && showModel">Model</th>
-        <th class="text-left" v-if="mdAndUp && showIp">IP</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="device in discoveredDevices" :key="device.nativeId" style="cursor: pointer;">
-        <td><v-icon size="x-small">{{ typeToIcon(device.type) }}</v-icon></td>
-        <td><v-btn @click="adoptDevice(device)" size="small" variant="text"
-            :prepend-icon="getFaPrefix('fa-circle-plus')">{{ device.name }}</v-btn></td>
-        <td v-if="mdAndUp && showModel">{{ device.info?.model }}</td>
-        <td v-if="mdAndUp && showIp">{{ device.info?.ip }}</td>
-      </tr>
-    </tbody>
-  </v-table>
-
+  <DevicePagination :devices="discoveredDevices" :device-groups="deviceGroups"
+    @click:device="device => adoptDevice(device as DiscoveredDevice)" hide-plugin-column></DevicePagination>
 </template>
 
 <script setup lang="ts">
-import { getFaPrefix, typeToIcon } from '@/device-icons';
 import { getDeviceFromId } from '@/id-device';
 import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref } from 'vue';
-import { useDisplay } from 'vuetify';
+import DevicePagination from '../DevicePagination.vue';
+import { createDeviceGroups } from '../device-pagination';
 import DeviceCreatorInterface from './DeviceCreator.vue';
 
-const { mdAndUp } = useDisplay();
 const dialog = ref(false);
 const discoveredDevice = ref<DiscoveredDevice>();
 
@@ -51,16 +30,10 @@ const props = defineProps<{
 
 const device = getDeviceFromId<DeviceProvider & DeviceDiscovery & ScryptedSystemDevice>(() => props.id);
 
-const showModel = computed(() => {
-  return props.discoveredDevices.some(d => d.info?.model);
-});
-
-const showIp = computed(() => {
-  return props.discoveredDevices.some(d => d.info?.ip);
-});
+const deviceGroups = createDeviceGroups(() => props.discoveredDevices);
 
 const description = computed(() => {
-  return device.value?.systemDevice?.deviceDiscovery || "device";
+  return device.value?.systemDevice?.deviceDiscovery || "Discovered Devices";
 });
 
 async function adoptDevice(d: DiscoveredDevice) {
