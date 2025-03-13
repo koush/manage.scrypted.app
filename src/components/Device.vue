@@ -108,6 +108,7 @@
             <RTCSignalingChannel v-if="hasRTC && playing" :id="cameraIdOrClipPathId" class="over-camera"
               :destination="playing" :muted="muted" :microphone="!!talkback">
             </RTCSignalingChannel>
+            <KvmComponent v-if="hasKVMService && playing" :id="id" class="over-camera" style="z-index: 3; cursor: pointer;"></KvmComponent>
             <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
               style="width: 100%; height: 100; object-fit: contain;"
               :style="clipPath ? 'transform: scale(.9);' : undefined"></video>
@@ -205,6 +206,7 @@ import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import PtyComponent from './PtyComponent.vue';
+import KvmComponent from './KvmComponent.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
@@ -271,6 +273,10 @@ const hasPositionSensor = computed(() => {
 const hasTTYService = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.StreamService) && device.value?.interfaces.includes(ScryptedInterface.TTY);
 });
+
+const hasKVMService = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.StreamService) && device.value?.interfaces.includes(ScryptedInterface.RTCSignalingChannel);
+})
 
 const isScryptedPlugin = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ScryptedPlugin);
