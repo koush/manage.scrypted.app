@@ -1,3 +1,12 @@
+# Checkout
+
+```sh
+git clone https://github.com/koush/manage.scrypted.app
+git clone https://github.com/koush/scrypted
+cd scrypted
+./npm-install.sh
+```
+
 # Development
 
 1. Modify vite.config.mts and change `http://localhost:11080` to point to your Scrypted server IP and http port 10080 (do not use https port 10043).
