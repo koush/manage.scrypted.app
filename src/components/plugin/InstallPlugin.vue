@@ -83,8 +83,8 @@ interface Plugin {
   version: string;
   username: string;
   date: string;
-  npm: string;
   link: string;
+  keywords: string[];
 };
 
 const plugins = asyncComputed({
@@ -99,14 +99,42 @@ const plugins = asyncComputed({
       url += `+${search.value}`;
     const response = await fetch(url);
     const json = await response.json();
-    return json.objects.map((o: any) => ({
+    const results = (json.objects as any[]).map(o => ({
       description: o.package.description?.replace(' for Scrypted', ''),
       name: o.package.name,
       version: o.package.version,
       username: o.package.publisher.username,
       date: new Date(o.package.date).toLocaleDateString(),
       link: o.package.links.npm,
-    })) as Plugin[];
+      keywords: o.package.keywords,
+    } satisfies Plugin));
+
+    // npm search returns valid candidates but the score and order seems totally whackadoo
+    const keywords = search.value?.split(' ') || [];
+    results.sort((a, b) => {
+      let ascore = 0;
+      let bscore = 0;
+
+      for (const keyword of keywords) {
+        if (a.keywords.includes(keyword))
+          ascore++;
+        if (b.keywords.includes(keyword))
+          bscore++;
+
+        if (a.name.includes(keyword))
+          ascore++;
+        if (b.name.includes(keyword))
+          bscore++;
+        if (a.description?.includes(keyword))
+          ascore++;
+        if (b.description?.includes(keyword))
+          bscore++;
+
+        return bscore - ascore;
+      }
+    });
+
+    return results;
   },
   default(previousValue) {
     return previousValue || [] as Plugin[];
