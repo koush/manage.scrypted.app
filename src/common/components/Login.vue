@@ -76,7 +76,7 @@ async function doLogin() {
 
   loginResult.value = "";
   try {
-    let change_password: string;
+    let change_password: string | undefined;
 
     if (!hasLogin.value) {
       if (confirmPassword.value !== password.value) {
