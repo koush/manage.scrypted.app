@@ -94,7 +94,7 @@
           <Suspense v-if="hasScriptable">
             <Scriptable :id="id" class="mb-4" @run="showConsole = true"></Scriptable>
           </Suspense>
-          <DeviceProvider v-if="hasDeviceCreator || providerHasVisibleDevices" class="mb-4" :id="id"></DeviceProvider>
+          <DeviceProvider v-if="hasDeviceCreator || hasDeviceDiscovery || providerHasVisibleDevices" class="mb-4" :id="id"></DeviceProvider>
           <ObjectDetection v-if="hasObjectDetection" :id="id" class="mb-4"></ObjectDetection>
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
@@ -244,6 +244,10 @@ const device = getDeviceFromId<Settings & VideoClips>(() => id.value);
 
 const hasDeviceCreator = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.DeviceCreator);
+});
+
+const hasDeviceDiscovery = computed(() => {
+  return device.value?.interfaces.includes(ScryptedInterface.DeviceDiscovery);
 });
 
 const providerHasVisibleDevices = computed(() => {
