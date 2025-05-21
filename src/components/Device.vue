@@ -106,7 +106,7 @@
               :scale=".9">
             </ClipPathEditor>
             <RTCSignalingChannel v-if="hasRTC && playing" :id="cameraIdOrClipPathId" class="over-camera"
-              :destination="playing" :muted="muted" :microphone="!!talkback">
+              :destination="playing" :muted="muted" :microphone="!!talkback" :style="clipPath ? 'transform: scale(.9);' : undefined">
             </RTCSignalingChannel>
             <KvmComponent v-if="hasKVMService && playing" :id="id" class="over-camera" style="z-index: 3; cursor: pointer;"></KvmComponent>
             <video v-if="videoClip" class="over-camera" :src="videoClip" playsinline autoplay controls muted
