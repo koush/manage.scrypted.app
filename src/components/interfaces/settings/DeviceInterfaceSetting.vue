@@ -58,7 +58,7 @@ const value = computed({
   },
   set(value) {
     if (!Array.isArray(value))
-      modelValue.value.value = value.value;
+      modelValue.value.value = value?.value;
     else
       modelValue.value.value = value.map(v => v.value);
   }
