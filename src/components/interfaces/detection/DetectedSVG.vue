@@ -60,7 +60,10 @@ const svgContents = computed<SvgContents>(() => {
   };
 
   for (const d of props.detected?.detections || []) {
-    const boundingBox = d.boundingBox;
+    let boundingBox = d.boundingBox;
+    if (!d.boundingBox) {
+      boundingBox = [0, props.detected!.inputDimensions[1], props.detected!.inputDimensions[0], 0];
+    }
     let stroke = 'red';
     if (d.className !== 'motion' && d.className) {
       let content = `${d.className} ${(d.score * 100).toFixed(0)}%`;
@@ -87,22 +90,6 @@ const svgContents = computed<SvgContents>(() => {
           ]
         });
       }
-
-      // get a bounding box for the two texts
-      // const textbb: [number, number, number, number] = [...boundingBox];
-      // if (!d.label) {
-      //   textbb[3] = 30;
-      //   textbb[1] -= 30;
-      // }
-      // else {
-      //   textbb[3] = 60;
-      //   textbb[1] -= 60;
-      // }
-
-      // ret.rects.push({
-      //   boundingBox: textbb,
-      //   fill: '#0000FF40',
-      // });
     }
 
     ret.rects.push({
