@@ -22,7 +22,7 @@
     </template>
     <component v-else :is="component" class="shrink" :readonly="modelValue.readonly" density="compact"
       variant="outlined" :label="hideTitle ? undefined : modelValue.title" :hint="description"
-      v-model="modelValue.value" :items="modelValue.choices" :multiple="modelValue.multiple"
+      v-model="modelValue.value" :items="modelValue.choices.filter(c => c != null)" :multiple="modelValue.multiple"
       :chips="modelValue.multiple" :closable-chips="modelValue.multiple && !modelValue.readonly"
       :persistent-hint="!!description" :hide-details="!description" persistent-placeholder :disabled="disabled">
       <template v-if="modelValue.multiple" v-slot:chip="{ props, index }">
