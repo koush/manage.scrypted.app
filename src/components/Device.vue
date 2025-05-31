@@ -478,7 +478,7 @@ const hasMiddleSlots = computed(() => {
     || hasCamera.value
     || clipPathDeviceId.value
     || hasTTYService.value
-    || (hasDeviceCreator.value || providerHasVisibleDevices.value)
+    || (hasDeviceCreator.value || providerHasVisibleDevices.value || hasDeviceDiscovery.value)
     // || hasDeviceCreator.value
     // || hasMixinProvider.value
     // || hasDevices.value
