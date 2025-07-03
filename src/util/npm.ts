@@ -1,11 +1,11 @@
 import semver from 'semver';
 import throttle from 'lodash/throttle';
-import { connectedClient, connectPluginClient } from './common/client';
+import { connectedClient, connectPluginClient } from '../common/client';
 import { computed, reactive, ref } from 'vue';
-import { getAllDevices } from './common/devices';
+import { getAllDevices } from '../common/devices';
 import { ScryptedInterface } from '@scrypted/types';
-import { createInterval } from './common/clock';
-import { asyncComputed } from './common/async-computed';
+import { createInterval } from '../common/clock';
+import { asyncComputed } from '../common/async-computed';
 
 export interface PluginUpdateCheck {
   updateAvailable?: string;

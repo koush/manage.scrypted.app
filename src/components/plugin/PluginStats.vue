@@ -82,7 +82,7 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient, connectPluginClient } from '@/common/client';
 import { isDark } from '@/common/colors';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { computed, ref } from 'vue';
 import { chipColor } from '../interfaces/settings-common';
 import { PluginModel } from './plugin-common';

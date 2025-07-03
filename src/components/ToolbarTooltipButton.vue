@@ -4,7 +4,7 @@
   </v-btn>
 </template>
 <script setup lang="ts">
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 
 defineProps<{
   forceIcon?: boolean;

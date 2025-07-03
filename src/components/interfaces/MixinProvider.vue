@@ -44,8 +44,8 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, getDeviceRoute } from '@/id-device';
+import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getDeviceFromId, getDeviceRoute } from '@/util/id-device';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { MixinProvider } from '@scrypted/types';
 import { computed, watch } from 'vue';

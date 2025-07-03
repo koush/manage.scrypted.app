@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import DevicePagination from '../DevicePagination.vue';

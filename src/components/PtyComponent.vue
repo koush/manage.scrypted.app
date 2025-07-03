@@ -24,7 +24,7 @@
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { isDark } from '@/common/colors';
 import { observeResize } from '@/common/resize-observer';
-import { getFaPrefix } from "@/device-icons";
+import { getFaPrefix } from "@/util/device-icons";
 import { createAsyncQueue, createAsyncQueueFromGenerator } from "@scrypted/common/src/async-queue";
 import { Deferred } from "@scrypted/common/src/deferred";
 import { sleep } from "@scrypted/common/src/sleep";

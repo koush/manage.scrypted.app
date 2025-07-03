@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { Deferred } from '@scrypted/common/src/deferred';
 import { KvmKeyEvent, KvmMouseEvent, StreamService } from '@scrypted/types';
 import { onUnmounted, ref } from 'vue';

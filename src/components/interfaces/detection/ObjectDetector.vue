@@ -2,7 +2,7 @@
   <DetectedSVG :detected="detected"></DetectedSVG>
 </template>
 <script setup lang="ts">
-import { getDeviceFromId, registerListener } from '@/id-device';
+import { getDeviceFromId, registerListener } from '@/util/id-device';
 import { ObjectDetector, ObjectsDetected, ScryptedInterface } from '@scrypted/types';
 import { ref, watch } from 'vue';
 import DetectedSVG from './DetectedSVG.vue';

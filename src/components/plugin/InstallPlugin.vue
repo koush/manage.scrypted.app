@@ -65,12 +65,12 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { sleep } from '@scrypted/common/src/sleep';
 import { ref } from 'vue';
-import { installPlugin } from '../../internal-apis';
+import { installPlugin } from '../../util/internal-apis';
 import { connectedClient } from '@/common/client';
-import { goDevice } from '@/id-device';
+import { goDevice } from '@/util/id-device';
 import { useRoute, useRouter } from 'vue-router';
 import ResponsiveColumn from '../ResponsiveColumn.vue';
 

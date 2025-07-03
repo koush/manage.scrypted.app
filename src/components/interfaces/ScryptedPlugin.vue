@@ -32,13 +32,13 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/device-icons';
-import { getDeviceFromId } from '@/id-device';
-import { checkNpmUpdate, NpmVersion } from '@/npm';
+import { getFaPrefix } from '@/util/device-icons';
+import { getDeviceFromId } from '@/util/id-device';
+import { checkNpmUpdate, NpmVersion } from '@/util/npm';
 import { ScryptedPlugin } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import Pagination from '../Pagination.vue';
-import { getPluginInfo, installPlugin } from '../../internal-apis';
+import { getPluginInfo, installPlugin } from '../../util/internal-apis';
 
 const menu = ref(false);
 

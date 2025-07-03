@@ -43,11 +43,11 @@
 </template>
 
 <script setup lang="ts">
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { Camera, MediaObject, Notifier, ScryptedInterface, Setting, VideoCamera } from '@scrypted/types';
 import DeviceInterfaceSetting from './settings/DeviceInterfaceSetting.vue';
 import { ref } from 'vue';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { connectedClient } from '@/common/client';
 
 const props = defineProps<{

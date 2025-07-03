@@ -194,14 +194,14 @@ import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/clien
 import { ClipPathModel } from '@/common/clip-path-model';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, getIdFromRoute } from '@/id-device';
+import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getDeviceFromId, getIdFromRoute } from '@/util/id-device';
 import { sleep } from "@scrypted/common/src/sleep";
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';
 import { ComponentPublicInstance, computed, nextTick, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import ClipPathEditor from '../common/components/ClipPathEditor.vue';
-import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../internal-apis';
+import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../util/internal-apis';
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';

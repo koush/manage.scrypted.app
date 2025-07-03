@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { PositionSensor } from '@scrypted/types';
 import { LatLngTuple, PointExpression } from 'leaflet';
 

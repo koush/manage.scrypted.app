@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { connectPluginClient, connectedClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, hasFixedPhysicalLocation } from '@/device-icons';
+import { getFaPrefix, hasFixedPhysicalLocation } from '@/util/device-icons';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, ref } from 'vue';
 import DevicePagination from './DevicePagination.vue';

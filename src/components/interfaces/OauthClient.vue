@@ -26,8 +26,8 @@
 </template>
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
-import { getFaPrefix } from '@/device-icons';
-import { getDeviceFromId } from '@/id-device';
+import { getFaPrefix } from '@/util/device-icons';
+import { getDeviceFromId } from '@/util/id-device';
 import { OauthClient } from '@scrypted/types';
 import { ref } from 'vue';
 

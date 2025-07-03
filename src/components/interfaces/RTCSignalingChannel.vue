@@ -3,7 +3,7 @@
 </template>
 <script setup lang="ts">
 import { connectedClient, connectPluginClient } from '@/common/client';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { BrowserSignalingSession } from '@scrypted/common/src/rtc-signaling';
 import { Camera, MediaStreamDestination, RTCSessionControl, RTCSignalingChannel, ScryptedMimeTypes, VideoCamera } from '@scrypted/types';
 import { onUnmounted, ref, watch } from 'vue';

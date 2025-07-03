@@ -15,7 +15,7 @@
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { Scriptable, ScriptSource } from '@scrypted/types';
 import type * as MonacoType from 'monaco-editor';
 import { onUnmounted, ref, watch } from 'vue';

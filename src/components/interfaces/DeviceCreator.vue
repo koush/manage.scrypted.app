@@ -22,8 +22,8 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { connectedClient } from '@/common/client';
-import { adoptDevice, createDevice } from '@/device-creator';
-import { getDeviceFromId } from '@/id-device';
+import { adoptDevice, createDevice } from '@/util/device-creator';
+import { getDeviceFromId } from '@/util/id-device';
 import { DeviceCreator, DiscoveredDevice, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';

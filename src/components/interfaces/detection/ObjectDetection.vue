@@ -21,7 +21,7 @@
 </template>
 <script setup lang="ts">
 import { connectedClient, connectPluginClient } from '@/common/client';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { ObjectDetection, ObjectsDetected } from '@scrypted/types';
 import { ref } from 'vue';
 import DetectedSVG from './DetectedSVG.vue';

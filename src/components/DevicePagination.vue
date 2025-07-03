@@ -49,8 +49,8 @@
 </template>
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
-import { hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { getDeviceRoute } from '@/id-device';
+import { hasFixedPhysicalLocation, typeToIcon } from '@/util/device-icons';
+import { getDeviceRoute } from '@/util/id-device';
 import { ScryptedDevice, ScryptedDeviceType } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';

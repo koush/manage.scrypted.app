@@ -42,11 +42,11 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, PressButtons, ScryptedDeviceType, ScryptedInterface, StartStop, Buttons, AudioSensor } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { connectedClient } from '../../../common/client';
 
 const props = defineProps<{

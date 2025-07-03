@@ -44,14 +44,14 @@
 import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
-import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/device-icons';
-import { goDevice } from '@/id-device';
-import { getPluginMonitors, getServerUpdateMonitor } from '@/npm';
+import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/util/device-icons';
+import { goDevice } from '@/util/id-device';
+import { getPluginMonitors, getServerUpdateMonitor } from '@/util/npm';
 import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import ThemeToggle from '../common/components/ThemeToggle.vue';
-import { scryptedAlerts } from '../internal-apis';
+import { scryptedAlerts } from '../util/internal-apis';
 
 defineProps<{
   modelValue: boolean;

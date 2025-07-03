@@ -52,7 +52,7 @@ import { SettingsGroup, SettingsSubgroup } from '../settings-common';
 import SplatSetting from './SplatSetting.vue';
 import { TrackedSetting } from './setting-modelvalue';
 import { isDark } from '@/common/colors';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import SettingRow from './SettingRow.vue';
 import { observeResize } from '@/common/resize-observer';
 import { isTouchPhone } from '@/common/size';

@@ -1,8 +1,8 @@
 import { EventListener, EventListenerOptions, EventListenerRegister, ScryptedDevice } from "@scrypted/types";
 import { ComputedRef, WritableComputedRef, computed, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { asyncComputed } from "./common/async-computed";
-import { connectPluginClient, connectedClient } from "./common/client";
+import { asyncComputed } from "../common/async-computed";
+import { connectPluginClient, connectedClient } from "../common/client";
 
 export function getIdFromRoute() {
   const route = useRoute();

@@ -65,8 +65,8 @@
 </template>
 <script setup lang="ts">
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceFromId, getDeviceRoute, registerListener } from '@/id-device';
+import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getDeviceFromId, getDeviceRoute, registerListener } from '@/util/id-device';
 import { DeviceDiscovery, DeviceProvider, DiscoveredDevice, ScryptedDevice, ScryptedDeviceType, ScryptedInterface, ScryptedSystemDevice } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';

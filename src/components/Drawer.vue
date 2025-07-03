@@ -44,12 +44,12 @@
 <script setup lang="ts">
 import { connectedClient, isAdmin } from '@/common/client';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceRoute } from '@/id-device';
+import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getDeviceRoute } from '@/util/id-device';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { removeAlert, scryptedAlerts } from '../internal-apis';
-import { getPluginMonitors, getServerUpdateMonitor } from '@/npm';
+import { removeAlert, scryptedAlerts } from '../util/internal-apis';
+import { getPluginMonitors, getServerUpdateMonitor } from '@/util/npm';
 
 defineProps<{
   modelValue: boolean;

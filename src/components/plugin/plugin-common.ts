@@ -1,5 +1,5 @@
 import { ScryptedDeviceType } from "@scrypted/types";
-import { PluginInfo } from "../../internal-apis";
+import { PluginInfo } from "../../util/internal-apis";
 
 export interface PluginModel {
   id: string;

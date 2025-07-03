@@ -1,6 +1,6 @@
 import { ScryptedDeviceType } from "@scrypted/types";
-import { getFaPrefix } from "./common/fa-prefix";
-export { getFaPrefix } from "./common/fa-prefix";
+import { getFaPrefix } from "../common/fa-prefix";
+export { getFaPrefix } from "../common/fa-prefix";
 
 export function typeToIcon(type?: ScryptedDeviceType | string) {
   return `${getFaPrefix(typeToIconInternal(type))}`;

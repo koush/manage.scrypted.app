@@ -71,13 +71,13 @@
 <script setup lang="ts">
 import { connectedClient, connectPluginClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, typeToIcon } from '@/device-icons';
-import { getDeviceRoute } from '@/id-device';
-import { checkNpmUpdate } from '@/npm';
+import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getDeviceRoute } from '@/util/id-device';
+import { checkNpmUpdate } from '@/util/npm';
 import { ScryptedInterface } from '@scrypted/types';
 import { computed, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
-import { getPluginInfo, installPlugin } from '../../internal-apis';
+import { getPluginInfo, installPlugin } from '../../util/internal-apis';
 import { PluginModel } from './plugin-common';
 import PluginStats from './PluginStats.vue';
 import ResponsiveColumn from '../ResponsiveColumn.vue';

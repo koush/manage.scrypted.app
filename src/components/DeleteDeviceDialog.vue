@@ -26,8 +26,8 @@
 </template>
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
-import { getFaPrefix } from '@/device-icons';
-import { getDeviceRoute } from '@/id-device';
+import { getFaPrefix } from '@/util/device-icons';
+import { getDeviceRoute } from '@/util/id-device';
 import { computed, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 

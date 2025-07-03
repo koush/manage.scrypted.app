@@ -53,8 +53,8 @@
 </template>
 <script setup lang="ts">
 import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScryptedCloudHostname } from '@/common/client';
-import { getFaPrefix } from '@/device-icons';
-import { getServerUpdateMonitor } from '@/npm';
+import { getFaPrefix } from '@/util/device-icons';
+import { getServerUpdateMonitor } from '@/util/npm';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
 import { Settings } from '@scrypted/types';
 import { ref } from 'vue';

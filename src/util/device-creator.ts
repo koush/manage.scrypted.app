@@ -1,6 +1,6 @@
 import { DeviceCreator, DeviceCreatorSettings, DeviceDiscovery, ScryptedNativeId, Setting } from "@scrypted/types";
 import { useRouter } from "vue-router";
-import { connectedClient } from "./common/client";
+import { connectedClient } from "../common/client";
 import { goDeviceId } from "./id-device";
 
 export async function createDevice(router: ReturnType<typeof useRouter>, id: string, settings: Setting[]) {

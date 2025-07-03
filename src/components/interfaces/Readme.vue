@@ -17,9 +17,9 @@
 <script setup lang="ts">
 import markdownit from 'markdown-it';
 import { Readme } from '@scrypted/types';
-import { getDeviceFromId } from '@/id-device';
+import { getDeviceFromId } from '@/util/id-device';
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { getLineHintColor } from '@/common/colors';
 import hljs from 'highlight.js/lib/core';
 import typescript from 'highlight.js/lib/languages/typescript';

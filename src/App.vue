@@ -39,7 +39,7 @@ import AppBar from './components/AppBar.vue';
 import Drawer from './components/Drawer.vue';
 import { useRoute } from 'vue-router';
 import Launcher from './components/Launcher.vue';
-import { getFaPrefix } from './device-icons';
+import { getFaPrefix } from './util/device-icons';
 
 const route = useRoute();
 

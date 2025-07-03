@@ -120,7 +120,7 @@
 import { asyncComputedRaw } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, getBaseUrl, isScryptedCloudHostname, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix } from '@/device-icons';
+import { getFaPrefix } from '@/util/device-icons';
 import { combineBaseUrl } from '@scrypted/client/src/index';
 import { LauncherApplication, ScryptedInterface } from '@scrypted/types';
 import { deepPurple } from 'vuetify/lib/util/colors.mjs';
