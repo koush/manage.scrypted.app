@@ -142,7 +142,7 @@ async function doLogin() {
   font-weight: 500 !important;
   font-size: 1.5rem !important;
   font-family: Quicksand, sans-serif !important;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
 }
 
 .scrypted-subtitle {
