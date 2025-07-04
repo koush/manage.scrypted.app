@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@babel/types": "^7.27.0",
-    "@scrypted/types": "^0.5.21",
+    "@scrypted/types": "^0.5.22",
     "@types/highlight.js": "^10.1.0",
     "@types/leaflet": "^1.9.17",
     "@types/lodash": "^4.17.16",
