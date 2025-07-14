@@ -1,16 +1,18 @@
 <template>
     <v-tooltip text="Toggle Theme" location="top" :open-delay="1000">
         <template v-slot:activator="{ props }">
+            <v-fade-transition leave-absolute>
 
-            <v-btn variant="text" @click="toggleTheme" v-bind="props" v-if="theme === 'light'">
-                <v-icon>{{ getFaPrefix('fa-sun-bright') }}</v-icon>
-            </v-btn>
-            <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else-if="theme === 'dark'">
-                <v-icon>{{ getFaPrefix('fa-moon') }}</v-icon>
-            </v-btn>
-            <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else>
-                <v-icon>{{ getFaPrefix('fa-moon-over-sun') }}</v-icon>
-            </v-btn>
+                <v-btn variant="text" @click="toggleTheme" v-bind="props" v-if="theme === 'light'">
+                    <v-icon>{{ getFaPrefix('fa-sun-bright') }}</v-icon>
+                </v-btn>
+                <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else-if="theme === 'dark'">
+                    <v-icon>{{ getFaPrefix('fa-moon') }}</v-icon>
+                </v-btn>
+                <v-btn variant="text" @click="toggleTheme" v-bind="props" v-else>
+                    <v-icon>{{ getFaPrefix('fa-moon-over-sun') }}</v-icon>
+                </v-btn>
+            </v-fade-transition>
         </template>
     </v-tooltip>
 </template>
