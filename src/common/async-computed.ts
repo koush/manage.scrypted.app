@@ -108,5 +108,6 @@ export function asyncComputedRaw<T, V extends string>(options: {
     return {
         computed: ret,
         loading,
+        currentPromise: currentValue.value,
     };
 }
