@@ -24,7 +24,7 @@
           <v-expansion-panel-text>
             <v-tabs-window v-model="selectedSettingSubgroup">
               <div class="mb-2"></div>
-              <template v-for="setting in selectedSettingSubgroup?.settings">
+              <template v-for="(setting, index) in selectedSettingSubgroup?.settings" :key="index + ':' + setting.key">
                 <SettingRow v-if="isRadioSettingVisible(setting)" :title="wide ? setting.title || '' : undefined"
                   :description="setting.type !== 'boolean' && (!setting.multiple || setting.choices) ? setting.description : undefined">
                   <SplatSetting :model-value="setting" @click-button-setting="emits('click-button-setting', setting)"
