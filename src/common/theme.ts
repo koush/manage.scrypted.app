@@ -22,9 +22,9 @@ export function getThemeManager() {
         else {
             const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (dark)
-                globalTheme.value = 'dark';
+                useTheme().change('dark');
             else
-                globalTheme.value = 'light';
+                useTheme().change('light');
         }
         theme.value = themeValue || undefined;
     }
