@@ -66,6 +66,8 @@ const rootSize = observeResize(root);
 const wide = computed(() => {
   if (isTouchPhone.value)
     return false;
+  if (!rootSize.value)
+    return false;
   return rootSize.value.width > 480;
 });
 
