@@ -4,7 +4,8 @@ import { useTheme } from "vuetify";
 export function getThemeManager() {
 
     const theme = ref<string | undefined>();
-    const globalTheme = useTheme().global.name;
+    const usedTheme = useTheme();
+    const globalTheme = usedTheme.global.name;
 
     function setTheme(theme?: string) {
         if (theme)
@@ -22,9 +23,9 @@ export function getThemeManager() {
         else {
             const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (dark)
-                useTheme().change('dark');
+                usedTheme.change('dark');
             else
-                useTheme().change('light');
+                usedTheme.change('light');
         }
         theme.value = themeValue || undefined;
     }
