@@ -18,7 +18,7 @@ export function getThemeManager() {
     function updateTheme() {
         const themeValue = localStorage.getItem('globalTheme');
         if (themeValue === 'light' || themeValue === 'dark') {
-            globalTheme.value = themeValue;
+            usedTheme.change(themeValue);
         }
         else {
             const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
