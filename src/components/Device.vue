@@ -165,7 +165,7 @@
 
             </template>
           </Camera>
-          <PtyComponent v-if="hasTTYService" :reconnect="true" title="TTY Interface" :expand-button="true"
+          <PtyComponent v-if="hasTTYService" :reconnect="true" title="Interactive Terminal" :expand-button="true"
             :control="true" :pluginId="device.pluginId" :nativeId="device.nativeId" class="mb-4">
           </PtyComponent>
 
