@@ -25,7 +25,7 @@
     "monaco-editor": "^0.50.0",
     "semver": "^7.7.2",
     "v-calendar": "^3.1.2",
-    "vue": "^3.5.17",
+    "vue": "^3.5.19",
     "vue-router": "^4.5.1",
     "vuetify": "^3.9.5"
   },
