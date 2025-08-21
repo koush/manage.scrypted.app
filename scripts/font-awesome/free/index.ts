@@ -1,7 +1,7 @@
 import { setFaPrefix } from '../../../src/common/fa-prefix'
 import '@fortawesome/fontawesome-free/css/fontawesome.min.css'
-import './solid.css'
-import './regular.css'
-import './brands.css'
+import '@fortawesome/fontawesome-free/css/solid.min.css'
+import '@fortawesome/fontawesome-free/css/regular.min.css'
+import '@fortawesome/fontawesome-free/css/brands.min.css'
 
 setFaPrefix('fa-solid');
