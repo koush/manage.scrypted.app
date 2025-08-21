@@ -45,7 +45,7 @@
     "vite": "^6.3.3",
     "vite-plugin-pwa": "^1.0.3",
     "vite-plugin-vuetify": "^2.1.2",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.0.6"
   },
   "optionalDependencies": {
     "@fortawesome/fontawesome-pro": "^7.0.0"
