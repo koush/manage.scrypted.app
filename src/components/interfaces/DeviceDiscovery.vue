@@ -33,7 +33,7 @@ const device = getDeviceFromId<DeviceProvider & DeviceDiscovery & ScryptedSystem
 const deviceGroups = createDeviceGroups(() => props.discoveredDevices);
 
 const description = computed(() => {
-  return device.value?.systemDevice?.deviceDiscovery || "Discovered Devices";
+  return device.value?.systemDevice?.deviceDiscovery || "Discovered Device";
 });
 
 async function adoptDevice(d: DiscoveredDevice) {
