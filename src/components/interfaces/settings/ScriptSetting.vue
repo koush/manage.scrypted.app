@@ -82,6 +82,8 @@ async function main() {
   // @ts-ignore
   const global = import('@types/node/globals.d.ts?raw') as Promise<RawModule>;
   // @ts-ignore
+  const module = import('@types/node/module.d.ts?raw') as Promise<RawModule>;
+  // @ts-ignore
   const buffer = import('@types/node/buffer.d.ts?raw') as Promise<RawModule>;
   // @ts-ignore
   const process = import('@types/node/process.d.ts?raw') as Promise<RawModule>;
@@ -98,6 +100,7 @@ async function main() {
 
   const standardLibs: StandardLibs = {
     "@types/node/globals.d.ts": (await global).default,
+    "@types/node/module.d.ts": (await module).default,
     "@types/node/buffer.d.ts": (await buffer).default,
     "@types/node/process.d.ts": (await process).default,
     "@types/node/events.d.ts": (await events).default,
