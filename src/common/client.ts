@@ -27,9 +27,10 @@ export const isAdmin = computed(() => connectedClient.value?.admin !== false);
 
 let probe: Promise<void> | undefined;
 async function probeConnection() {
+  let client: ScryptedClientStatic | undefined;
   try {
     console.log('waiting for client (30s)');
-    const client = await timeoutFunction(30000, async () => {
+    client = await timeoutFunction(30000, async () => {
       if (connectedClient.value)
         return connectedClient.value;
       if (clientPromise)
@@ -56,9 +57,15 @@ async function probeConnection() {
   }
   catch (e) {
     console.error('Scrypted connection probe failed. Reconnecting.', e);
-    connectedClient.value = undefined;
-    clientPromise?.then(client => client.disconnect());
-    clientPromise = undefined;
+    client?.disconnect();
+    if (connectedClient.value === client) {
+      connectedClient.value = undefined;
+      clientPromise?.then(client => client.disconnect());
+      clientPromise = undefined;
+    }
+    else {
+      console.log('probeConnection: client already replaced');
+    }
   }
 
   heartbeatMissed = false;
