@@ -10,12 +10,5 @@ export function vibrate() {
 }
 
 export function windowLocationReload() {
-    if ((globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage && localStorage.getItem('postMessage')) {
-        (globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage({
-            type: 'windowLocationReload',
-        });
-    }
-    else {
-        window.location.reload();
-    }
+    window.location.reload();
 }
