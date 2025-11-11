@@ -14,14 +14,17 @@ export function windowLocationReload() {
 }
 
 export function appWindowLocationReload() {
-    windowLocationReload();
-    try {
-        if ((globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage) {
+    if ((globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage) {
+        try {
             (globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage({
                 type: 'windowLocationReload',
             });
         }
+        catch (e) {
+        }
+        setTimeout(windowLocationReload, 500);
     }
-    catch (e) {
+    else {
+        windowLocationReload();
     }
 }
