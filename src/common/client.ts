@@ -6,7 +6,7 @@ import { clearPreviousLoginResults, getPreviousLoginResult, refreshServerRegistr
 import { supportsOOBLogin } from './browser';
 import { setLossyAsyncInterval } from './clock';
 import { isFullScreen } from './displaymode';
-import { windowLocationReload } from './platform-shims';
+import { appWindowLocationReload, windowLocationReload } from './platform-shims';
 
 export const connectedClient = shallowRef<ScryptedClientStatic>();
 export let clientPromise: Promise<ScryptedClientStatic> | undefined;
@@ -214,7 +214,7 @@ export async function connectClient(options: ScryptedClientOptions): Promise<Scr
     if (firstConnectionAttempt !== undefined) {
       if (!isFullScreen.value && Date.now() - firstConnectionAttempt > 1 * 60 * 60 * 1000) {
         await sleep(1000);
-        windowLocationReload();
+        appWindowLocationReload();
       }
     }
     else {

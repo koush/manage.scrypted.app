@@ -12,3 +12,16 @@ export function vibrate() {
 export function windowLocationReload() {
     window.location.reload();
 }
+
+export function appWindowLocationReload() {
+    windowLocationReload();
+    try {
+        if ((globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage) {
+            (globalThis as any).webkit?.messageHandlers?.scrypted?.postMessage({
+                type: 'windowLocationReload',
+            });
+        }
+    }
+    catch (e) {
+    }
+}
