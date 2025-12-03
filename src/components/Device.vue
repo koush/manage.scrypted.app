@@ -99,6 +99,7 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
+          <WebComponentProvider :id="id"></WebComponentProvider>
           <Camera v-if="clipPathDeviceId || hasCamera" :id="cameraIdOrClipPathId" clickable class="mb-4 never-blur"
             :hide-refresh="!!playing || !!videoClip" @img:click="playing = destination" ref="camera"
             :img-style="clipPath ? 'transform: scale(.9);' : undefined">
@@ -205,8 +206,8 @@ import { clearConsole, removeAlert, restartPlugin, scryptedAlerts } from '../uti
 import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
-import PtyComponent from './PtyComponent.vue';
 import KvmComponent from './KvmComponent.vue';
+import PtyComponent from './PtyComponent.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
 import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
@@ -221,6 +222,7 @@ import Scriptable from './interfaces/Scriptable.vue';
 import ScryptedLogger from './interfaces/ScryptedLogger.vue';
 import ScryptedPlugin from './interfaces/ScryptedPlugin.vue';
 import VideoClipsInterface from './interfaces/VideoClips.vue';
+import WebComponentProvider from './interfaces/WebComponentProvider.vue';
 import { PlaybackType } from './interfaces/camera-common';
 import ObjectDetection from './interfaces/detection/ObjectDetection.vue';
 import ObjectDetector from './interfaces/detection/ObjectDetector.vue';
@@ -264,6 +266,10 @@ const hasCamera = computed(() => {
 
 const hasObjectDetection = computed(() => {
   return device.value?.interfaces.includes(ScryptedInterface.ObjectDetection);
+});
+
+const hasWebComponentProvider = computed(() => {
+  return device.value?.interfaces.includes('WebComponentProvider');
 });
 
 const hasScriptable = computed(() => {
@@ -478,6 +484,7 @@ const hasMiddleSlots = computed(() => {
     || hasCamera.value
     || clipPathDeviceId.value
     || hasTTYService.value
+    || hasWebComponentProvider.value
     || (hasDeviceCreator.value || providerHasVisibleDevices.value || hasDeviceDiscovery.value)
     // || hasDeviceCreator.value
     // || hasMixinProvider.value
