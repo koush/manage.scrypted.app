@@ -99,7 +99,7 @@
           <Suspense>
             <PositionSensor v-if="hasPositionSensor" :id="id" class="mb-4"></PositionSensor>
           </Suspense>
-          <WebComponentProvider :id="id"></WebComponentProvider>
+          <WebComponentProvider v-if="hasWebComponentProvider" :id="id" class="mb-4"></WebComponentProvider>
           <Camera v-if="clipPathDeviceId || hasCamera" :id="cameraIdOrClipPathId" clickable class="mb-4 never-blur"
             :hide-refresh="!!playing || !!videoClip" @img:click="playing = destination" ref="camera"
             :img-style="clipPath ? 'transform: scale(.9);' : undefined">
