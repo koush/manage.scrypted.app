@@ -2,13 +2,16 @@
   <v-dialog v-model="loginDialog" max-width="300px">
     <v-card>
       <v-card-title>Login Required</v-card-title>
-      <v-card-text>Scrypted Management Console is currently inside a browser iframe. For web security, a new tab will be
-        opened, and the
-        browser may prompt to log into this server again.
+
+      <v-card-text v-if="isIframe">Scrypted Management Console is currently inside a browser iframe. For web security,
+        a new tab will be opened, and the browser may prompt to log into this server again.
         <br />
         <br />
         <b>Home Assistant Addon installations must create a new Administrator user</b> within the Scrypted Users sidebar
         menu to log in from outside of Home Assistant.
+      </v-card-text>
+      <v-card-text v-else>Scrypted Management Console needs to log in using the browser. A new browser window will be
+        opened, and the browser may prompt to log into this server again.
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -25,11 +28,12 @@
   </v-btn>
 </template>
 <script setup lang="ts">
+import { isInstalledApp } from '@/common/browser';
 import { connectedClient } from '@/common/client';
 import { getFaPrefix } from '@/util/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { OauthClient } from '@scrypted/types';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   id: string;
@@ -39,16 +43,16 @@ const device = getDeviceFromId<OauthClient>(() => props.id);
 
 const loginDialog = ref(false);
 
-function isIFrame() {
+const isIframe = computed(() => {
   try {
     return window.self !== window.top;
   } catch (e) {
     return true;
   }
-}
+});
 
 async function login() {
-  if (isIFrame()) {
+  if (isIframe.value || isInstalledApp || navigator.userAgent.includes('Scrypted')) {
     loginDialog.value = true;
     return;
   }
@@ -76,7 +80,7 @@ async function login() {
     redirect_uri = `https://home.scrypted.app/web/oauth/callback`;
   }
   url.searchParams.set('redirect_uri', redirect_uri);
-  url.searchParams.set('state',JSON.stringify({
+  url.searchParams.set('state', JSON.stringify({
     d: props.id,
     s: url.searchParams.get('state'),
     r: window.location.toString(),
