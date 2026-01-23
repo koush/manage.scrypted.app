@@ -149,14 +149,15 @@ export function fixupAppDomainImageUrl(url: string) {
 
   // console.error('rewriting', url);
   // direct connection can be rewritten to the direct connection host without any fuss.
-  if (connectedClient.value?.loginResult.queryToken && connectedClient.value?.address && (connectedClient.value?.connectionType === 'http-direct' || isSelfHosted())) {
+  const queryToken = connectedClient.value?.loginResult.queryToken;
+  if (queryToken && connectedClient.value?.address && (connectedClient.value?.connectionType === 'http-direct' || isSelfHosted())) {
     // get the absolute url and change the host and protocol.
     const rewrite = new URL(url, window.location.href);
     const base = new URL(connectedClient.value.address);
     rewrite.protocol = base.protocol;
     rewrite.hostname = base.hostname;
     rewrite.port = base.port;
-    for (const [k, v] of Object.entries(connectedClient.value.loginResult.queryToken)) {
+    for (const [k, v] of Object.entries(queryToken)) {
       rewrite.searchParams.set(k, v);
     }
     url = rewrite.toString();
