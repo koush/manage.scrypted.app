@@ -1,5 +1,5 @@
 <template>
-    <v-tooltip text="Toggle Theme" location="top" :open-delay="1000">
+    <v-tooltip text="Toggle Theme" location="top" :open-delay="1000" :disabled="isTouchDevice">
         <template v-slot:activator="{ props }">
             <v-fade-transition leave-absolute>
                 <v-btn :icon="icon" variant="text" @click="toggleTheme" v-bind="props" v-if="theme === 'light'">
@@ -19,6 +19,7 @@
 import type { IconValue } from 'vuetify/lib/composables/icons.mjs';
 import { getFaPrefix } from '../fa-prefix';
 import { getThemeManager } from '../theme';
+import { isTouchDevice } from '../size';
 
 const tm = getThemeManager();
 

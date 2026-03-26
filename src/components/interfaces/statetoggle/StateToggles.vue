@@ -390,7 +390,6 @@ const ptzActions = computed(() => {
 
 const pressButtons = computed(() => {
   console.log(connectedClient.value.systemManager.getSystemState()[device.value.id]);
-  console.log('buttons', device.value.buttons);
 
   return (device.value.buttons || []).map(buttonId => {
     return {
