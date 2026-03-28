@@ -243,8 +243,11 @@ declare interface Notifier {
 
 declare interface NotifierOptions {
   body?: string;
+  bodyWithSubtitle?: string;
   subtitle?: string;
   image?: string;
+  silent?: boolean;
+  critical?: boolean;
 }
 
 // Settings
