@@ -31,13 +31,15 @@
         </v-menu>
       </template>
       <template v-slot:append-inner>
-        <v-btn class="pa-0 inner-btn" variant="text" @click="sendPrompt" :disabled="loading" :loading="loading" :color="loading ? 'info' : undefined">
+        <v-btn class="pa-0 inner-btn" variant="text" @click="sendPrompt" :disabled="loading" :loading="loading"
+          :color="loading ? 'info' : undefined">
           <v-icon v-if="!loading">{{ getFaPrefix('fa-brain-circuit') }}</v-icon>
         </v-btn>
       </template>
 
     </v-text-field>
-    <v-alert v-if="llmMessage" type="info" class="mr-2 ml-2 mb-2" density="compact" closable @click:close="llmMessage = ''">
+    <v-alert v-if="llmMessage" type="info" class="mr-2 ml-2 mb-2" density="compact" closable
+      @click:close="llmMessage = ''">
       {{ llmMessage }}
     </v-alert>
     <div ref="container" style="height: 640px; width: 100%;"></div>
@@ -45,15 +47,16 @@
 </template>
 <script setup lang="ts">
 import { isDark } from '@/common/colors';
+import { getAllDevices } from '@/common/devices';
+import { getFaPrefix } from '@/common/fa-prefix';
 import { getDeviceFromId } from '@/util/id-device';
-import { ChatCompletion, Scriptable, ScriptSource, ScryptedInterface } from '@scrypted/types';
+import type { ChatCompletion, ChatCompletionMessageParam, Scriptable, ScriptSource } from '@scrypted/types';
+import { ScryptedInterface } from '@scrypted/types';
 import type * as MonacoType from 'monaco-editor';
 import { computed, onUnmounted, ref, watch } from 'vue';
-import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
-import { getFaPrefix } from '@/common/fa-prefix';
-import { getAllDevices } from '@/common/devices';
 import PROMPT from '../../scripts/PROMPT.md?raw';
 import TYPINGS from '../../scripts/sdk-types-trimmed.d.ts?raw';
+import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
 
 const monaco = await import('monaco-editor');
 
@@ -79,6 +82,8 @@ const selectedChatCompletion = computed(() =>
 const userPrompt = ref('');
 const loading = ref(false);
 const llmMessage = ref('');
+
+const conversationHistory = ref<ChatCompletionMessageParam[]>([]);
 
 function assembleSystemPrompt(): string {
   const parts: string[] = [];
@@ -134,13 +139,16 @@ async function sendPrompt() {
       ? `Here is the user's code file:\n\`\`\`\n${currentScript}\n\`\`\``
       : "The user's code file is currently empty.";
 
+    const messages: ChatCompletionMessageParam[] = [
+      { role: 'system', content: assembleSystemPrompt() },
+      { role: 'system', content: scriptMessage },
+      { role: 'system', content: 'You must end your response by calling either the write_script_file tool to write the script, or the show_message tool to respond to the user or report any issues.' },
+      ...conversationHistory.value,
+      { role: 'user', content: prompt }
+    ];
+
     const response = await selectedChatCompletion.value.getChatCompletion({
-      messages: [
-        { role: 'system', content: assembleSystemPrompt() },
-        { role: 'system', content: scriptMessage },
-        { role: 'system', content: 'You must end your response by calling either the write_script_file tool to write the script, or the show_message tool to respond to the user or report any issues.' },
-        { role: 'user', content: prompt }
-      ],
+      messages,
       model: undefined,
       tools: [
         {
@@ -181,6 +189,14 @@ async function sendPrompt() {
     });
 
     console.log(response);
+
+    // Add user message and assistant response to history
+    conversationHistory.value.push({ role: 'user', content: prompt });
+    conversationHistory.value.push({
+      role: 'assistant',
+      content: response.choices?.[0]?.message?.content || undefined,
+      tool_calls: response.choices?.[0]?.message?.tool_calls,
+    });
 
     const toolCall = response.choices?.[0]?.message?.tool_calls?.[0];
     if (toolCall?.type === 'function' && toolCall?.function?.name === 'write_script_file') {
