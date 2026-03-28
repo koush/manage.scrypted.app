@@ -14,7 +14,7 @@
     </v-alert>
     <v-text-field v-else v-model="userPrompt" :disabled="loading" density="compact" variant="outlined"
       placeholder="Create a script that..." persistent-hint class="mr-2 ml-2 mb-2" @keydown.enter="sendPrompt">
-      <template v-slot:prepend>
+      <template v-slot:prepend-inner>
         <v-menu>
           <template v-slot:activator="{ props: menuProps }">
             <v-btn variant="text" size="small" v-bind="menuProps">
