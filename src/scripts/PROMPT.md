@@ -1029,6 +1029,26 @@ const jpegBuffer = await mediaManager.convertMediaObjectToBuffer(mo, 'image/jpeg
 const url = await mediaManager.convertMediaObjectToUrl(mo, 'image/jpeg');
 ```
 
+## Intercom Audio Playback
+
+Use `Intercom` interface to play audio through two-way audio devices (cameras, smart speakers):
+
+```typescript
+// CRITICAL: Use '-re' flag when playing audio files through Intercom
+// Without '-re', ffmpeg reads the file as fast as possible, overwhelming the stream
+const audioMo = await mediaManager.createFFmpegMediaObject({
+    inputArguments: ['-re', '-i', 'https://example.com/alert.mp3'],
+});
+
+const intercom = systemManager.getDeviceById<Intercom>(deviceId);
+await intercom.startIntercom(audioMo);
+
+// Call stopIntercom() to cancel playback early
+await intercom.stopIntercom();
+```
+
+The `-re` flag tells ffmpeg to read input at native frame rate (realtime), essential for streaming audio to intercoms.
+
 ## Fetch API
 
 Scripts have access to `fetch` for HTTP requests:

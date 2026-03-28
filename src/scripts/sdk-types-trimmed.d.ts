@@ -60,6 +60,7 @@ declare enum ScryptedInterface {
   Refresh = "Refresh",
   Program = "Program",
   ObjectDetector = "ObjectDetector",
+  Intercom = "Intercom",
 }
 
 declare enum LockState {
@@ -290,6 +291,24 @@ declare interface MediaObject {
   convert<T>(toMimeType: string): Promise<T>;
 }
 
+declare interface FFmpegInput {
+  url?: string;
+  urls?: string[];
+  inputArguments?: string[];
+  destinationVideoBitrate?: number;
+  h264EncoderArguments?: string[];
+  videoDecoderArguments?: string[];
+  h264FilterArguments?: string[];
+  env?: { [key: string]: string };
+  ffmpegPath?: string;
+  mediaStreamOptions?: ResponseMediaStreamOptions;
+}
+
+declare interface Intercom {
+  startIntercom(media: MediaObject): Promise<void>;
+  stopIntercom(): Promise<void>;
+}
+
 // Managers
 declare interface SystemManager {
   getDeviceById(id: string): ScryptedDevice;
@@ -310,6 +329,7 @@ declare interface DeviceManager {
 declare interface MediaManager {
   createMediaObject(data: any, mimeType: string, options?: any): Promise<MediaObject>;
   createMediaObjectFromUrl(url: string, options?: any): Promise<MediaObject>;
+  createFFmpegMediaObject(ffmpegInput: FFmpegInput, options?: any): Promise<MediaObject>;
   convertMediaObjectToBuffer(mediaObject: MediaObject, toMimeType: string): Promise<Buffer>;
   convertMediaObjectToLocalUrl(mediaObject: string | MediaObject, toMimeType: string): Promise<string>;
 }
