@@ -134,18 +134,21 @@ async function sendPrompt() {
   userPrompt.value = '';
 
   try {
-    const currentScript = currentEditor.getValue();
-    const scriptMessage = currentScript.trim()
-      ? `Here is the user's code file:\n\`\`\`\n${currentScript}\n\`\`\``
-      : "The user's code file is currently empty.";
-
     const messages: ChatCompletionMessageParam[] = [
       { role: 'system', content: assembleSystemPrompt() },
-      { role: 'system', content: scriptMessage },
       { role: 'system', content: 'You must end your response by calling either the write_script_file tool to write the script, or the show_message tool to respond to the user or report any issues.' },
-      ...conversationHistory.value,
-      { role: 'user', content: prompt }
     ];
+
+    // Only send script content on first message
+    if (conversationHistory.value.length === 0) {
+      const currentScript = currentEditor.getValue();
+      const scriptMessage = currentScript.trim()
+        ? `Here is the user's code file:\n\`\`\`\n${currentScript}\n\`\`\``
+        : "The user's code file is currently empty.";
+      messages.splice(1, 0, { role: 'system', content: scriptMessage });
+    }
+
+    messages.push(...conversationHistory.value, { role: 'user', content: prompt });
 
     const response = await selectedChatCompletion.value.getChatCompletion({
       messages,
