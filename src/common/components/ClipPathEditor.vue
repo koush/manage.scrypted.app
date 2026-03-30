@@ -46,7 +46,9 @@ function onClick(e: MouseEvent) {
     modelValue.value = { points: [] };
 
   const div = e.currentTarget as HTMLDivElement;
-  modelValue.value.points.push([applyScaleInverse(e.offsetX / div.offsetWidth), applyScaleInverse(e.offsetY / div.offsetHeight)]);
-  modelValue.value.dimensions = [div.offsetWidth, div.offsetHeight];
+  const value = {...modelValue.value};
+  value.points.push([applyScaleInverse(e.offsetX / div.offsetWidth), applyScaleInverse(e.offsetY / div.offsetHeight)]);
+  value.dimensions = [div.offsetWidth, div.offsetHeight];
+  modelValue.value = value;
 }
 </script>
