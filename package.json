@@ -27,7 +27,7 @@
     "v-calendar": "^3.1.2",
     "vue": "^3.5.31",
     "vue-router": "^4.6.4",
-    "vuetify": "^4.0.4"
+    "vuetify": "^3.12.4"
   },
   "devDependencies": {
     "@babel/types": "^7.29.0",
