@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import { isInstalledApp } from '@/common/browser';
-import { connectedClient } from '@/common/client';
+import { connectedClient, getBaseHostname, isAppDomain } from '@/common/client';
 import { getFaPrefix } from '@/util/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { OauthClient } from '@scrypted/types';
@@ -72,7 +72,7 @@ async function login() {
       u.hostname = 'localhost';
     }
     if (u.hostname === 'localhost') {
-      u.hostname = new URL(window.location.href).hostname;
+      u.hostname = isAppDomain() ? getBaseHostname() : new URL(window.location.href).hostname;
       redirect_uri = u.toString();
     }
   }
