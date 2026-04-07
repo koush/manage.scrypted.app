@@ -16,7 +16,7 @@
     </v-tooltip>
 </template>
 <script setup lang="ts">
-import type { IconValue } from 'vuetify/lib/composables/icons.mjs';
+import type { IconValue } from 'vuetify/lib/composables/icons';
 import { getFaPrefix } from '../fa-prefix';
 import { getThemeManager } from '../theme';
 import { isTouchDevice } from '../size';
