@@ -58,7 +58,7 @@ tar -czf ~/backups/scrypted-backup-${DATE}.tar.gz \
 
 ```cron
 # EXAMPLE ONLY — TODO: replace /path/to/manage.scrypted.app with your actual repo checkout path.
-0 3 * * * cd /path/to/manage.scrypted.app && tar -czf ~/backups/scrypted-backup-$(date +\%Y\%m\%d).tar.gz infra/scrypted_volume infra/caddy_data infra/Caddyfile infra/.env
+0 3 * * * cd /path/to/manage.scrypted.app && tar -czf ~/backups/scrypted-backup-$(date +\%Y\%m\%d-\%H\%M\%S).tar.gz infra/scrypted_volume infra/caddy_data infra/Caddyfile infra/.env
 ```
 
 Before enabling the cron job, verify the `cd` path points to your real checkout:
@@ -207,7 +207,7 @@ These checks close the integration-readiness gap before dashboard handoff.
 
 ### 9.1 Verify iframe header compatibility
 
-Set the **public, browser-facing** Scrypted URL (not the local loopback health endpoint like `http://127.0.0.1:10080`) and inspect response headers:
+Set the **public, browser-facing** Scrypted URL (not the local loopback health endpoint like `http://127.0.0.1:10080`) and inspect response headers. Keep this exported for the rest of the Phase 2C checks in the same shell:
 
 ```sh
 export SCRYPTED_URL="https://scrypted.example.com"
