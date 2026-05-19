@@ -57,6 +57,7 @@ tar -czf ~/backups/scrypted-backup-${DATE}.tar.gz \
 ### Automate with cron
 
 ```cron
+# Replace /path/to/manage.scrypted.app with your actual repo checkout path.
 0 3 * * * cd /path/to/manage.scrypted.app && tar -czf ~/backups/scrypted-backup-$(date +\%Y\%m\%d).tar.gz infra/scrypted_volume infra/caddy_data infra/Caddyfile infra/.env
 ```
 
