@@ -23,6 +23,14 @@ services:
     environment:
       # Allow Scrypted to bind raw sockets for RTSP/HomeKit/mDNS on host net.
       SCRYPTED_INSECURE_USE_RAW_SOCKETS: "true"
+    healthcheck:
+      # Scrypted exposes an HTTP endpoint on :10080; a 200-level or 3xx
+      # response means the runtime is up and accepting connections.
+      test: ["CMD-SHELL", "curl -fsk http://127.0.0.1:10080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   caddy:
     # Pin to a specific minor/patch version (e.g. caddy:2.9) for reproducible
@@ -35,7 +43,17 @@ services:
     # With network_mode: host, Caddy binds :80 and :443 directly on the host
     # and reaches Scrypted at 127.0.0.1:10443 (no published ports needed).
     depends_on:
-      - scrypted
+      scrypted:
+        condition: service_healthy
+    healthcheck:
+      # Caddy's admin API listens on localhost:2019 by default.
+      # A 200 from /config/ means the Caddy process is alive and its
+      # config has loaded.
+      test: ["CMD-SHELL", "curl -fsk http://127.0.0.1:2019/config/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro   # Caddy site config
       - ./ui:/srv/ui:ro                        # built Vue UI (dist/ copied here)

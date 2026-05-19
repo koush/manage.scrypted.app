@@ -24,8 +24,9 @@ This index is the operator/team entrypoint for current status, merge sequencing,
 
 ## Operations docs
 
-- **Docker + Caddy operator notes**
+- **Docker + Caddy operator notes + day-two ops runbook**
   - [`DOCKER-CADDY-OPS-NOTES.md`](DOCKER-CADDY-OPS-NOTES.md)
+  - [`../infra/OPS-RUNBOOK.md`](../infra/OPS-RUNBOOK.md)
 
 - **Server app track summary (current prototype and decision gate)**
   - [`SERVER-APP-TRACK-SUMMARY.md`](SERVER-APP-TRACK-SUMMARY.md)

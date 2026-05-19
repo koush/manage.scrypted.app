@@ -54,10 +54,12 @@ the loopback interface.
 
 ```
 infra/
-├── docker-compose.yml   — Compose stack (Scrypted + Caddy)
+├── docker-compose.yml   — Compose stack (Scrypted + Caddy, with health checks)
+├── .env.example         — image-tag overrides template (copy to .env)
 ├── Caddyfile            — primary config: public domain + Let's Encrypt
 ├── Caddyfile.lan        — alternative: LAN-only with self-signed cert
 ├── Caddyfile.advanced   — reference: explicit path-matcher variant (fragile)
+├── OPS-RUNBOOK.md       — backup / restore / rollback / upgrade procedures
 ├── .gitignore           — excludes runtime volumes and built UI
 ├── ui/                  — mount target for the built Vue app
 │   └── .gitkeep
@@ -255,8 +257,32 @@ reachability without risking production rate-limit exhaustion.
 |------|----------------|---------------------------------------|
 | 80   | Caddy          | HTTP → HTTPS redirect / ACME challenge |
 | 443  | Caddy          | HTTPS — the UI + proxied Scrypted API |
+| 2019 | Caddy          | Admin API (health check target, loopback only) |
 | 10443| Scrypted       | Scrypted internal HTTPS (loopback only)|
-| 10080| Scrypted       | Scrypted internal HTTP  (loopback only)|
+| 10080| Scrypted       | Scrypted internal HTTP (loopback only, health check target)|
+
+---
+
+## Day-two operations
+
+Backup, restore, rollback, and upgrade procedures are documented in
+[`OPS-RUNBOOK.md`](OPS-RUNBOOK.md).
+
+Quick reference:
+
+```sh
+# Check health
+docker compose ps
+
+# Backup Scrypted data + Caddy certs + config
+DATE=$(date +%Y%m%d-%H%M%S)
+tar -czf ~/backups/scrypted-backup-${DATE}.tar.gz \
+    infra/scrypted_volume infra/caddy_data infra/Caddyfile infra/.env
+
+# Roll back to a previous Scrypted image
+# Edit infra/.env → SCRYPTED_IMAGE=ghcr.io/koush/scrypted:vX.Y.Z
+docker compose pull scrypted && docker compose up -d scrypted
+```
 
 ### "Bad gateway" or WebSocket errors
 

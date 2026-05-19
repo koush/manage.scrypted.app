@@ -47,3 +47,7 @@ This pattern gives predictable operational behavior for dashboard embedding:
 - Keep proxy contract explicit in team docs.
 - Avoid ad-hoc route changes during integration phase.
 - Treat Caddy config as controlled infrastructure code with review gates.
+
+## Day-two ops
+
+Backup, restore, rollback, and upgrade procedures: [`infra/OPS-RUNBOOK.md`](../infra/OPS-RUNBOOK.md).
