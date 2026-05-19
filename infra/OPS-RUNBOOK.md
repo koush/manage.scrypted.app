@@ -61,6 +61,12 @@ tar -czf ~/backups/scrypted-backup-${DATE}.tar.gz \
 0 3 * * * cd /path/to/manage.scrypted.app && tar -czf ~/backups/scrypted-backup-$(date +\%Y\%m\%d).tar.gz infra/scrypted_volume infra/caddy_data infra/Caddyfile infra/.env
 ```
 
+Before enabling the cron job, verify the `cd` path points to your real checkout:
+
+```sh
+cd /your/real/manage.scrypted.app/path && pwd
+```
+
 ---
 
 ## 3. Restore
