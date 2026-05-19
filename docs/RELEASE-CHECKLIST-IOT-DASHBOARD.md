@@ -34,17 +34,17 @@ Use this checklist as a required gate before handing this repository to dashboar
 
 - [x] Dependabot config validated (no duplicate paths).
 - [x] Docker socket security notes added to server-app track doc.
-- [ ] CodeQL and Scorecard workflows pass on current baseline.
-- [ ] Secret requirements for build/deploy are documented.
-- [ ] Incident-response and ownership contacts are documented.
+- [x] CodeQL and Scorecard workflows pass on current baseline (latest successful runs on 2026-05-18).
+- [x] Secret requirements for build/deploy are documented (`docs/PHASE2-SECURITY-RELEASE-REQUIREMENTS.md`).
+- [x] Incident-response and ownership contacts are documented (`docs/PHASE2-SECURITY-RELEASE-REQUIREMENTS.md`).
 
 ## E) Server-app track readiness
 
 - [x] Electron chosen as canonical track (Phase 2 decision).
 - [x] Docker socket security notes documented.
-- [ ] Electron packaging targets defined (`electron-builder.yml`).
-- [ ] Electron release workflow added to `.github/workflows/`.
-- [ ] Code-signing requirements documented per platform.
+- [x] Electron packaging targets defined (`Caddy/electron-builder.yml`).
+- [x] Electron release workflow added to `.github/workflows/electron-release.yml`.
+- [x] Code-signing requirements documented per platform (`docs/PHASE2-SECURITY-RELEASE-REQUIREMENTS.md`).
 
 ## F) Final handoff package
 

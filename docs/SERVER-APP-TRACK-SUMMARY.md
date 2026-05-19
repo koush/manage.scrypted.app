@@ -50,15 +50,17 @@ Before shipping, the following must be addressed:
 - **Permission model:** Document which system permissions the packaged app requires
   (Docker group membership, pty permissions for the terminal) and request least privilege.
 
-## Packaging and release process (draft)
+## Packaging and release process (Phase 2 baseline)
 
-1. Pin `electron` and `electron-builder` versions in `Caddy/package.json`.
-2. Add a `.npmrc` or `electron-builder.yml` with platform-specific targets (macOS dmg, Linux AppImage, Windows NSIS).
-3. Add a GitHub Actions release workflow that:
-   - Runs `npm ci && npm run build` in `Caddy/`
-   - Uploads artifacts to a GitHub Release
-4. Sign macOS builds with a Developer ID certificate before distributing outside the App Store.
-5. Sign Windows builds with a code-signing cert to avoid SmartScreen warnings.
+1. Electron packaging targets are defined in `Caddy/electron-builder.yml`:
+   - macOS: DMG (`x64`, `arm64`)
+   - Linux: AppImage (`x64`, `arm64`)
+   - Windows: NSIS (`x64`, `arm64`)
+2. GitHub Actions release workflow is defined in `.github/workflows/electron-release.yml`:
+   - Builds package artifacts per OS
+   - Publishes a draft GitHub release for `caddy-v*` tags
+3. Signing and notarization requirements are documented in:
+   - `docs/PHASE2-SECURITY-RELEASE-REQUIREMENTS.md`
 
 ## Recommendation
 
@@ -67,4 +69,3 @@ Keep server-app tracks out of baseline IoT dashboard integration critical path u
 - routing/auth/API contracts are frozen
 - ownership and release process are defined
 - packaging and support policy are approved
-
