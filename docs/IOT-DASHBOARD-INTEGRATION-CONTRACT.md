@@ -119,10 +119,10 @@ handle_path /scrypted/* {
 | TLS strategy (public) | ✅ | Let's Encrypt via Caddy ACME (automatic) |
 | TLS strategy (LAN) | ✅ | Caddy local CA (`tls internal`); clients trust `caddy_data/.../root.crt` |
 | Cert ownership | ✅ | Caddy manages cert lifecycle automatically |
-| Rollout owner | ⚠️ | Define before handoff — who runs `docker compose pull && up`? |
-| Rollback owner | ⚠️ | Define before handoff — who approves image pin changes? |
+| Rollout owner | ✅ | Platform/Ops owner runs `docker compose pull && up -d` during approved windows |
+| Rollback owner | ✅ | Platform/Ops owner executes rollback; dashboard/platform leads approve rollback decision |
 | Incident contact | ⚠️ | Define before handoff |
-| Monitoring | 🔲 | No external monitoring configured; `docker compose ps` is the current health gate |
+| Monitoring | ✅ | Platform/Ops owner monitors health (`docker compose ps`) and container logs; external monitoring deferred |
 
 ---
 
@@ -132,4 +132,4 @@ handle_path /scrypted/* {
 - Server/operator app functionality currently exists as prototype work under `Caddy/`.
 - Main UI stack in this repo remains Vue/Vuetify; dashboard ecosystem alignment decision is still required.
 - Health checks are configured in `infra/docker-compose.yml` for both services.
-
+- Live host validation steps for iframe headers and API/WS proxy are documented in `infra/OPS-RUNBOOK.md` section 9.

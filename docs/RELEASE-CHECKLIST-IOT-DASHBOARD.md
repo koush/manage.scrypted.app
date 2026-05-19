@@ -26,9 +26,9 @@ Use this checklist as a required gate before handing this repository to dashboar
 - [x] Auth/session ownership proposed (Scrypted self-contained).
 - [x] Embedding mode proposed (iframe).
 - [x] WebSocket proxy behavior documented (Caddy automatic).
-- [ ] X-Frame-Options check run against live Scrypted instance.
-- [ ] API/WS proxy behavior validated end-to-end on real host.
-- [ ] Rollout/rollback/monitoring ownership defined (owner sign-off).
+- [ ] X-Frame-Options check run against live Scrypted instance (procedure: `infra/OPS-RUNBOOK.md` section 9.1).
+- [ ] API/WS proxy behavior validated end-to-end on real host (procedure: `infra/OPS-RUNBOOK.md` section 9.2).
+- [ ] Rollout/rollback/monitoring ownership signed off by owner (proposed defaults in `docs/IOT-DASHBOARD-INTEGRATION-CONTRACT.md` section 5).
 
 ## D) Security and governance readiness
 
@@ -54,4 +54,3 @@ Use this checklist as a required gate before handing this repository to dashboar
 - [x] Known limitations and open items listed in ops runbook and architecture doc.
 - [ ] Commands and environment variables reviewed and confirmed by owner.
 - [ ] Handoff sign-off recorded by platform + dashboard leads.
-

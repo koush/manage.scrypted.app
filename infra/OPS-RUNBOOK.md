@@ -191,3 +191,43 @@ All volumes persist on disk.  Restart at any time with `docker compose up -d`.
 - `network_mode: host` means health-check `curl` calls must succeed on the host's loopback interface — this is expected behavior.
 - No automated off-host backup transfer is configured.  Add `rsync` or `rclone` to the cron job for remote backup.
 - Caddy admin API (`2019`) is bound to all interfaces by default in some versions; confirm it is not publicly reachable with `ss -tlnp | grep 2019`.
+
+---
+
+## 9. Phase 2C integration validation (live host)
+
+These checks close the integration-readiness gap before dashboard handoff.
+
+### 9.1 Verify iframe header compatibility
+
+Set the public Scrypted URL and inspect response headers:
+
+```sh
+export SCRYPTED_URL="https://scrypted.example.com"
+curl -isk "${SCRYPTED_URL}/scrypted/" | grep -Ei "x-frame-options|content-security-policy"
+```
+
+Expected baseline:
+- No `X-Frame-Options: DENY` header
+- CSP does not block dashboard iframe embedding policy
+
+If headers block iframe usage, apply the documented `header_down` override in
+`docs/IOT-DASHBOARD-INTEGRATION-CONTRACT.md` section 4 and reload Caddy.
+
+### 9.2 Verify API + WebSocket proxy behavior
+
+1. Open the dashboard panel that embeds Scrypted in an iframe.
+2. In browser DevTools Network:
+   - confirm API calls under `/scrypted/api/*` return success (2xx/expected auth redirects)
+   - confirm at least one Scrypted WebSocket request shows `101 Switching Protocols`
+3. Confirm reconnect behavior by restarting Scrypted:
+
+```sh
+cd infra
+docker compose restart scrypted
+docker compose logs --tail=100 scrypted
+```
+
+Pass criteria:
+- iframe remains functional after backend restart
+- WebSocket reconnects without manual cookie/header injection
