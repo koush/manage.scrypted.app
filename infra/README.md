@@ -90,7 +90,17 @@ scrypted.example.com {             # ← your real domain
 }
 ```
 
-### 3. Build the Vue UI
+### 3. Configure image tags (`.env`)
+
+For reproducible deployments, pin image tags in an env file:
+
+```sh
+cp .env.example .env
+```
+
+Then edit `.env` and set your preferred pinned versions.
+
+### 4. Build the Vue UI
 
 From the **repo root**:
 
@@ -103,7 +113,7 @@ cp -r dist/* infra/ui/
 > If you are working directly inside `infra/`, adjust the path:
 > `cp -r ../dist/* ui/`
 
-### 4. Start the stack
+### 5. Start the stack
 
 ```sh
 docker compose up -d
@@ -112,7 +122,7 @@ docker compose up -d
 Caddy will automatically obtain a Let's Encrypt certificate the first time it
 receives a request, provided your DNS is resolving and ports 80/443 are open.
 
-### 5. Tail the logs
+### 6. Tail the logs
 
 ```sh
 docker compose logs -f

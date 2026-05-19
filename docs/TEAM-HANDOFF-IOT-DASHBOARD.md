@@ -23,6 +23,7 @@ Platform engineers, integration engineers, and technical leads onboarding this r
 - Merge readiness/closure sequencing across remaining PRs.
 - Docs rebase merge with final path-reference sanity against live `main`.
 - Legacy PR retirement after superseding merges.
+- Integration contract freeze (routing/auth/API ownership details).
 
 ## Integration contract recommendations
 
@@ -37,6 +38,10 @@ Define and freeze the following before broader rollout:
    - required headers, websocket expectations, timeouts
 4. **Ops ownership contract**
    - who owns cert lifecycle, rollout, rollback, monitoring
+
+Canonical contract document:
+
+- [`IOT-DASHBOARD-INTEGRATION-CONTRACT.md`](IOT-DASHBOARD-INTEGRATION-CONTRACT.md)
 
 ## Delivery phases
 
@@ -62,6 +67,7 @@ Define and freeze the following before broader rollout:
 - Docs drift (references to non-main paths).
 - PR overlap/legacy ambiguity.
 - Major dependency upgrades bleeding into baseline integration stream.
+- Stack mismatch risk (dashboard React/Tailwind ecosystem vs current Vue/Vuetify UI codebase).
 
 ## Recommended operating mode
 
@@ -69,3 +75,9 @@ Define and freeze the following before broader rollout:
 - Explicit merge order.
 - Immediate superseded PR closure.
 - No “meta cleanup” PR bundles during integration window.
+
+## Canonical references for handoff
+
+- Architecture: [`IOT-DASHBOARD-ARCHITECTURE.md`](IOT-DASHBOARD-ARCHITECTURE.md)
+- Release gate checklist: [`RELEASE-CHECKLIST-IOT-DASHBOARD.md`](RELEASE-CHECKLIST-IOT-DASHBOARD.md)
+- Deployment operations: [`DOCKER-CADDY-OPS-NOTES.md`](DOCKER-CADDY-OPS-NOTES.md)

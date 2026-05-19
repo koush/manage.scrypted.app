@@ -25,8 +25,8 @@ This is not just an app repo; it is an operations-enabled fork.
 - ✅ Major-upgrades test track kept draft (`#34`) for diagnostics only.
 
 ### Important operational note
-Some docs/PR streams reference `server-app/` and `server-app-tauri/`.  
-If those directories are not yet on `main`, treat them as planned tracks until merged.
+Main currently includes a prototype operator desktop/server control track under `Caddy/` (Electron + Docker control surfaces).
+References to `server-app/` and `server-app-tauri/` in older docs/PR streams should be treated as planned naming/track artifacts unless those paths are merged later.
 
 ---
 
@@ -36,6 +36,7 @@ If those directories are not yet on `main`, treat them as planned tracks until m
 |------|------------------|
 | `src/` | Vue + TypeScript management UI fork surface. |
 | `infra/` | Compose + Caddy deployment assets and runbook docs. |
+| `Caddy/` | Experimental Electron/operator control track and alternate Caddy stack prototype. |
 | `agent-harness/` | LLM/script-generation harness for Scrypted workflows. |
 | `.github/` | CI, Dependabot, policy automation, templates, governance. |
 | `docs/` | Status, handoff, ops notes, integration guidance. |
@@ -64,6 +65,7 @@ At a high level:
 - Caddy terminates TLS and routes UI + API/WS traffic.
 - Compose orchestrates Scrypted + proxy.
 - Subdomain/LAN/subpath variants are supported by Caddy config variants.
+- Use `infra/.env` (from `infra/.env.example`) to pin runtime images for reproducible deployments.
 - See operator notes: [`docs/DOCKER-CADDY-OPS-NOTES.md`](docs/DOCKER-CADDY-OPS-NOTES.md).
 
 ---
@@ -72,6 +74,9 @@ At a high level:
 
 - [`docs/STATUS-2026-05-18.md`](docs/STATUS-2026-05-18.md)
 - [`docs/TEAM-HANDOFF-IOT-DASHBOARD.md`](docs/TEAM-HANDOFF-IOT-DASHBOARD.md)
+- [`docs/IOT-DASHBOARD-INTEGRATION-CONTRACT.md`](docs/IOT-DASHBOARD-INTEGRATION-CONTRACT.md)
+- [`docs/IOT-DASHBOARD-ARCHITECTURE.md`](docs/IOT-DASHBOARD-ARCHITECTURE.md)
+- [`docs/RELEASE-CHECKLIST-IOT-DASHBOARD.md`](docs/RELEASE-CHECKLIST-IOT-DASHBOARD.md)
 - [`docs/DOCKER-CADDY-OPS-NOTES.md`](docs/DOCKER-CADDY-OPS-NOTES.md)
 - [`docs/SERVER-APP-TRACK-SUMMARY.md`](docs/SERVER-APP-TRACK-SUMMARY.md)
 

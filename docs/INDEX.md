@@ -16,6 +16,9 @@ This index is the operator/team entrypoint for current status, merge sequencing,
 
 3. **IoT Dashboard integration handoff**
    - [`TEAM-HANDOFF-IOT-DASHBOARD.md`](TEAM-HANDOFF-IOT-DASHBOARD.md)
+   - [`IOT-DASHBOARD-INTEGRATION-CONTRACT.md`](IOT-DASHBOARD-INTEGRATION-CONTRACT.md)
+   - [`IOT-DASHBOARD-ARCHITECTURE.md`](IOT-DASHBOARD-ARCHITECTURE.md)
+   - [`RELEASE-CHECKLIST-IOT-DASHBOARD.md`](RELEASE-CHECKLIST-IOT-DASHBOARD.md)
 
 ---
 
@@ -24,7 +27,7 @@ This index is the operator/team entrypoint for current status, merge sequencing,
 - **Docker + Caddy operator notes**
   - [`DOCKER-CADDY-OPS-NOTES.md`](DOCKER-CADDY-OPS-NOTES.md)
 
-- **Server app track summary (Electron/Tauri)**
+- **Server app track summary (current prototype and decision gate)**
   - [`SERVER-APP-TRACK-SUMMARY.md`](SERVER-APP-TRACK-SUMMARY.md)
 
 ---
@@ -33,9 +36,12 @@ This index is the operator/team entrypoint for current status, merge sequencing,
 
 1. `STATUS-2026-05-18.md`
 2. `TEAM-HANDOFF-IOT-DASHBOARD.md`
-3. `DOCKER-CADDY-OPS-NOTES.md`
-4. `SERVER-APP-TRACK-SUMMARY.md`
-5. `MERGE-RUNBOOK-2026-05-18.md` (for maintainers/release operators)
+3. `IOT-DASHBOARD-INTEGRATION-CONTRACT.md`
+4. `IOT-DASHBOARD-ARCHITECTURE.md`
+5. `DOCKER-CADDY-OPS-NOTES.md`
+6. `RELEASE-CHECKLIST-IOT-DASHBOARD.md`
+7. `SERVER-APP-TRACK-SUMMARY.md`
+8. `MERGE-RUNBOOK-2026-05-18.md` (for maintainers/release operators)
 
 ---
 

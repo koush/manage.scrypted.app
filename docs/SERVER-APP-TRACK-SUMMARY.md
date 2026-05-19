@@ -4,10 +4,10 @@
 
 Provide an operator-facing desktop control layer for Scrypted runtime lifecycle and diagnostics.
 
-## Track inventory
+## Track inventory (current `main`)
 
-- Electron track (`server-app`)
-- Tauri track (`server-app-tauri`)
+- Electron-oriented prototype under `Caddy/` (operator control, logs, mini terminal)
+- No `server-app/` or `server-app-tauri/` directories currently on `main`
 
 ## Expected capabilities
 
@@ -18,8 +18,9 @@ Provide an operator-facing desktop control layer for Scrypted runtime lifecycle 
 
 ## Current status
 
-- Tracks exist in PR/workstream context and should be treated independently from baseline integration.
-- If referenced in docs before landing on `main`, mark clearly as planned/in-progress to avoid broken expectations.
+- Operator app functionality is present as a prototype in `Caddy/`.
+- Legacy references to `server-app/` and `server-app-tauri/` should be treated as planned naming/track artifacts.
+- Keep this track independent from baseline dashboard integration until decision gates are closed.
 
 ## Decision gate required
 

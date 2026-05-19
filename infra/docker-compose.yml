@@ -13,7 +13,8 @@ services:
   scrypted:
     # Pin to a specific release tag (e.g. ghcr.io/koush/scrypted:v0.x.y) for
     # reproducible deployments; `latest` always tracks the newest build.
-    image: ghcr.io/koush/scrypted:latest
+    # Set SCRYPTED_IMAGE in infra/.env for pinned releases.
+    image: ${SCRYPTED_IMAGE:-ghcr.io/koush/scrypted:latest}
     container_name: scrypted
     network_mode: host
     restart: unless-stopped
@@ -26,7 +27,8 @@ services:
   caddy:
     # Pin to a specific minor/patch version (e.g. caddy:2.9) for reproducible
     # deployments; `caddy:2` tracks the latest 2.x release.
-    image: caddy:2
+    # Set CADDY_IMAGE in infra/.env for pinned releases.
+    image: ${CADDY_IMAGE:-caddy:2.10}
     container_name: caddy
     network_mode: host
     restart: unless-stopped
