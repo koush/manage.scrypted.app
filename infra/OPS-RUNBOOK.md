@@ -200,7 +200,7 @@ These checks close the integration-readiness gap before dashboard handoff.
 
 ### 9.1 Verify iframe header compatibility
 
-Set the public Scrypted URL and inspect response headers:
+Set the **public, browser-facing** Scrypted URL (not the local loopback health endpoint like `http://127.0.0.1:10080`) and inspect response headers:
 
 ```sh
 export SCRYPTED_URL="https://scrypted.example.com"
