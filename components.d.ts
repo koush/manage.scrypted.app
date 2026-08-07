@@ -72,7 +72,6 @@ declare module 'vue' {
     StateToggles: typeof import('./src/components/interfaces/statetoggle/StateToggles.vue')['default']
     StringSetting: typeof import('./src/components/interfaces/settings/StringSetting.vue')['default']
     Terminal: typeof import('./src/components/Terminal.vue')['default']
-    ToolbarTooltipButton: typeof import('./src/components/ToolbarTooltipButton.vue')['default']
     VideoClips: typeof import('./src/components/interfaces/VideoClips.vue')['default']
     WebComponentProvider: typeof import('./src/components/interfaces/WebComponentProvider.vue')['default']
   }

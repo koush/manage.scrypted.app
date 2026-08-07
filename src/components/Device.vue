@@ -209,7 +209,7 @@ import DeviceSettings from './DeviceSettings.vue';
 import KvmComponent from './KvmComponent.vue';
 import PtyComponent from './PtyComponent.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
-import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';
 import DeviceProvider from './interfaces/DeviceProvider.vue';
 import MixinProvider from './interfaces/MixinProvider.vue';

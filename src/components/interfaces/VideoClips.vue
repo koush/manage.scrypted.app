@@ -79,7 +79,7 @@ import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { ScryptedInterface, VideoClip, VideoClips } from '@scrypted/types';
 import { computed, ref } from 'vue';
-import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 
 const dark = isDark();
 

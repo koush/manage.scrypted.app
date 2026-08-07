@@ -33,7 +33,7 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import debounce from 'lodash/debounce';
 import { onUnmounted, ref, watch } from 'vue';
-import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 
 const props = defineProps<{
   title: string;

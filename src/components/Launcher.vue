@@ -124,7 +124,7 @@ import { getFaPrefix } from '@/common/device-icons';
 import { combineBaseUrl } from '@scrypted/client/src/index';
 import { LauncherApplication, ScryptedInterface } from '@scrypted/types';
 import { deepPurple } from 'vuetify/lib/util/colors';
-import ToolbarTooltipButton from './ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 import { computed } from 'vue';
 
 const showNvr = computed(() => {

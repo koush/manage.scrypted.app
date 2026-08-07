@@ -24,7 +24,7 @@ import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId, registerListener } from '@/util/id-device';
 import { Camera, ScryptedInterface } from '@scrypted/types';
 import { ref, StyleValue } from 'vue';
-import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 import debounce from 'lodash/debounce';
 
 const props = defineProps<{

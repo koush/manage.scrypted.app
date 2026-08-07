@@ -56,7 +56,7 @@ import type * as MonacoType from 'monaco-editor';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import PROMPT from '../../scripts/PROMPT.md?raw';
 import TYPINGS from '../../scripts/sdk-types-trimmed.d.ts?raw';
-import ToolbarTooltipButton from '../ToolbarTooltipButton.vue';
+import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 
 const monaco = await import('monaco-editor');
 
