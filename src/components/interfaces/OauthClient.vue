@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { isInstalledApp } from '@/common/browser';
 import { connectedClient } from '@/common/client';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { OauthClient } from '@scrypted/types';
 import { computed, ref } from 'vue';

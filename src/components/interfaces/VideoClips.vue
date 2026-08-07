@@ -75,7 +75,7 @@ import { fixupAppDomainImageUrl } from '@/common/client';
 import { isDark } from '@/common/colors';
 import { observeResize } from '@/common/resize-observer';
 import { isTouchPhone } from '@/common/size';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { ScryptedInterface, VideoClip, VideoClips } from '@scrypted/types';
 import { computed, ref } from 'vue';

@@ -30,7 +30,7 @@
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient } from '@/common/client';
 import { getAllDeviceIds } from '@/common/devices';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { registerListeners } from '@/util/id-device';
 import { ScryptedInterface, ScryptedSystemDevice, Setting, Settings } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';

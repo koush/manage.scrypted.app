@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId, registerListener } from '@/util/id-device';
 import { ScryptedDeviceType, ScryptedInterface, Setting, Settings } from '@scrypted/types';
 import { computed, ref, watch } from 'vue';

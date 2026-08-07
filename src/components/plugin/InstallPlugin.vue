@@ -65,7 +65,7 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { sleep } from '@scrypted/common/src/sleep';
 import { ref } from 'vue';
 import { installPlugin } from '../../util/internal-apis';

@@ -71,7 +71,7 @@
 <script setup lang="ts">
 import { connectedClient, connectPluginClient, isAdmin } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getFaPrefix, typeToIcon } from '@/common/device-icons';
 import { getDeviceRoute } from '@/util/id-device';
 import { checkNpmUpdate } from '@/util/npm';
 import { ScryptedInterface } from '@scrypted/types';

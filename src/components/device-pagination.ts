@@ -1,5 +1,5 @@
 import { connectedClient, connectPluginClient } from "@/common/client";
-import { hasFixedPhysicalLocation } from "@/util/device-icons";
+import { hasFixedPhysicalLocation } from "@/common/device-icons";
 import { ScryptedDeviceType } from "@scrypted/types";
 import { computed } from "vue";
 

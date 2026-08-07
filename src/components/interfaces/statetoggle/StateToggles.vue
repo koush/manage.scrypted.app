@@ -46,7 +46,7 @@ import { getDeviceFromId } from '@/util/id-device';
 import { Battery, BinarySensor, EntrySensor, Lock, LockState, MotionSensor, OccupancySensor, OnOff, PanTiltZoom, Pause, PressButtons, ScryptedDeviceType, ScryptedInterface, StartStop, Buttons, AudioSensor } from '@scrypted/types';
 import { computed } from 'vue';
 import StateToggle from './StateToggle.vue';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { connectedClient } from '../../../common/client';
 
 const props = defineProps<{

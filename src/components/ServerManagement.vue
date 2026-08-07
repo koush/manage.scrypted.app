@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import { connectedClient, connectPluginClient, fixupAppDomainLinkUrl, isScryptedCloudHostname } from '@/common/client';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getServerUpdateMonitor } from '@/util/npm';
 import { combineBaseUrl, getCurrentBaseUrl } from '@scrypted/client/src/index';
 import { Settings } from '@scrypted/types';

@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { connectedClient, isAdmin } from '@/common/client';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getFaPrefix, typeToIcon } from '@/common/device-icons';
 import { getDeviceRoute } from '@/util/id-device';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';

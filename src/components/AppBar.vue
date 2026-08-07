@@ -44,7 +44,7 @@
 import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
-import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/util/device-icons';
+import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/common/device-icons';
 import { goDevice } from '@/util/id-device';
 import { getPluginMonitors, getServerUpdateMonitor } from '@/util/npm';
 import { ScryptedDevice, ScryptedDeviceType, ScryptedInterface } from '@scrypted/types';

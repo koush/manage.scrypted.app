@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { getAllDevices } from '@/common/devices';
-import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getFaPrefix, typeToIcon } from '@/common/device-icons';
 import { getDeviceFromId, getDeviceRoute } from '@/util/id-device';
 import { timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { MixinProvider } from '@scrypted/types';

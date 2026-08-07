@@ -23,7 +23,7 @@
   </v-card-actions>
 </template>
 <script setup lang="ts">
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { computed } from 'vue';
 import { chipColor } from '../settings-common';
 

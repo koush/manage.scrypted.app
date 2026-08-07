@@ -29,7 +29,7 @@
 </template>
 <script setup lang="ts">
 import { connectedClient } from '@/common/client';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId, goDevice } from '@/util/id-device';
 import { MixinProvider, ScryptedDevice, ScryptedInterface } from '@scrypted/types';
 import { useRouter } from 'vue-router';

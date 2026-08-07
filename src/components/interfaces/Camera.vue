@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
 import { connectPluginClient, connectedClient, fixupAppDomainImageUrl } from '@/common/client';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId, registerListener } from '@/util/id-device';
 import { Camera, ScryptedInterface } from '@scrypted/types';
 import { ref, StyleValue } from 'vue';

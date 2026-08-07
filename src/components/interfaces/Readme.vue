@@ -19,7 +19,7 @@ import markdownit from 'markdown-it';
 import { Readme } from '@scrypted/types';
 import { getDeviceFromId } from '@/util/id-device';
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getLineHintColor } from '@/common/colors';
 import hljs from 'highlight.js/lib/core';
 import typescript from 'highlight.js/lib/languages/typescript';

@@ -195,7 +195,7 @@ import { connectedClient, fixupAppDomainImageUrl, isAdmin } from '@/common/clien
 import { ClipPathModel } from '@/common/clip-path-model';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice } from '@/common/size';
-import { getFaPrefix, typeToIcon } from '@/util/device-icons';
+import { getFaPrefix, typeToIcon } from '@/common/device-icons';
 import { getDeviceFromId, getIdFromRoute } from '@/util/id-device';
 import { sleep } from "@scrypted/common/src/sleep";
 import { ClipPath, ScryptedDeviceType, ScryptedInterface, ScryptedMimeTypes, Setting, Settings, VideoClip, VideoClips } from '@scrypted/types';

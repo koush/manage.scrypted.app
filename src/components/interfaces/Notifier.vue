@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { Camera, MediaObject, Notifier, ScryptedInterface, Setting, VideoCamera } from '@scrypted/types';
 import DeviceInterfaceSetting from './settings/DeviceInterfaceSetting.vue';
 import { ref } from 'vue';

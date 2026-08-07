@@ -32,7 +32,7 @@
 </template>
 <script setup lang="ts">
 import { asyncComputed } from '@/common/async-computed';
-import { getFaPrefix } from '@/util/device-icons';
+import { getFaPrefix } from '@/common/device-icons';
 import { getDeviceFromId } from '@/util/id-device';
 import { checkNpmUpdate, NpmVersion } from '@/util/npm';
 import { ScryptedPlugin } from '@scrypted/types';
