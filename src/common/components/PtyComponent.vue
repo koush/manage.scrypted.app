@@ -118,6 +118,71 @@ unmounted.promise.then(() => {
 });
 
 let localQueue: ReturnType<typeof createAsyncQueueFromGenerator>;
+let currentDataQueue: ReturnType<typeof createAsyncQueue<Buffer>>;
+
+type OutputListener = (data: Buffer) => void;
+const outputListeners = new Set<OutputListener>();
+
+function makeDisposable(d: IDisposable): Disposable {
+  return {
+    [Symbol.dispose]() {
+      d.dispose();
+    }
+  };
+}
+
+async function sendCommand(command: string, timeoutMs = 60000): Promise<string> {
+  if (!currentDataQueue) {
+    throw new Error('Terminal is not connected');
+  }
+
+  const uuid = Math.random().toString(36).substring(2, 10);
+  const sentinel = `-------- COMMAND COMPLETE [${uuid}] --------`;
+  const sentinelPattern = new RegExp(`\\r?\\n?${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r?\\n?`);
+
+  const collected: Buffer[] = [];
+  const done = new Deferred<string>();
+
+  const listener: OutputListener = (data: Buffer) => {
+    collected.push(data);
+    const text = Buffer.concat(collected).toString('utf8');
+    if (text.includes(sentinel)) {
+      done.resolve(text);
+    }
+  };
+  outputListeners.add(listener);
+
+  const timeout = setTimeout(() => {
+    done.reject(new Error(`Command timed out after ${timeoutMs}ms`));
+  }, timeoutMs);
+
+  try {
+    currentDataQueue.enqueue(Buffer.from(command + '\n', 'utf8'));
+    currentDataQueue.enqueue(Buffer.from(`echo ${sentinel}\n`, 'utf8'));
+
+    const rawOutput = await done.promise;
+
+    let cleaned = rawOutput.replace(sentinelPattern, '');
+    cleaned = cleaned.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
+    return cleaned.trim();
+  }
+  finally {
+    clearTimeout(timeout);
+    outputListeners.delete(listener);
+  }
+}
+
+async function sendCtrlC(): Promise<void> {
+  if (!currentDataQueue) {
+    throw new Error('Terminal is not connected');
+  }
+  currentDataQueue.enqueue(Buffer.from('\x03', 'utf8'));
+}
+
+defineExpose({
+  sendCommand,
+  sendCtrlC,
+});
 
 function refreshOnUpdate() {
   localQueue?.end();
@@ -134,6 +199,7 @@ async function connectPty() {
   buffer = [];
 
   const dataQueue = createAsyncQueue<Buffer>();
+  currentDataQueue = dataQueue;
   unmounted.promise.then(() => dataQueue.end());
 
   if (props.hello) {
@@ -159,14 +225,6 @@ async function connectPty() {
       if (bufferedLength < MAX_BUFFERED_LENGTH)
         term.options.disableStdin = false;
     }
-  }
-
-  function makeDisposable(d: IDisposable): Disposable {
-    return {
-      [Symbol.dispose]() {
-        d.dispose();
-      }
-    };
   }
 
   using _data = makeDisposable(term.onData(data => dataQueueEnqueue(Buffer.from(data, 'utf8'))));
@@ -219,6 +277,9 @@ async function connectPty() {
       const b = Buffer.from(message);
       if (props.copyButton) {
         buffer.push(b);
+      }
+      for (const listener of outputListeners) {
+        listener(b);
       }
       term.write(new Uint8Array(message));
     }
