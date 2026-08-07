@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="height: 100%; display: flex; flex-direction: column;">
     <template v-if="icon" v-slot:prepend>
       <v-icon size="small" :icon="getFaPrefix(icon)"></v-icon>
     </template>
@@ -17,7 +17,7 @@
     <template v-slot:title>
       <v-card-subtitle class="pt-1 pl-4" style="text-transform: uppercase;">{{ title }}</v-card-subtitle>
     </template>
-    <div class="ml-3 mr-3" ref="terminal" :style="{ height: '100%' }"></div>
+    <div class="ml-3 mr-3" ref="terminal" style="flex: 1; min-height: 0;"></div>
   </v-card>
 </template>
 <script setup lang="ts">
