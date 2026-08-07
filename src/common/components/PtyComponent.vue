@@ -30,7 +30,7 @@ import { Deferred } from "@scrypted/common/src/deferred";
 import { sleep } from "@scrypted/common/src/sleep";
 import { DeviceProvider, ScryptedNativeId, StreamService } from '@scrypted/types';
 import { FitAddon } from '@xterm/addon-fit';
-import { IDisposable, Terminal } from '@xterm/xterm';
+import { Terminal } from '@xterm/xterm';
 import debounce from 'lodash/debounce';
 import { onUnmounted, ref, watch } from 'vue';
 import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
@@ -122,14 +122,6 @@ let currentDataQueue: ReturnType<typeof createAsyncQueue<Buffer>>;
 
 type OutputListener = (data: Buffer) => void;
 const outputListeners = new Set<OutputListener>();
-
-function makeDisposable(d: IDisposable): Disposable {
-  return {
-    [Symbol.dispose]() {
-      d.dispose();
-    }
-  };
-}
 
 async function sendCommand(command: string, timeoutMs = 60000): Promise<string> {
   if (!currentDataQueue) {
@@ -227,12 +219,12 @@ async function connectPty() {
     }
   }
 
-  using _data = makeDisposable(term.onData(data => dataQueueEnqueue(Buffer.from(data, 'utf8'))));
-  using _binary = makeDisposable(term.onBinary(data => dataQueueEnqueue(Buffer.from(data, 'binary'))));
-  using _resize = makeDisposable(term.onResize(dim => {
+  const _data = term.onData(data => dataQueueEnqueue(Buffer.from(data, 'utf8')));
+  const _binary = term.onBinary(data => dataQueueEnqueue(Buffer.from(data, 'binary')));
+  const _resize = term.onResize(dim => {
     ctrlQueue.enqueue({ dim });
     dataQueue.enqueue(Buffer.alloc(0));
-  }));
+  });
 
   async function* localGenerator() {
     while (true) {
@@ -286,6 +278,9 @@ async function connectPty() {
 
   }
   finally {
+    _data.dispose();
+    _binary.dispose();
+    _resize.dispose();
     if (!props.reconnect)
       return;
     await sleep(1000);
