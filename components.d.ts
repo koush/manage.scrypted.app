@@ -49,7 +49,6 @@ declare module 'vue' {
     Plugins: typeof import('./src/components/plugin/Plugins.vue')['default']
     PluginStats: typeof import('./src/components/plugin/PluginStats.vue')['default']
     PositionSensor: typeof import('./src/components/interfaces/PositionSensor.vue')['default']
-    PtyComponent: typeof import('./src/components/PtyComponent.vue')['default']
     RadioButtonSetting: typeof import('./src/components/interfaces/settings/RadioButtonSetting.vue')['default']
     RadioPanelSetting: typeof import('./src/components/interfaces/settings/RadioPanelSetting.vue')['default']
     Readme: typeof import('./src/components/interfaces/Readme.vue')['default']

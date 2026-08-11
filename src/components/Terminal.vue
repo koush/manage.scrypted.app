@@ -4,6 +4,6 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import PtyComponent from "@/components/PtyComponent.vue";
+import PtyComponent from "@/common/components/PtyComponent.vue";
 
 </script>

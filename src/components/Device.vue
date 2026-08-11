@@ -207,7 +207,7 @@ import DeleteDeviceDialog from './DeleteDeviceDialog.vue';
 import DeviceLayout from './DeviceLayout.vue';
 import DeviceSettings from './DeviceSettings.vue';
 import KvmComponent from './KvmComponent.vue';
-import PtyComponent from './PtyComponent.vue';
+import PtyComponent from '../common/components/PtyComponent.vue';
 import ResponsiveColumn from './ResponsiveColumn.vue';
 import ToolbarTooltipButton from '@/common/components/ToolbarTooltipButton.vue';
 import Camera from './interfaces/Camera.vue';

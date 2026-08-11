@@ -132,6 +132,8 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
   const sentinel = `-------- COMMAND COMPLETE [${uuid}] --------`;
   const sentinelPattern = new RegExp(`\\r?\\n?${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r?\\n?`);
 
+  const hexSentinel = Array.from(sentinel).map(c => '\\x' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+
   const collected: Buffer[] = [];
   const done = new Deferred<string>();
 
@@ -149,8 +151,7 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
   }, timeoutMs);
 
   try {
-    currentDataQueue.enqueue(Buffer.from(command + '\n', 'utf8'));
-    currentDataQueue.enqueue(Buffer.from(`echo ${sentinel}\n`, 'utf8'));
+    currentDataQueue.enqueue(Buffer.from(`${command}; printf '${hexSentinel}\\n'\n`, 'utf8'));
 
     const rawOutput = await done.promise;
 
@@ -257,8 +258,8 @@ async function connectPty() {
 
     const { systemManager, connectRPCObject } = connectedClient.value!;
 
-    const plugin = systemManager.getDeviceByName<DeviceProvider>(props.pluginId || "@scrypted/core");
-    const streamSvc = (props.nativeId ? await plugin.getDevice(props.nativeId) : plugin) as StreamService<Buffer | string, Buffer>;
+    const streamDevice = systemManager.getDeviceById<StreamService<Buffer | string, Buffer>>(props.pluginId || "@scrypted/core", props.nativeId);
+    const streamSvc = streamDevice.providerId ? await systemManager.getDeviceById<DeviceProvider>(streamDevice.providerId).getDevice(props.nativeId) as StreamService<Buffer | string, Buffer> : streamDevice;
     const streamSvcDirect = await connectRPCObject(streamSvc);
     const remoteGenerator = await streamSvcDirect.connectStream(localQueue.queue as AsyncGenerator<Buffer | string>, props.options);
 
