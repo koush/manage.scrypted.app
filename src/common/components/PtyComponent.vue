@@ -130,18 +130,24 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
 
   const uuid = Math.random().toString(36).substring(2, 10);
   const sentinel = `-------- COMMAND COMPLETE [${uuid}] --------`;
-  const sentinelPattern = new RegExp(`\\r?\\n?${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r?\\n?`);
+  const sentinelPattern = new RegExp(`${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\r?\\n)?([\\s\\S]*?)(?:\\r?\\n)?${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
 
   const hexSentinel = Array.from(sentinel).map(c => '\\x' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+  const b64Command = Buffer.from(command).toString('base64');
 
   const collected: Buffer[] = [];
   const done = new Deferred<string>();
+  let sentinelCount = 0;
 
   const listener: OutputListener = (data: Buffer) => {
     collected.push(data);
     const text = Buffer.concat(collected).toString('utf8');
-    if (text.includes(sentinel)) {
-      done.resolve(text);
+    const count = (text.match(new RegExp(sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+    if (count > sentinelCount) {
+      sentinelCount = count;
+      if (sentinelCount >= 2) {
+        done.resolve(text);
+      }
     }
   };
   outputListeners.add(listener);
@@ -151,13 +157,13 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
   }, timeoutMs);
 
   try {
-    currentDataQueue.enqueue(Buffer.from(`${command}; printf '${hexSentinel}\\n'\n`, 'utf8'));
+    currentDataQueue.enqueue(Buffer.from(`printf '${hexSentinel}\\n'; echo '${b64Command}' | base64 -d | $SHELL; printf '${hexSentinel}\\n'\n`, 'utf8'));
 
     const rawOutput = await done.promise;
 
-    let cleaned = rawOutput.replace(sentinelPattern, '');
-    cleaned = cleaned.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '');
-    return cleaned.trim();
+    const match = rawOutput.match(sentinelPattern);
+    const cleaned = match ? match[1] : rawOutput;
+    return cleaned.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
   }
   finally {
     clearTimeout(timeout);
