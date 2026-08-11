@@ -128,26 +128,27 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
     throw new Error('Terminal is not connected');
   }
 
-  const uuid = Math.random().toString(36).substring(2, 10);
-  const sentinel = `-------- COMMAND COMPLETE [${uuid}] --------`;
-  const sentinelPattern = new RegExp(`${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\r?\\n)?([\\s\\S]*?)(?:\\r?\\n)?${sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
-
-  const hexSentinel = Array.from(sentinel).map(c => '\\x' + c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-  const b64Command = Buffer.from(command).toString('base64');
+  const uuid = Math.random().toString(16).substring(2, 6);
+  const startSentinel = `--agent-start-${uuid}--`;
+  const endSentinel = `--agent-end-${uuid}--`;
+  const startSentinelHex = `\\x2d\\x2dagent-start\\x2d${uuid}\\x2d\\x2d`;
+  const endSentinelHex = `\\x2d\\x2dagent-end\\x2d${uuid}\\x2d\\x2d`;
+  const escapedSentinel = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const extractPattern = new RegExp(`${escapedSentinel(startSentinel)}(?:\\r?\\n)?([\\s\\S]*?)(?:\\r?\\n)?${escapedSentinel(endSentinel)}`);
+  const escapedCommand = command.replace(/'/g, "'\\''");
 
   const collected: Buffer[] = [];
   const done = new Deferred<string>();
-  let sentinelCount = 0;
+  let foundStart = false;
 
   const listener: OutputListener = (data: Buffer) => {
     collected.push(data);
     const text = Buffer.concat(collected).toString('utf8');
-    const count = (text.match(new RegExp(sentinel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-    if (count > sentinelCount) {
-      sentinelCount = count;
-      if (sentinelCount >= 2) {
-        done.resolve(text);
-      }
+    if (text.includes(startSentinel)) {
+      foundStart = true;
+    }
+    if (foundStart && text.includes(endSentinel)) {
+      done.resolve(text);
     }
   };
   outputListeners.add(listener);
@@ -157,11 +158,11 @@ async function sendCommand(command: string, timeoutMs = 60000): Promise<string> 
   }, timeoutMs);
 
   try {
-    currentDataQueue.enqueue(Buffer.from(`printf '${hexSentinel}\\n'; echo '${b64Command}' | base64 -d | $SHELL; printf '${hexSentinel}\\n'\n`, 'utf8'));
+    currentDataQueue.enqueue(Buffer.from(`printf '${startSentinelHex}\\n'; printf '%s' '${escapedCommand}' | $SHELL; printf '${endSentinelHex}\\n'\n`, 'utf8'));
 
     const rawOutput = await done.promise;
 
-    const match = rawOutput.match(sentinelPattern);
+    const match = rawOutput.match(extractPattern);
     const cleaned = match ? match[1] : rawOutput;
     return cleaned.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').trim();
   }
