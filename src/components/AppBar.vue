@@ -34,6 +34,10 @@
     <ThemeToggle></ThemeToggle>
     <template v-if="isLoggedIn">
       <!-- <div class="mr-2">{{ connectedClient?.username }}</div> -->
+      <v-btn v-if="oidcEnabled && !oidcLinked" @click="linkOidc" size="small" variant="text">
+        <v-tooltip activator="parent" location="bottom">Link OIDC Account</v-tooltip>
+        <v-icon>{{ getFaPrefix('fa-link') }}</v-icon>
+      </v-btn>
       <v-btn @click="logoutClient">
         <v-icon>{{ getFaPrefix('fa-arrow-right-from-bracket') }}</v-icon>
       </v-btn>
@@ -41,7 +45,8 @@
   </v-app-bar>
 </template>
 <script setup lang="ts">
-import { connectedClient, isLoggedIn, logoutClient } from '@/common/client';
+import { combineBaseUrl } from '@scrypted/client/src/index';
+import { getBaseUrl, connectedClient, isLoggedIn, logoutClient, oidcEnabled, oidcLinked } from '@/common/client';
 import { getAllDevices } from '@/common/devices';
 import { isTouchDevice, isTouchPhone } from '@/common/size';
 import { getFaPrefix, hasFixedPhysicalLocation, typeToIcon } from '@/common/device-icons';
@@ -71,6 +76,10 @@ const search = ref<string>();
 
 const value = ref<SearchResult>();
 const router = useRouter();
+
+function linkOidc() {
+  window.location.href = combineBaseUrl(getBaseUrl(), 'login/oidc/link');
+}
 
 const updateAvailable = getServerUpdateMonitor();
 const updateAvailableCount = computed(() => updateAvailable.value?.updateAvailable ? 1 : 0);

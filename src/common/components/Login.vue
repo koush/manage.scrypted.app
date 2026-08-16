@@ -9,35 +9,49 @@
         <v-card-subtitle v-if="loginHostname" style="text-align: center;" class="scrypted-subtitle2">Log into: {{
           loginHostname }}</v-card-subtitle>
 
-        <v-text-field class="ml-8 mr-8 mt-8 mb-8" density="compact" variant="outlined" v-model="username"
-          autocorrect="off" autocapitalize="off" spellcheck="false" label="User Name" persistent-placeholder
-          hide-details></v-text-field>
-        <v-text-field class="ml-8 mr-8 mb-8" density="compact" variant="outlined" v-model="password" type="password"
-          :label="changePassword ? 'Current Password' : 'Password'" autocomplete="on" persistent-placeholder
-          hide-details>
-        </v-text-field>
-        <v-text-field v-if="changePassword" class="ml-8 mr-8 mb-4" density="compact" variant="outlined"
-          v-model="newPassword" type="password" label="New Password" autocomplete="on" persistent-placeholder>
-        </v-text-field>
-        <v-text-field v-if="!hasLogin || changePassword" class="ml-8 mr-8 mb-4" density="compact" variant="outlined"
-          v-model="confirmPassword" type="password"
-          :label="changePassword ? 'Confirm New Password' : 'Confirm Password'" autocomplete="on"
-          persistent-placeholder>
-        </v-text-field>
+        <template v-if="showBasic">
+          <v-text-field class="ml-8 mr-8 mt-8 mb-8" density="compact" variant="outlined" v-model="username"
+            autocorrect="off" autocapitalize="off" spellcheck="false" label="User Name" persistent-placeholder
+            hide-details></v-text-field>
+          <v-text-field class="ml-8 mr-8 mb-8" density="compact" variant="outlined" v-model="password" type="password"
+            :label="changePassword ? 'Current Password' : 'Password'" autocomplete="on" persistent-placeholder
+            hide-details>
+          </v-text-field>
+          <v-text-field v-if="changePassword" class="ml-8 mr-8 mb-4" density="compact" variant="outlined"
+            v-model="newPassword" type="password" label="New Password" autocomplete="on" persistent-placeholder>
+          </v-text-field>
+          <v-text-field v-if="!hasLogin || changePassword" class="ml-8 mr-8 mb-4" density="compact" variant="outlined"
+            v-model="confirmPassword" type="password"
+            :label="changePassword ? 'Confirm New Password' : 'Confirm Password'" autocomplete="on"
+            persistent-placeholder>
+          </v-text-field>
+        </template>
 
         <div class="pl-8 pr-8 pb-2" style="color: red;" v-if="loginResult">{{ loginResult }}</div>
+
+        <div v-if="showBasic && oidcEnabled" class="pl-8 pr-8 pb-2">
+          <v-divider></v-divider>
+        </div>
+
+        <div v-if="oidcEnabled" class="pl-8 pr-8 pb-4" :class="{ 'pt-6': !showBasic }">
+          <v-btn block variant="outlined" @click.prevent="signInWithOidc">
+            {{ showBasic ? 'Or sign in with OIDC' : 'Sign in with OIDC' }}
+          </v-btn>
+        </div>
 
         <v-card-actions>
           <v-btn :icon="getFaPrefix('fa-home')" v-if="isScryptedCloudHostname()" size="small"
             @click.prevent="logoutClient"></v-btn>
-          <template v-if="hasLogin">
+          <template v-if="showBasic && hasLogin">
             <v-btn size="small" variant="text" v-if="!changePassword" @click="changePassword = true">Change
               Password</v-btn>
             <v-btn size="small" variant="text" v-else="!changePassword" @click="changePassword = false">Cancel</v-btn>
           </template>
           <v-spacer></v-spacer>
-          <v-btn v-if="hasLogin" size="small" type="submit" variant="text" @click.prevent="doLogin">Log In</v-btn>
-          <v-btn v-else type="submit" size="small" variant="text" @click.prevent="doLogin">Create Account</v-btn>
+          <template v-if="showBasic">
+            <v-btn v-if="hasLogin" size="small" type="submit" variant="text" @click.prevent="doLogin">Log In</v-btn>
+            <v-btn v-else type="submit" size="small" variant="text" @click.prevent="doLogin">Create Account</v-btn>
+          </template>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -45,9 +59,9 @@
 </template>
 
 <script setup lang="ts">
-import { loginScryptedClient, checkScryptedClientLogin } from '@scrypted/client/src/index';
-import { ref } from 'vue';
-import { getBaseUrl, hasLogin, isScryptedCloudHostname, isSelfHosted, logoutClient, saveSelfHostedCredentials } from '../client';
+import { combineBaseUrl, loginScryptedClient, checkScryptedClientLogin } from '@scrypted/client/src/index';
+import { computed, ref } from 'vue';
+import { authType, getBaseUrl, hasLogin, isScryptedCloudHostname, isSelfHosted, logoutClient, oidcEnabled, saveSelfHostedCredentials } from '../client';
 import { windowLocationReload } from '../platform-shims';
 import { getFaPrefix } from '../fa-prefix';
 
@@ -63,13 +77,23 @@ const newPassword = ref<string>();
 const loginResult = ref<string>();
 const loginHostname = ref<string>();
 
+const showBasic = computed(() => authType.value !== 'oidc');
+
 const baseUrl = getBaseUrl();
 checkScryptedClientLogin({
   baseUrl,
 })
   .then(r => {
     loginHostname.value = r.hostname;
+    if (r.authType) {
+      authType.value = r.authType;
+    }
   })
+  .catch(() => { });
+
+function signInWithOidc() {
+  window.location.href = combineBaseUrl(baseUrl, 'login/oidc');
+}
 
 async function doLogin() {
   const baseUrl = getBaseUrl();
@@ -91,7 +115,7 @@ async function doLogin() {
         loginResult.value = "New passwords do not match.";
         return;
       }
-      change_password = confirmPassword.value;
+      change_password = newPassword.value;
     }
 
     const response = await loginScryptedClient({
@@ -106,13 +130,13 @@ async function doLogin() {
       loginResult.value = response.error;
       return;
     }
+
     try {
       const redirect_uri = new URL(window.location.href).searchParams.get('redirect_uri');
-      if (redirect_uri) {
+      if (redirect_uri && new URL(redirect_uri).origin === window.location.origin) {
         window.location.href = redirect_uri;
         return;
       }
-
     }
     catch (e) {
     }

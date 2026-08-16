@@ -1,4 +1,4 @@
-import { connectScryptedClient, getCurrentBaseUrl, logoutScryptedClient, redirectScryptedLogin, ScryptedClientLoginError, ScryptedClientOptions, ScryptedClientStatic } from '@scrypted/client/src/index';
+import { checkScryptedClientLogin, connectScryptedClient, getCurrentBaseUrl, logoutScryptedClient, redirectScryptedLogin, ScryptedClientLoginError, ScryptedClientOptions, ScryptedClientStatic } from '@scrypted/client/src/index';
 import { timeoutFunction, timeoutPromise } from '@scrypted/common/src/promise-utils';
 import { sleep } from "@scrypted/common/src/sleep";
 import { computed, reactive, ref, shallowRef } from 'vue';
@@ -14,6 +14,9 @@ export let clientPromise: Promise<ScryptedClientStatic> | undefined;
 export const isLoggedIn = ref(true);
 export const hasLogin = ref<boolean | undefined>();
 export const cloudLoginRedirect = ref<string>();
+export const authType = ref<string | undefined>(undefined);
+export const oidcLinked = ref(false);
+export const oidcEnabled = computed(() => !!(authType.value?.includes('oidc')));
 
 // export const SCRYPTED_SERVER = window.location.hostname === 'beta.scrypted.app' ? 'home-dev.scrypted.app' : 'home.scrypted.app';
 export const SCRYPTED_SERVER = 'home.scrypted.app';
@@ -238,6 +241,10 @@ export async function connectClient(options: ScryptedClientOptions): Promise<Scr
     const self = connectedClient.value = await clientPromise;
     console.log(connectedClient.value);
     isLoggedIn.value = true;
+    checkScryptedClientLogin({ baseUrl: getBaseUrl() }).then(r => {
+      if (r.authType) authType.value = r.authType;
+      if (r.oidcLinked !== undefined) oidcLinked.value = r.oidcLinked;
+    }).catch(() => { });
 
     self.onClose = () => {
       console.error('Scrypted client closed');
