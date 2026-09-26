@@ -67,7 +67,7 @@ const radios = ref('url');
 const title = ref('Scrypted');
 const subtitle = ref('Test Notification');
 const body = ref('This is a message from the Scrypted Management Console.');
-const url = ref<string>('https://home.scrypted.app/_punch/web_hi_res_512.png');
+const url = ref<string>('https://login.scrypted.app/_punch/web_hi_res_512.png');
 const error = ref<string>();
 
 async function sendNotification() {

@@ -40,7 +40,7 @@
           <v-spacer>
           </v-spacer>
 
-          <ToolbarTooltipButton v-if="isScryptedCloudHostname()" href="https://home.scrypted.app"
+          <ToolbarTooltipButton v-if="isScryptedCloudHostname()" href="https://login.scrypted.app"
             tooltip="Scrypted Cloud" icon="fa-home">
           </ToolbarTooltipButton>
 
